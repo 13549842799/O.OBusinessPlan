@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.authority.mapper.RoleMapper"> 
+    
+    <sql id="base_column">
+        ro.id,ro.code,ro.sort,ro.name,ro.creator,
+        ro.createTime,ro.modifier,ro.modifierTime,ro.updateNo,ro.delflag
+    </sql>
+   
+    <insert id="giveRolesBatch" >
+    INSERT INTO
+        admin_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    <if test="adminId !=null">
+    aid,
+    </if>
+    <if test="roleIds !=null">
+    rid,
+    </if>
+    <if test="creator !=null">
+    creator,
+    createTime,
+    modifier,
+    modifiTime
+    </if>
+    </trim>
+    <if test="roleIds !=null">
+    VALUES
+    <foreach collection="roleIds" item="rid" separator=",">
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    <if test="adminId !=null">
+    #{adminId,jdbcType=INTEGER},
+    </if>
+    #{rid,jdbcType=INTEGER},
+    <if test="creator !=null">
+    #{creator,jdbcType=INTEGER},
+    NOW(),
+    #{creator,jdbcType=INTEGER},
+    NOW()
+    </if>
+    </trim>
+    </foreach>
+    </if>
+    </insert>    
+	
+    <select id="getById" resultType="role" parameterType="role">
+        SELECT 
+        <include refid="base_column"/>
+        FROM role ro
+        WHERE ro.id = #{id} 
+        <if test="delflag != null">
+        AND ro.delflag = #{delflag}
+        </if>
+    </select>
+    
+	<update id="updateFull" parameterType="role">
+        UPDATE role SET 
+            code = #{code},
+            sort = #{sort},
+            name = #{name},
+            modifier = #{modifier}
+            modifierTime = #{modifierTime}
+            describes = #{describes},
+            state = #{state,jdbcType=TINYINT},
+            delflag = #{delflag,jdbcType=TINYINT}
+         WHERE id = #{id}
+    </update>
+	
+	<update id="state" >
+        UPDATE resource set state = IF(state = 0, #{on}, #{off})
+        WHERE id = #{ key }
+    </update>
+    
+    <update id="deleteFromAdmin" parameterType="map">
+        UPDATE
+          admin_role
+        SET
+          delflag = #{delflag, jdbcType=TINYINT}
+        AND
+          modifier = #{modifier}
+        AND
+          modifierTime = NOW()
+        WHERE
+          aid = #{adminId}
+        AND
+          rid IN
+        <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
+          #{roleId}
+        </foreach>
+    </update>
+    
+    <select id="getList" resultType="role" parameterType="role">
+        SELECT
+        <include refid="base_column"/>
+        FROM role ro
+        <where>
+          <if test="creator != null">
+            ro.creator = #{creator, jdbcType=INTEGER}
+          </if>
+          <if test="state != null">
+            AND ro.state = #{state,jdbcType=TINYINT}
+          </if>
+          <if test="delflag != null">
+            AND ro.delflag = #{delflag, jdbcType=TINYINT}
+          </if>
+        </where>
+        ORDER BY sort 
+    </select>
+    
+    <select id="getFullList" parameterType="rolePage" resultType="rolePage">
+        SELECT
+          <include refid="base_column" />, cr.nikename AS creatorName,
+          mo.nikename AS modifierName
+        FROM
+          role ro
+        LEFT JOIN admin cr ON ro.creator = cr.id
+        LEFT JOIN admin mo ON ro.modifier = mo.id
+        <where>
+          <if test="creator != null">
+            ro.creator = #{creator, jdbcType=INTEGER}
+          </if>
+          <if test="state != null">
+            AND ro.state = #{state,jdbcType=TINYINT}
+          </if>
+          <if test="delflag != null">
+            AND ro.delflag = #{delflag, jdbcType=TINYINT}
+          </if>
+          <if test="creatorName != null">
+            AND cr.nikeName LIKE CONCAT('%', #{creatorName}, '%')
+          </if>
+        </where>
+    </select>
+    
+    <select id="getRolesOfAdmin" resultType="role">
+        SELECT
+          DISTINCT <include refid="base_column"/>
+        FROM role ro
+        LEFT JOIN admin_role ar ON ro.id = ar.rid
+        WHERE
+          ro.delflag = #{delflag, jdbcType=TINYINT}
+        AND
+          ro.state = #{state, jdbcType = TINYINT}
+        <choose>
+        <when test="type">
+        AND  
+          ar.aid = #{adminId}
+        </when>
+        <otherwise>
+        AND
+          ar.aid != #{adminId}
+        </otherwise>
+        </choose>
+    </select>
+
+</mapper>

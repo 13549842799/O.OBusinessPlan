@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.admin.mapper.EmployeeMapper"> 
+
+    <resultMap type="employee" id="EmployeeResult">
+	<id property="eid" column="eid" />
+	   <result property="ecode" column="ecode"/>
+	   <result property="name" column="name"/>
+	   <result property="sex" column="sex"/>
+	   <result property="birth" column="birth"/>
+	   <result property="idCard" column="idCard"/>
+	   <result property="marriageId" column="marriageId"/>
+	   <result property="nationId" column="nationId"/>
+	   <result property="nationName" column="nationName" />
+	   <result property="phone" column="phone"/>
+	   <result property="email" column="email"/>
+	   <result property="qq" column="qq"/>
+	   <result property="address" column="address"/>
+	   <result property="qualificationId" column="qualificationId"/>
+	   <result property="qualificationName" column="qualificationName"/>
+	   <result property="school" column="school"/>
+	   <result property="avatar" column="avatar"/>
+	   <result property="positionId" column="positionId"/>
+	   <result property="positionName" column="positionName" />
+	   <result property="departmentId" column="departmentId"/>
+	   <result property="departmentName" column="departmentName"/>
+	   <result property="stateId" column="stateId"/>
+	   <result property="stateName" column="stateName"/>
+	   <result property="salary" column="salary"/>
+	   <result property="salaryTypeId" column="salaryTypeId"/>
+	   <result property="salaryTypeName" column="salaryTypeName" /> 
+	   <result property="beginTime" column="beginTime"/>
+	   <result property="endTime" column="endTime"/>
+	   <result property="creator" column="creator"/>
+	   <result property="creatorName" column="creatorName"/>
+	   <result property="createTime" column="createTime"/>
+	   <result property="delflag" column="delflag"/> 
+	</resultMap>
+	
+
+	<sql id="base_column">
+	e.eid ,e.ecode ,e.name ,e.sex ,
+	e.birth ,e.idCard ,e.marriageId ,e.nationId ,
+	e.phone ,e.email ,e.qq ,e.address ,e.qualificationId ,
+	e.school ,e.avatar ,e.positionId ,e.departmentId ,
+	e.stateId ,e.salary ,e.salaryTypeId ,e.beginTime ,
+	e.endTime ,e.creator ,e.createTime
+	</sql>
+	
+	<sql id="base_all">
+	*
+	</sql>
+	
+	<select id="getByStr" resultType="employee" parameterType="employee">
+	SELECT
+	<include refid="base_column"/>
+	FROM
+	   employee e
+	WHERE
+	   e.`ecode` = #{key}
+	AND
+	   e.delflag = #{delflag,jdbcType=TINYINT}
+	</select>
+	
+	<select id="list" resultType="employee" parameterType="employeeForm">
+	SELECT
+	   <include refid="base_all"/>
+	FROM
+	    employee e
+	LEFT JOIN
+	    authority_employee ar ON e.eid=ae.eid
+	LEFT JOIN
+	    authority au ON ae.aid==au.id
+	LEFT JOIN
+	    dictionary d_nation ON e.nationId=d_nation.id
+	LEFT JOIN
+	    dictionary d_qua ON  e.qualificationId = d_qua.id
+	LEFT JOIN
+	    positions p ON p.id=e.positionId
+	LEFT JOIN
+	    department dep ON dep.id=e.departmentId
+	LEFT JOIN
+	    dictionary d_state ON d_state.id=e.stateId
+	LEFT JOIN
+	    dictionart d_salary ON d_salary.id=e.salaryTypeId
+	WHERE
+	    1=1
+	<if test="eids !=nul">
+	eid IN
+	<foreach collection="eids" item="eid" open="(" close=")" separator=",">
+	#{eid,jdbcType=INTEGER}
+	</foreach>
+	</if>
+	<if test="ecode !=null">
+	<![CDATA[ 
+	AND LOCATE(#{ecode,jdbcType=VARCHAR},e.ecode)>0
+	]]>
+	</if>
+	<if test="name !=null">
+	<![CDATA[
+	AND LOCATE(#{name,jdbcType=VARCHAR},e.name)>0  
+	]]> 
+	</if>
+	<if test="idCard !=null">
+	<![CDATA[
+	AND LOCATE(#{idCard,jdbcType=VARCHAR},e.idCard)>0  
+	]]> 
+	</if>
+	<if test="phone !=null">
+	<![CDATA[
+	AND LOCATE(#{phone,jdbcType=VARCHAR},e.phone)>0  
+	]]> 
+	</if>
+	<if test="email !=null">
+	<![CDATA[
+	AND LOCATE(#{email,jdbcType=VARCHAR},e.email)>0  
+	]]> 
+	</if>
+	<if test="qq !=null">
+	<![CDATA[
+	AND LOCATE(#{qq,jdbcType=VARCHAR},e.qq)>0  
+	]]> 
+	</if>
+	<if test="positionIds !=null">
+	AND p.id IN 
+	<foreach collection="positionIds" item="po" open="(" close=")" separator=",">
+	#{po,jdbcType=INTEGER}
+	</foreach>
+	</if>
+	<if test="departmentIds !=null">
+	AND dep.id IN
+	<foreach collection="departmentIds" item="de" open="(" close=")" separator=",">
+	#{de,jdbcType=INTEGER}
+	</foreach>
+	</if>
+	<if test="sex !=null">
+	AND e.sex=#{sex,jdbcType=VARCHAR}
+	</if>
+	<if test="marriageId !=null">
+	AND e.marriageId=#{marriageId,jdbcType=INTEGER}
+	</if>
+	<if test=" nationId!=null">
+	AND d_nation.id=#{nationId,jdbcType=INTEGER}
+	</if>
+	<if test="minSalary !=null">
+	<![CDATA[
+	AND e.salary >= #{minSalary,jdbcType=DECIMAL}
+	]]>
+	</if>
+	<if test="maxSalary !=null">
+	<![CDATA[
+	AND e.salary <=#{maxSalary,jdbcType=DECIMAL}
+	]]>
+	</if>
+	<if test="salaryTypeId !=null">
+	AND d_salary.id=#{salaryTypeId,jdbcType=INTEGER}
+	</if>
+	<if test="minBeginTime !=null">
+	<![CDATA[
+	AND e.beginTime >=#{minBeginTime,jdbcType=TIMESTAMP}
+	]]>
+	</if>
+	<if test="maxBeginTime !=null">
+	<![CDATA[
+	AND e.beginTime <=#{maxBeginTime,jdbcType=TIMESTAMP}
+	]]>
+	</if>
+	<if test="minEndTime !=null">
+	<![CDATA[
+	AND e.endTime <=#{minEndTime,jdbcType=TIMESTAMP}
+	]]>
+	</if>
+	<if test="maxEndTime !=null">
+	<![CDATA[
+	AND e.endTime <=#{maxEndTime,jdbcType=TIMESTAMP}
+	]]>
+	</if>
+	<if test="delflag !=null">
+	AND e.delflag=#{delflag,jdbcType=INTEGER}
+	AND au.delflag=#{delflag,jdbcType=INTEGER}
+	</if>
+    <if test="stateId !=null">
+    AND d_state.id=#{stateId,jdbcType=INTEGER}
+    </if> 
+    <if test=" pageNum !=null and pageSize!=null">
+    LIMIT #{pageNum,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+    </if>
+	</select>
+	
+	<select id="findEmployee" resultMap="EmployeeResult" parameterType="employee">
+	SELECT
+	    <include refid="base_all"/>
+	FROM
+	    employee e
+	LEFT JOIN
+	    authority_employee ar ON e.eid=ae.eid
+	LEFT JOIN
+	    authority au ON ae.aid==au.id
+	LEFT JOIN
+	    dictionary d_nation ON e.nationId=d_nation.id
+	LEFT JOIN
+	    dictionary d_qua ON  e.qualificationId = d_qua.id
+	LEFT JOIN
+	    positions p ON p.id=e.positionId
+	LEFT JOIN
+	    department dep ON dep.id=e.departmentId
+	LEFT JOIN
+	    dictionary d_state ON d_state.id=e.stateId
+	LEFT JOIN
+	    dictionart d_salary ON d_salary.id=e.salaryTypeId
+	WHERE
+	    e.delflag = #{delflag,jdbcType=TINYINT}
+	AND
+	    au.delflag=#{delflag,jdbcType=INTEGER}
+	<if test="ecode !=null">
+	AND e.ecode = #{ecode,jdbcType=VARCHAR}
+	</if>
+	<if test="name !=null">
+	AND e.name=#{name,jdbcType=VARCHAR}
+	</if>
+	<if test="positionId !=null">
+	AND p.id = #{positionId,jdbcType=INTEGER}
+	</if>
+	<if test="departmentId !=null">
+	AND dep.id= #{departmentId,jdbcType=INTEGER}
+	</if>
+	<if test="sex !=null">
+	AND e.sex=#{sex,jdbcType=VARCHAR}
+	</if>
+	<if test="marriageId !=null">
+	AND e.marriageId = #{marriageId,jdbcType=TINYINT}
+	</if>
+	<if test=" nationId!=null">
+	AND d_nation.id=#{nationId,jdbcType=INTEGER}
+	</if>
+	<if test="salaryTypeId !=null">
+	AND d_salary.id=#{salaryTypeId,jdbcType=INTEGER}
+	</if>
+    <if test="stateId !=null">
+    AND d_state.id=#{stateId,jdbcType=INTEGER}
+    </if> 
+	</select>
+
+    <insert id="insert" parameterType="employee" useGeneratedKeys="true" keyProperty="eid">
+    INSERT INTO
+         employee
+    (ecode     ,name     ,sex   ,birth  ,idCard ,
+     marriageId,nationId ,phone ,email  ,qq ,
+     address   ,qualificationId ,school ,avatar,
+     positionId,departmentId    ,stateId,salary ,
+     salaryTypeId,beginTime     ,creator,createtime )
+     VALUES
+     (
+     #{ecode,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{sex,jdbcType=VARCHAR},
+     #{birth,jdbcType=TIMESTAMP},#{idCard,jdbcType=VARCHAR},#{marriageId,jdbcType=INTEGER},
+     #{nationId,jdbcType=INTEGER},#{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},
+     #{qq,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{qualificationId,jdbcType=INTEGER},
+     #{school,jdbcType=VARCHAR},#{avatar,jdbcType=VARCHAR},#{positionId,jdbcType=INTEGER},
+     #{departmentId,jdbcType=INTEGER},#{stateId,jdbcType=INTEGER},#{salary,jdbcType=DECIMAL},
+     #{salaryTypeId,jdbcType=INTEGER},#{beginTime,jdbcType=TIMESTAMP},#{creator,jdbcType=INTEGER},
+     NOW())
+    </insert>
+	
+	<update id="update" parameterType="employee" >
+	UPDATE
+	    employee
+	SET
+	<trim suffixOverrides=",">
+	<if test="name !=null">
+	name=#{name,jdbcType=VARCHAR},
+	</if>
+	<if test="sex !=null">,
+	sex=#{sex,jdbcType=VARCHAR}
+	</if>
+	<if test="birth !=null">
+	birth=#{birth,jdbcType=TIMESTAMP},
+	</if>
+	<if test="idCard !=null">
+	idCard=#{idCard,jdbcType=VARCHAR},
+	</if>
+	<if test="marriageId !=null">
+	marriageId=#{marriageId,jdbcType=INTEGER},
+	</if>
+	<if test=" nationId!=null">
+	nationId=#{nationId,jdbcType=INTEGER},
+	</if>
+	<if test="phone !=null">
+	phone=#{phone,jdbcType=VARCHAR},
+	</if>
+	<if test="email !=null">
+	email=#{email,jdbcType=VARCHAR},
+	</if>
+	<if test=" qq!=null">
+	qq=#{qq,jdbcType=VARCHAR},
+	</if>
+	<if test="address !=null">
+	address=#{address,jdbcType=VARHCAR},
+	</if>
+	<if test="qualificationId !=null">
+	qualificationId=#{qualificationId,jdbcType=INTEGER},
+	</if>
+	<if test="school !=null">
+	school=#{school,jdbcType=VARCHAR},
+	</if>
+	<if test="avatar !=null">
+	avatar=#{avatar,jdbcType=VARCHAR},
+	</if>
+	<if test=" positionId!=null">
+	positionId=#{positionId,jdbcType=INTEGER},
+	</if>
+	<if test=" departmentId!=null">
+	departmentId=#{departmentId,jdbcType=INTEGER},
+	</if>
+	<if test="salary !=null">
+	salary=#{salary,jdbcType=VARCHAR},
+	</if>
+	<if test=" salaryTypeId!=null">
+	salaryTypeId=#{salaryTypeId,jdbcType=INTEGER},
+	</if>
+	<if test="beginTime !=null">
+	beginTime=#{beginTime,jdbcType=TIMESTAMP},
+	</if>
+	<if test="endTime !=null">
+	endTime=#{endTime,jdbcType=TIMESTAMP},
+	</if>
+	<if test="adminId !=null">
+	adminId = #{adminId}
+	</if>
+	</trim>
+	WHERE
+	     delflag =#{delflag,jdbcType=INTEGER}
+	<if test="eid !=null">
+	AND eid=#{eid,jdbcType=INTEGER}
+	</if>
+	<if test="ecode !=null">
+	AND ecode = #{ecode,jdbcType=VARCHAR}
+	</if>
+	<if test="stateId !=null">
+	AND stateId !=#{stateId,jdbcType=INTEGER}
+	</if>
+	</update>
+
+</mapper>
