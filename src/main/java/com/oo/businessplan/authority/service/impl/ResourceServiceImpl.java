@@ -29,7 +29,9 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource> implements Re
 	@Override
 	public List<Resource> getResourcesForAdmin(Integer adminId,String accountName) {
 		
-		List<Resource> list = resourceMapper.getModuleResourcesList(adminId,accountName,1,DeleteFlag.VALID.getCode(),StatusFlag.ENABLE.getCode());
+		List<Resource> list = resourceMapper.getModuleResourcesList
+				(adminId,accountName,Resource.MENU_MODULE,DeleteFlag.VALID.getCode(),
+						StatusFlag.ENABLE.getCode());
 		
 		return list;
 	}

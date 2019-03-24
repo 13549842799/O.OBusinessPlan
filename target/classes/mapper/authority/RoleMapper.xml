@@ -6,8 +6,23 @@
     
     <sql id="base_column">
         ro.id,ro.code,ro.sort,ro.name,ro.creator,
-        ro.createTime,ro.modifier,ro.modifierTime,ro.updateNo,ro.delflag
+        ro.createTime,ro.modifier,ro.modifierTime,ro.updateNo,
+        ro.state,ro.delflag
     </sql>
+    
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO
+        role
+    (
+      code , sort, name, creator, createTime, modifier, modifierTime, describes, 
+      state, delflag
+    )    
+    VALUES
+    (
+     #{code}, #{sort}, #{name}, #{creator}, NOW(), #{modifier}, NOW(), #{describes},
+     #{state, jdbcType=TINYINT}, #{delflag, jdbcType=TINYINT}
+    )
+    </insert>
    
     <insert id="giveRolesBatch" >
     INSERT INTO
@@ -60,8 +75,8 @@
             code = #{code},
             sort = #{sort},
             name = #{name},
-            modifier = #{modifier}
-            modifierTime = #{modifierTime}
+            modifier = #{modifier},
+            modifierTime = #{modifierTime},
             describes = #{describes},
             state = #{state,jdbcType=TINYINT},
             delflag = #{delflag,jdbcType=TINYINT}
@@ -69,7 +84,7 @@
     </update>
 	
 	<update id="state" >
-        UPDATE resource set state = IF(state = 0, #{on}, #{off})
+        UPDATE role set state = IF(state = 0, #{on}, #{off})
         WHERE id = #{ key }
     </update>
     

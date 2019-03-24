@@ -7,7 +7,7 @@ public class Test2 {
 	
 	@Test
 	public void tt(){
-		String aString = "abcabc";
+		System.out.println(Integer.parseInt(null));
 		
 	}
 }

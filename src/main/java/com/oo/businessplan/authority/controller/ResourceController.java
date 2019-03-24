@@ -55,9 +55,10 @@ public class ResourceController extends BaseController{
 		  = new Resource(null, pid, name, type, state, DeleteFlag.VALID.getCode());
 		  
 		ResponseResult<Object> response = new ResponseResult<>();
-		List<Resource> resources = resourceService.getList(params);
-		Queue<Resource> queue = new LinkedList<>(resources);
-		return response.success(resourceService.getResourceTree(queue, null));	  
+		Queue<Resource> queue = new LinkedList<>(resourceService.getList(params));
+		List<Resource> list = resourceService.getResourceTree(queue, null);
+		list.forEach(o->o.createPath());
+		return response.success(list);	  
 	  }
 	
 	  @ApiOperation(value = "根据用户获取对应模块资源列表")
@@ -92,7 +93,7 @@ public class ResourceController extends BaseController{
         @ApiParam(value = "请求路径", required = false)  
         @RequestParam(required=false,value="request_url")String request_url,
         @ApiParam(value = "排序(未位置)", required = false)  
-        @RequestParam(required=false,value="order")Integer order,
+        @RequestParam(required=false,value="order", defaultValue="99")Integer order,
         @ApiParam(value = "样式", required = false)  
         @RequestParam(required=false,value="style")String style,
         @ApiParam(value = "描述", required = false)  

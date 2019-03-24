@@ -2,11 +2,22 @@ package com.oo.businessplan.authority.pojo;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
+
+import com.oo.businessplan.common.util.StringUtil;
+
+import net.bytebuddy.asm.Advice.This;
 
 
 public class Resource implements Serializable{
 	
 	private static final long serialVersionUID = -1934209512231698453L;
+	
+	public static final int MENU_MODULE = 1;
+	
+	public static final int PAGE_MODULE = 2;
+	
+	public static final int FUNCTION_MODULE = 3;
 	
 	private Integer id;
 	private Integer pid;
@@ -49,6 +60,16 @@ public class Resource implements Serializable{
 		this.style = style;
 		this.describes = describes;
 		this.key = key;
+	}
+	
+	public void createPath() {
+		if (this.pid == null) {
+			this.path =String.valueOf(this.id);
+		}
+		if (this.childs == null || this.childs.size() == 0) {
+			return;
+		}
+		childs.forEach(o->o.setPath(this.id+","+o.id));
 	}
 
 	public Integer getId() {

@@ -1,6 +1,9 @@
 package com.oo.businessplan.basic.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
@@ -128,6 +131,7 @@ public abstract class BaseServiceImpl<T> {
 	}
 	
 	public void add(T t) throws AddErrorException {
+		fullDeleteSign(t);
 	    try {
 		  	int count = baseMapper.add(t);
 		  	if (count == 0) {
@@ -141,6 +145,7 @@ public abstract class BaseServiceImpl<T> {
 	
 	@Transactional
 	public int update(T t) {
+		fullDeleteSign(t);
 		int count = baseMapper.update(t);
 		if (count == 0 || count == 1) {
 			return count;
@@ -151,6 +156,7 @@ public abstract class BaseServiceImpl<T> {
 	
 	@Transactional
 	public int updateFull(T t) {
+		fullDeleteSign(t);
 		int count = baseMapper.updateFull(t);
 		if (count == 0 || count == 1) {
 			return count;
@@ -170,6 +176,22 @@ public abstract class BaseServiceImpl<T> {
 	
 	public boolean delete(int id) {
 		return baseMapper.delete(DeleteFlag.DELETE.getCode(), id) == 1;
+	}
+	
+	/**
+	 * 为对象补充值为正常的删除标志属性
+	 * @param t
+	 */
+	private void fullDeleteSign (T t) {
+		Class<? extends Object> cls = t.getClass();
+		try {
+			Method method = cls.getMethod("setDelflag", Byte.class);
+			if (method != null) {
+				method.invoke(t, DeleteFlag.VALID.getCode());
+			}				
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		} 
 	}
 
 }

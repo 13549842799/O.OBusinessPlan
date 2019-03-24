@@ -12,6 +12,7 @@ import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,9 +76,6 @@ public class RolesController extends BaseController{
 			Integer currentAdmin = currentAdminId(request);
 			role.setCreator(currentAdmin);
 			role.setModifier(currentAdmin);
-			Timestamp current = new Timestamp(new Date().getTime());
-			role.setCreateTime(current);
-			role.setModifierTime(current);
 		} catch (ObjectNotExistException e) {
 			e.printStackTrace();
 			return response.fail(ResultConstant.NOT_EXIST_ADMIN);
@@ -150,20 +148,23 @@ public class RolesController extends BaseController{
 	  }
 	  
 	  @ApiOperation(value = "启用/禁用 角色")
-	  @RequestMapping(value="/state.do",method=RequestMethod.PATCH)
+	  @RequestMapping(value="/{id}/state.do",method=RequestMethod.PATCH)
 	  @IgnoreSecurity(authority=false)
 	  public ResponseResult<Object> stateRole(
 			  HttpServletRequest request,
-			  @RequestBody Role role) {
-		  ResponseResult<Object> response = new ResponseResult<>();
-		  
-		  if (role == null || role.getId() == null) {
+			  @PathVariable("id")Integer id) {
+		  ResponseResult<Object> response = new ResponseResult<>();		  
+		  if (id == null) {
 			return response.fail("请选择角色");
+		  }		  		  
+		  try {
+		      if (roleService.state(id, currentAdminId(request))) {
+			      return response.success();
+			  }
+		  } catch (ObjectNotExistException e) {
+			  e.printStackTrace();
 		  }		  
-		  if (roleService.state(role.getId())) {
-			return response.success();
-		  }		  
-		  return response.fail("更新失败");
+		  return response.fail("操作失败,请联系管理员");
 	  }
 	  
 	  @ApiOperation(value = "角色列表")
