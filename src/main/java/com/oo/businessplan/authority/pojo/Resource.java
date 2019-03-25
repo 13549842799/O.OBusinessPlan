@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import com.oo.businessplan.basic.entity.StateAbleEntity;
 import com.oo.businessplan.common.util.StringUtil;
 
 import net.bytebuddy.asm.Advice.This;
 
 
-public class Resource implements Serializable{
+public class Resource extends StateAbleEntity<Integer> implements Serializable{
 	
 	private static final long serialVersionUID = -1934209512231698453L;
 	
@@ -19,7 +20,6 @@ public class Resource implements Serializable{
 	
 	public static final int FUNCTION_MODULE = 3;
 	
-	private Integer id;
 	private Integer pid;
 	private String name;
 	private String request_url;
@@ -29,25 +29,20 @@ public class Resource implements Serializable{
 	private String describes;
 	private String key;
 	private Byte locking;
-	private Byte state;
-	private Byte delflag;
 	
 	private List<Resource> childs;
 	
 	public Resource () {}
 	
 	public Resource(Integer id,Byte delflag) {
-		super();
-		this.id = id;
-		this.delflag = delflag;
+		super(id, delflag);
 	}
 	
 	public Resource(Integer id, Integer pid, String name, Byte type, Byte state, Byte delflag) {
-		this(id, delflag);
+		super(pid, delflag, state);
 		this.pid = pid;
 		this.name = name;
-		this.type = type;
-		this.state = state;		
+		this.type = type;	
 	}
 
 
@@ -59,25 +54,19 @@ public class Resource implements Serializable{
 		this.path = path;
 		this.style = style;
 		this.describes = describes;
-		this.key = key;
+		this.key = key; 
 	}
 	
 	public void createPath() {
 		if (this.pid == null) {
-			this.path =String.valueOf(this.id);
+			this.path =String.valueOf(this.getId());
 		}
 		if (this.childs == null || this.childs.size() == 0) {
 			return;
 		}
-		childs.forEach(o->o.setPath(this.id+","+o.id));
+		childs.forEach(o->o.setPath(this.getId()+","+o.getId()));
 	}
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
 	public Integer getPid() {
 		return pid;
 	}
@@ -127,18 +116,6 @@ public class Resource implements Serializable{
 	public void setKey(String key) {
 		this.key = key;
 	}
-	public Byte getState() {
-		return state;
-	}
-	public void setState(Byte state) {
-		this.state = state;
-	}
-	public Byte getDelflag() {
-		return delflag;
-	}
-	public void setDelflag(Byte delflag) {
-		this.delflag = delflag;
-	}
 	public Byte getLocking() {
 		return locking;
 	}
@@ -156,7 +133,7 @@ public class Resource implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Resource [id=" + id + ", name=" + name + ", describes=" + describes + ", key=" + key + "]";
+		return "Resource [name=" + name + ", describes=" + describes + ", key=" + key + "]";
 	}
 	
 

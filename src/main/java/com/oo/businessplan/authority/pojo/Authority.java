@@ -3,23 +3,23 @@ package com.oo.businessplan.authority.pojo;
 import java.io.Serializable;
 import java.util.logging.Level;
 
+import com.oo.businessplan.basic.entity.DeleteAbleEntity;
+
 /**
  * 权限类
  * @author cyz
  *
  */
-public class Authority implements Serializable{
+public class Authority extends DeleteAbleEntity<Integer> implements Serializable{
 	
 	 /**
 	 * 
 	 */
-	protected static final long serialVersionUID = 2531977273592100538L;
-	protected Integer id;
-	protected Integer roid;
-	protected Integer reid;
-	protected Byte type;
-	protected Byte level;
-	protected Byte delflag;
+	private static final long serialVersionUID = 2531977273592100538L;
+	private Integer roid;
+	private Integer reid;
+	private Byte type;
+	private Byte level;
 	
 	public Authority() {super();}
 	
@@ -36,15 +36,9 @@ public class Authority implements Serializable{
 	public Authority(Integer roid, Integer reid, Byte type, Byte delflag) {
 		this(roid, reid);
 		this.type = type;
-		this.delflag = delflag;
+		this.setDelflag(delflag);
 	}
 	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
 	public Integer getReid() {
 		return reid;
 	}
@@ -62,12 +56,6 @@ public class Authority implements Serializable{
 	}
 	public void setType(Byte type) {
 		this.type = type;
-	}
-	public Byte getDelflag() {
-		return delflag;
-	}
-	public void setDelflag(Byte delflag) {
-		this.delflag = delflag;
 	}
 	
 	public Byte getLevel() {

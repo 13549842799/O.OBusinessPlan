@@ -3,11 +3,12 @@ package com.oo.businessplan.admin.pojo.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Admin implements Serializable{
+import com.oo.businessplan.basic.entity.StateAbleEntity;
+
+public class Admin extends StateAbleEntity<Integer> implements Serializable{
 		
 	
 	private static final long serialVersionUID = 8497855686170324041L;
-	private Integer id;
 	private String accountname;
 	private String password;
 	private String nikename;
@@ -15,27 +16,20 @@ public class Admin implements Serializable{
 	private Integer relatedid;
 	private String autologin_mac;
 	private Timestamp createtime;
-	private Byte state;
-	private Byte delflag;
+
 	
 	public Admin() {super();}
 	
 	public Admin(Integer id) {
 		this();
-		this.id = id;
+		setId(id);
 	}
 	
 	public Admin(Integer id,Byte delflag) {
 		this(id);
-		this.delflag = delflag;
+		setDelflag(delflag);
 	}
 	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
 	public String getAccountname() {
 		return accountname;
 	}
@@ -78,23 +72,12 @@ public class Admin implements Serializable{
 	public void setCreatetime(Timestamp createtime) {
 		this.createtime = createtime;
 	}
-	public Byte getState() {
-		return state;
-	}
-	public void setState(Byte state) {
-		this.state = state;
-	}
-	public Byte getDelflag() {
-		return delflag;
-	}
-	public void setDelflag(Byte delflag) {
-		this.delflag = delflag;
-	}
+
 	@Override
 	public String toString() {
-		return "Admin [id=" + id + ", accountname=" + accountname + ", password=" + password + ", nikename=" + nikename
+		return "Admin [id=" + getId() + ", accountname=" + accountname + ", password=" + password + ", nikename=" + nikename
 				+ ", avatar=" + avatar + ", relatedid=" + relatedid + ", autologin_mac=" + autologin_mac
-				+ ", createtime=" + createtime + ", state=" + state + ", delflag=" + delflag + "]";
+				+ ", createtime=" + createtime + ", state=" + getState() + ", delflag=" + getDelflag() + "]";
 	}
 	@Override
 	public int hashCode() {
@@ -104,12 +87,12 @@ public class Admin implements Serializable{
 		result = prime * result + ((autologin_mac == null) ? 0 : autologin_mac.hashCode());
 		result = prime * result + ((avatar == null) ? 0 : avatar.hashCode());
 		result = prime * result + ((createtime == null) ? 0 : createtime.hashCode());
-		result = prime * result + ((delflag == null) ? 0 : delflag.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((getDelflag() == null) ? 0 : getDelflag().hashCode());
+		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
 		result = prime * result + ((nikename == null) ? 0 : nikename.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((relatedid == null) ? 0 : relatedid.hashCode());
-		result = prime * result + ((state == null) ? 0 : state.hashCode());
+		result = prime * result + ((getState() == null) ? 0 : getState().hashCode());
 		return result;
 	}
 	@Override
@@ -141,15 +124,15 @@ public class Admin implements Serializable{
 				return false;
 		} else if (!createtime.equals(other.createtime))
 			return false;
-		if (delflag == null) {
-			if (other.delflag != null)
+		if (getDelflag() == null) {
+			if (other.getDelflag() != null)
 				return false;
-		} else if (!delflag.equals(other.delflag))
+		} else if (!getDelflag().equals(other.getDelflag()))
 			return false;
-		if (id == null) {
-			if (other.id != null)
+		if (getId() == null) {
+			if (other.getId() != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!getId().equals(other.getId()))
 			return false;
 		if (nikename == null) {
 			if (other.nikename != null)
@@ -166,10 +149,10 @@ public class Admin implements Serializable{
 				return false;
 		} else if (!relatedid.equals(other.relatedid))
 			return false;
-		if (state == null) {
-			if (other.state != null)
+		if (getState() == null) {
+			if (other.getState() != null)
 				return false;
-		} else if (!state.equals(other.state))
+		} else if (!getState().equals(other.getState()))
 			return false;
 		return true;
 	}

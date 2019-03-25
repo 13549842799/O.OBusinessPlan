@@ -24,8 +24,8 @@ public final class AuthorityWithKey extends Authority  {
 
 	@Override
 	public String toString() {
-		return "AuthorityWithKey [key=" + key + ", id=" + id + ", roid=" + roid + ", reid=" + reid + ", type=" + type
-				+ ", delflag=" + delflag + "]";
+		return "AuthorityWithKey [key=" + key + ", id=" + this.getId() + ", roid=" + this.getRoid() + ", reid=" + this.getReid() + ", type=" + this.getType()
+				+ ", delflag=" + this.getDelflag() + "]";
 	}
 
 	
