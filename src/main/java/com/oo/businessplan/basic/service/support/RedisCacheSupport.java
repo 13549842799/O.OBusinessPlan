@@ -36,12 +36,12 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 	 * @return
 	 */
 	public final  T getObject(String key,Byte state,int expired,int timeUnit){
-		System.out.println("当前调用的对象名称："+this.getClass().getSimpleName());
+		String objName = this.getClass().getSimpleName();
 		@SuppressWarnings("unchecked")
-		T t =(T)tokenManager.getValueFromMap(key, hkey.get(""), expired, timeUnit);
+		T t =(T)tokenManager.getValueFromMap(key, hkey.get(objName), expired, timeUnit);
 		if (t==null) {
 			t = baseMapper.getByStr(key,DeleteFlag.VALID.getCode(), state);
-			tokenManager.saveForMap(key, hkey.get(""), t, expired, timeUnit);
+			tokenManager.saveForMap(key, hkey.get(objName), t, expired, timeUnit);
 		}
 		
 	    return t;
@@ -70,12 +70,12 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 	 * @return
 	 */
 	private final  List<T> getListObject(String key,Byte state,int expired,int timeUnit){
-		 
+		String objName = this.getClass().getSimpleName();
 		@SuppressWarnings("unchecked")
-		List<T> t =(List<T>)tokenManager.getValueFromMap(key, hkey.get(""), expired, timeUnit);
+		List<T> t =(List<T>)tokenManager.getValueFromMap(key, hkey.get(objName), expired, timeUnit);
 		if (t==null) {
 			t = baseMapper.getListByStr(key, DeleteFlag.VALID.getCode(), state);
-			tokenManager.saveForMap(key, hkey.get(""), t, expired, timeUnit);
+			tokenManager.saveForMap(key, hkey.get(objName), t, expired, timeUnit);
 		}
 		
 	    return t;
@@ -112,7 +112,10 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 		private Map<String, String> keyMap = new HashMap<>();
 		
 		public HKeyMap () {
-			keyMap.put("", "");
+			keyMap.put("AdminServiceImpl", "admin");
+			keyMap.put("EmployeeServiceImpl", "employee");
+			keyMap.put("AuthorityServiceImpl", "authority");
+			keyMap.put("ResourceServiceImpl", "resource");
 		}
 		
 		public String get(String key) {

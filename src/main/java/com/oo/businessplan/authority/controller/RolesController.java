@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
@@ -62,6 +63,9 @@ public class RolesController extends BaseController{
 	  
 	  @Autowired
 	  private AdminService adminService;
+	  
+	  @Resource(name="roleService")
+	  private CodeServie cs;
 	
 	  @ApiOperation(value = "创建角色")
 	  @RequestMapping(value="/add.do",method=RequestMethod.POST)
@@ -76,7 +80,6 @@ public class RolesController extends BaseController{
 		role.setCreator(currentAdmin);
 		role.setModifier(currentAdmin);
 		
-		CodeServie cs = (CodeServie)roleService;
 		if (StringUtil.isEmpty(role.getCode())) {
 			role.setCode(cs.generalCode());
 		} else if (cs.codeExists(role.getCode(), DeleteFlag.VALID)){
