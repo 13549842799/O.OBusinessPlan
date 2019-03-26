@@ -32,7 +32,7 @@ import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.exception.CheckObjectExistException;
 import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
-import com.oo.businessplan.common.exception.PasswordValidException;
+import com.oo.businessplan.common.exception.login.PasswordValidException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.redis.RedisTokenManager;

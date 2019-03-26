@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
+import com.oo.businessplan.common.exception.login.LoginException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.redis.RedisTokenManager;
 import com.oo.businessplan.common.security.SecurityAspect;
@@ -21,7 +22,7 @@ public abstract class BaseController {
 	 * @return
 	 * @throws ObjectNotExistException
 	 */
-	protected SessionInfo matchSessionInfo(HttpServletRequest request) throws ObjectNotExistException{
+	protected SessionInfo matchSessionInfo(HttpServletRequest request) {
 		
 		  String userCode = request
 				  .getHeader(securityAspect.getUserCode());   //用户编号
@@ -31,7 +32,7 @@ public abstract class BaseController {
 		  SessionInfo info = (SessionInfo)tokenManager//获取此用户维护redis的存储对象
 				  .getValueFromMap(userCode,EntityConstants.REDIS_SESSION_NAME);		  
 		  if (info==null) {
-			      throw new ObjectNotExistException("登陆失效");
+			      throw new LoginException();
 		  }
 		  return  info;
 	}
@@ -42,7 +43,7 @@ public abstract class BaseController {
 	 * @return
 	 * @throws ObjectNotExistException
 	 */
-	protected Integer currentAdminId(HttpServletRequest request) throws ObjectNotExistException {
+	protected Integer currentAdminId(HttpServletRequest request)  {
 		
 		SessionInfo info = matchSessionInfo(request);
 		

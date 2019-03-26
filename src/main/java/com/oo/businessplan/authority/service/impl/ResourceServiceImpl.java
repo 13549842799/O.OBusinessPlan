@@ -13,6 +13,7 @@ import com.oo.businessplan.authority.pojo.Resource;
 import com.oo.businessplan.authority.service.ResourceService;
 import com.oo.businessplan.basic.service.RedisCacheService;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
+import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
@@ -21,7 +22,7 @@ import com.oo.businessplan.common.exception.UpdateErrorException;
 import com.oo.businessplan.common.util.StringUtil;
 
 @Service("resourceService")
-public class ResourceServiceImpl extends BaseServiceImpl<Resource> implements ResourceService, RedisCacheService<Resource> {
+public class ResourceServiceImpl extends RedisCacheSupport<Resource> implements ResourceService {
 
 	@Autowired
 	ResourceMapper resourceMapper;
@@ -83,14 +84,14 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource> implements Re
 
 
 
-	@Override
+	/*@Override
 	public Resource getObject(String key, int expired, int timeUnit) {
-		return super.getObject(resourceMapper, key,EntityConstants.REDIS_RESOURCE_NAME, expired, timeUnit);
+		return super.getObject(key,EntityConstants.REDIS_RESOURCE_NAME, expired, timeUnit);
 	}
 
 	@Override
 	public List<Resource> getListObject(String key, int expired, int timeUnit) {
-		return super.getListObject(resourceMapper, key, EntityConstants.REDIS_RESOURCE_NAME, expired, timeUnit);
-	}
+		return super.getListObject(key, EntityConstants.REDIS_RESOURCE_NAME, expired, timeUnit);
+	}*/
 	
 }

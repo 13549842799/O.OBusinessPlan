@@ -1,10 +1,8 @@
 package com.oo.businessplan.authority.service.impl;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,35 +14,30 @@ import com.oo.businessplan.authority.mapper.AuthorityMapper;
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.AuthorityWithKey;
 import com.oo.businessplan.authority.service.AuthorityService;
-import com.oo.businessplan.basic.mapper.BaseMapper;
-import com.oo.businessplan.basic.service.RedisCacheService;
 import com.oo.businessplan.basic.service.UtilService;
-import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
+import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
 import com.oo.businessplan.common.util.StringUtil;
 
 @Service("authorityService")
-public class AuthorityServiceImpl extends BaseServiceImpl<Authority> 
-                     implements AuthorityService, RedisCacheService<Authority>,
-                                UtilService<Authority>{
+public class AuthorityServiceImpl extends RedisCacheSupport<Authority>
+                     implements AuthorityService, UtilService<Authority>{
 
 	@Autowired
 	private AuthorityMapper authorityMapper;
 	
-	@Override
+	/*@Override
 	public Authority getObject(String key,int expired, int timeUnit) {
-		return super.getObject((BaseMapper<Authority>)authorityMapper, 
-				key, EntityConstants.REDIS_AUTHORITY_NAME, expired, timeUnit);
+		return super.getObject(key, EntityConstants.REDIS_AUTHORITY_NAME, expired, timeUnit);
 	}
 
 	@Override
 	public List<Authority> getListObject(String key, int expired,
 			int timeUnit) {		
-		return super.getListObject((BaseMapper<Authority>)authorityMapper, 
-				key, EntityConstants.REDIS_AUTHORITY_NAME, expired, timeUnit);
-	}
+		return super.getListObject(key, EntityConstants.REDIS_AUTHORITY_NAME, expired, timeUnit);
+	}*/
 	 
 	@Override
 	@Transactional

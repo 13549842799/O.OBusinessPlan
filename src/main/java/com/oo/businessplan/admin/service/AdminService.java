@@ -14,7 +14,7 @@ import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectExistException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
-import com.oo.businessplan.common.exception.PasswordValidException;
+import com.oo.businessplan.common.exception.login.PasswordValidException;
 
 public interface AdminService extends BaseService<Admin>{
 	

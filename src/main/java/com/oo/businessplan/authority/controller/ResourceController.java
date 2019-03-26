@@ -72,10 +72,7 @@ public class ResourceController extends BaseController{
 			SessionInfo info = matchSessionInfo(request);
 			List<Resource> resources = resourceService.getResourcesForAdmin(null,info.getName());
 			return response.success(resourceService.getResourceTree(resources, null));
-		  } catch (ObjectNotExistException e) {		
-			e.printStackTrace();
-			return response.error("用户已过时或不存在");
-		  } catch (Exception e) {
+		  }  catch (Exception e) {
 			e.printStackTrace();
 			return response.error("发生未知异常",e.getMessage());
 		  }

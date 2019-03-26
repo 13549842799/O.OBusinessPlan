@@ -22,11 +22,11 @@ import com.oo.businessplan.common.redis.RedisTokenManager;
 public abstract class BaseServiceImpl<T> {
 	
 	  
-	@Autowired
-    protected RedisTokenManager tokenManager;
+	/*@Autowired
+    protected RedisTokenManager tokenManager;*/
 	
 	@Autowired
-	BaseMapper<T> baseMapper;
+	protected BaseMapper<T> baseMapper;
 	
 	/**
 	 * 从redis中获取key为key，hashkey为hashkey的对象，如果没有，则从数据库中获取
@@ -40,7 +40,7 @@ public abstract class BaseServiceImpl<T> {
 	 * @param timeUnit
 	 * @return
 	 */
-	private  T getObject(BaseMapper<T> mapper,String key,String hashKey,Byte state,int expired,int timeUnit){
+	/*private  T getObject(BaseMapper<T> mapper,String key,String hashKey,Byte state,int expired,int timeUnit){
 		 
 		@SuppressWarnings("unchecked")
 		T t =(T)tokenManager.getValueFromMap(key, hashKey, expired, timeUnit);
@@ -50,7 +50,7 @@ public abstract class BaseServiceImpl<T> {
 		}
 		
 	    return t;
-	}
+	}*/
 	
 	/**
 	 * 与上面的方法类似，不过在从数据库中获取记录时不需加入状态条件
@@ -61,10 +61,10 @@ public abstract class BaseServiceImpl<T> {
 	 * @param timeUnit
 	 * @return
 	 */
-	public T getObject(BaseMapper<T> mapper,String key,String hashKey,int expired,int timeUnit){
+	/*public T getObject(BaseMapper<T> mapper,String key,String hashKey,int expired,int timeUnit){
 		T t =getObject(mapper, key, hashKey, null, expired, timeUnit);
 	    return t;
-	}
+	}*/
 	
 	public T getById(T t) {
 		return baseMapper.getById(t);
@@ -80,7 +80,7 @@ public abstract class BaseServiceImpl<T> {
 	 * @param timeUnit
 	 * @return
 	 */
-	private  List<T> getListObject(BaseMapper<T> mapper,String key,String hashKey,Byte state,int expired,int timeUnit){
+	/*private  List<T> getListObject(BaseMapper<T> mapper,String key,String hashKey,Byte state,int expired,int timeUnit){
 		 
 		@SuppressWarnings("unchecked")
 		List<T> t =(List<T>)tokenManager.getValueFromMap(key, hashKey, expired, timeUnit);
@@ -90,7 +90,7 @@ public abstract class BaseServiceImpl<T> {
 		}
 		
 	    return t;
-	}
+	}*/
 	
 	/**
 	 * 
@@ -101,17 +101,17 @@ public abstract class BaseServiceImpl<T> {
 	 * @param timeUnit
 	 * @return
 	 */
-	public List<T> getListObject(BaseMapper<T> mapper,String key,String hashKey,int expired,int timeUnit){
+	/*public List<T> getListObject(BaseMapper<T> mapper,String key,String hashKey,int expired,int timeUnit){
 		 
 	    return getListObject(mapper, key, hashKey,null, expired, timeUnit);
-	}
+	}*/
 	
 	/**
 	 * 移除保存在redis中键为key的对象
 	 * @param key
 	 * @return
 	 */
-	public boolean remove(String key){
+	/*public boolean remove(String key){
 		try {
 			tokenManager.cancel(key);
 			return true;
@@ -119,7 +119,7 @@ public abstract class BaseServiceImpl<T> {
 			e.printStackTrace();
 			return false;
 		}
-	}
+	}*/
 	
 	/**
 	 * 通用方法，获取某个对象的list集合

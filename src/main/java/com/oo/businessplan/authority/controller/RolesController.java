@@ -72,14 +72,10 @@ public class RolesController extends BaseController{
 		  
 		ResponseResult<Object> response = new ResponseResult<>();
 		
-		try {
-			Integer currentAdmin = currentAdminId(request);
-			role.setCreator(currentAdmin);
-			role.setModifier(currentAdmin);
-		} catch (ObjectNotExistException e) {
-			e.printStackTrace();
-			return response.fail(ResultConstant.NOT_EXIST_ADMIN);
-		}
+		Integer currentAdmin = currentAdminId(request);
+		role.setCreator(currentAdmin);
+		role.setModifier(currentAdmin);
+		
 		CodeServie cs = (CodeServie)roleService;
 		if (StringUtil.isEmpty(role.getCode())) {
 			role.setCode(cs.generalCode());
@@ -128,21 +124,18 @@ public class RolesController extends BaseController{
 				&& ((CodeServie)roleService).codeExists(role.getCode(), DeleteFlag.VALID)) {
 			return response.fail(ResultConstant.CODE_EXIST);
 		}
-		try {
-			role.setModifier(currentAdminId(request));
-			role.setModifierTime(new Timestamp(new Date().getTime()));
-			switch (roleService.updateFull(role)) {
-			case 1:				
-				return response.success(role);
-			case 0:
-				return response.fail("更新失败");
-			case -1:
-				return response.fail("更新异常");
-			}
-		} catch (ObjectNotExistException e) {
-			e.printStackTrace();
-			return response.fail(ResultConstant.NOT_EXIST_ADMIN);
+
+		role.setModifier(currentAdminId(request));
+		role.setModifierTime(new Timestamp(new Date().getTime()));
+		switch (roleService.updateFull(role)) {
+		case 1:				
+			return response.success(role);
+		case 0:
+			return response.fail("更新失败");
+		case -1:
+			return response.error("更新异常");
 		}
+		
 		
 		return response.success();
 	  }
@@ -157,13 +150,10 @@ public class RolesController extends BaseController{
 		  if (id == null) {
 			return response.fail("请选择角色");
 		  }		  		  
-		  try {
-		      if (roleService.state(id, currentAdminId(request))) {
-			      return response.success();
-			  }
-		  } catch (ObjectNotExistException e) {
-			  e.printStackTrace();
-		  }		  
+	      if (roleService.state(id, currentAdminId(request))) {
+		      return response.success();
+		  }
+	  
 		  return response.fail("操作失败,请联系管理员");
 	  }
 	  
@@ -223,19 +213,16 @@ public class RolesController extends BaseController{
 		  if (admin == null) {
 			return response.fail(ResultConstant.NOT_EXIST_ADMIN);
 		  }
-		  try {
-			Map<String,String> result = roleService.giveRole(roleIds, 
-					userId, currentAdminId(request));
-			if (result.get(SystemKey.ERROR_KEY) != null) {
-				return response.fail(result.get(SystemKey.ERROR_KEY));
-			}
-			//获取当前用户拥有角色
-			List<Role> adminRoles = roleService.getRolesOfAdmin(userId, true);			 
-			return response.success(adminRoles);
-		  } catch (ObjectNotExistException e) {
-			e.printStackTrace();
-			return response.fail(e.getMessage());
+
+		  Map<String,String> result = roleService.giveRole(roleIds, 
+				userId, currentAdminId(request));
+		  if (result.get(SystemKey.ERROR_KEY) != null) {
+			return response.fail(result.get(SystemKey.ERROR_KEY));
 		  }
+		  //获取当前用户拥有角色
+		  List<Role> adminRoles = roleService.getRolesOfAdmin(userId, true);			 
+		  return response.success(adminRoles);
+		  
 	  }
 	  
 	  @ApiOperation("删除用户的指定角色")
@@ -253,18 +240,14 @@ public class RolesController extends BaseController{
 		  if (admin == null) {
 			return response.fail(ResultConstant.NOT_EXIST_ADMIN);
 		  }
-		  try {
-			if (!roleService.removeRoleFromAdmin(userId, 
-					roleIds, currentAdminId(request))) {
-				return response.fail("删除失败");
-			}			
-			//获取当前用户拥有角色
-			List<Role> adminRoles = roleService.getRolesOfAdmin(userId, true);			 
-			return response.success(adminRoles);
-		  } catch (ObjectNotExistException e) {
-			e.printStackTrace();
-			return response.fail(e.getMessage());
-		  }
+		  if (!roleService.removeRoleFromAdmin(userId, 
+				roleIds, currentAdminId(request))) {
+			return response.fail("删除失败");
+		  }			
+		  //获取当前用户拥有角色
+		  List<Role> adminRoles = roleService.getRolesOfAdmin(userId, true);			 
+		  return response.success(adminRoles);
+		  
 	  }
 	  
 	  @ApiOperation("移动角色")

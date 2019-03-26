@@ -17,7 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
-import com.oo.businessplan.common.exception.TokenException;
+import com.oo.businessplan.common.exception.login.TokenException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.redis.RedisTokenManager;

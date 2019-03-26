@@ -16,6 +16,7 @@ import com.oo.businessplan.admin.service.EmployeeService;
 import com.oo.businessplan.basic.mapper.BaseMapper;
 import com.oo.businessplan.basic.service.RedisCacheService;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
+import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.constant.SystemKey;
@@ -26,7 +27,7 @@ import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.util.UpLoadUtil;
 
 @Service("employeeService")
-public class EmployeeServiceImpl extends BaseServiceImpl<Employee> implements EmployeeService, RedisCacheService<Employee> {
+public class EmployeeServiceImpl extends RedisCacheSupport<Employee> implements EmployeeService {
 	
 	@Autowired
 	private EmployeeMapper employeeMapper;
@@ -34,15 +35,15 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee> implements Em
 	@Autowired
 	private UpLoadUtil upLoadUtil;
 	
-	@Override
+	/*@Override
 	public Employee getObject(String key, int expired, int timeUnit) {
-		return super.getObject((BaseMapper<Employee>) employeeMapper, key,EntityConstants.REDIS_EMPLOYEE_NAME,expired, timeUnit);
+		return super.getObject( key,EntityConstants.REDIS_EMPLOYEE_NAME,expired, timeUnit);
 	}
 
 	@Override
 	public List<Employee> getListObject(String key, int expired, int timeUnit) {
-		return super.getListObject((BaseMapper<Employee>) employeeMapper, key, EntityConstants.REDIS_EMPLOYEE_NAME, expired, timeUnit);
-	}
+		return super.getListObject( key, EntityConstants.REDIS_EMPLOYEE_NAME, expired, timeUnit);
+	}*/
 
 	@Override
 	@Transactional

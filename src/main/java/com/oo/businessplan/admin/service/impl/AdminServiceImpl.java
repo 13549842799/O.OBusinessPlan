@@ -27,6 +27,7 @@ import com.oo.businessplan.basic.mapper.BaseMapper;
 import com.oo.businessplan.basic.service.MsgService;
 import com.oo.businessplan.basic.service.RedisCacheService;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
+import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.constant.SystemKey;
@@ -38,14 +39,14 @@ import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectExistException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
-import com.oo.businessplan.common.exception.PasswordValidException;
+import com.oo.businessplan.common.exception.login.PasswordValidException;
 import com.oo.businessplan.common.redis.RedisTokenManager;
 import com.oo.businessplan.common.security.TokenManager;
 import com.oo.businessplan.common.util.PassUtil;
 import com.oo.businessplan.common.util.StringUtil;
 
 @Service("adminService")
-public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminService, RedisCacheService<Admin> {
+public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminService {
 	
 	@Autowired
 	private AdminMapper adminMapper;
@@ -68,15 +69,15 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminSer
 	@Autowired
 	private MsgService msgService;
 	
-	@Override
+	/*@Override
 	public Admin getObject(String key,int expired, int timeUnit) {
-		return super.getObject((BaseMapper<Admin>)adminMapper, key,EntityConstants.REDIS_ADMIN_NAME, expired, timeUnit);
+		return super.getObject( key,EntityConstants.REDIS_ADMIN_NAME, expired, timeUnit);
 	}
 
 	@Override
 	public List<Admin> getListObject(String key, int expired,int timeUnit) {		
-		return super.getListObject((BaseMapper<Admin>)adminMapper, key, EntityConstants.REDIS_ADMIN_NAME, expired, timeUnit);
-	}
+		return super.getListObject( key, EntityConstants.REDIS_ADMIN_NAME, expired, timeUnit);
+	}*/
 
 	@Override
 	public Map<String, Object> getAdminByAccountName(String accountName) {

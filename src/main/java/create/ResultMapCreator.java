@@ -12,6 +12,7 @@ import java.util.List;
 import javax.mail.Flags.Flag;
 
 import com.oo.businessplan.admin.pojo.entity.Admin;
+import com.oo.businessplan.article.pojo.entity.Diary;
 import com.oo.businessplan.authority.pojo.Role;
 
 public class ResultMapCreator {
@@ -27,7 +28,7 @@ public class ResultMapCreator {
 
 	public static void main(String[] args) {
 		
-         String string =   resultMap(Admin.class);
+         String string =   resultMap(Diary.class);
 		 System.out.println(string);
 		
 	}

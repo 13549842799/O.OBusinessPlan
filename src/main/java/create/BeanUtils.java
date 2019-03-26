@@ -3,7 +3,9 @@ package create;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Date;
 
 import com.oo.businessplan.common.util.DateUtil;
@@ -74,6 +76,12 @@ public class BeanUtils {
 		String cName = c.getName();
 		String daoUrl = getPackageName(cName) + ".mapper";
 		String daoPath = daoUrl.replace(".", "/");
+		System.out.println(cName);
+		System.out.println(daoUrl);
+		System.out.println(daoPath);
+		if (1==1) {
+			return;
+		}
 		String fileName = System.getProperty("user.dir") + "/src/main/java/" + daoPath + "/" + getLastChar(cName)
 				+ "Mapper.java";
 		File f = new File(fileName);
@@ -389,6 +397,7 @@ public class BeanUtils {
 		String beanName = getLastChar(cName);
 		String moduleName = getModuleName(cName);
 		String packageName = getPackageName(cName);
+        
 		String fileName = System.getProperty("user.dir") + "/src/main/resources/mapper/" + moduleName + "/"
 				+ getLastChar(cName) + "Mapper.xml";
 		File f = new File(fileName);
@@ -626,9 +635,9 @@ public class BeanUtils {
 	 */
 	public String getPackageName(String str) {
 		if (str != null && str.length() > 0) {
-			int dot = str.lastIndexOf('.');
+			int dot = str.indexOf(".", 20);
 			if (dot > -1 && dot < str.length() - 1) {
-				return str.substring(0, str.length() - (str.length() - dot) - 7);
+				return str.substring(0, dot);
 			}
 		}
 		return str;
@@ -646,7 +655,7 @@ public class BeanUtils {
 	public String getModuleName(String str) {
 		if (str != null && str.length() > 0) {
 			String[] dot = str.split("\\.");
-			str = dot[2];
+			str = dot[3];
 		}
 		return str;
 	}
@@ -716,6 +725,18 @@ public class BeanUtils {
 		}
 
 		return rs;
+	}
+	
+	private String[] findSupClass(Class c, String[] fields) {
+		if (c == Object.class) {
+			return fields;
+		}
+		
+		Field[] fs = c.getDeclaredFields();
+		fields = Arrays.copyOf(fields, fields.length+fs.length);
+		
+		
+		return null;
 	}
 
 	/**

@@ -17,6 +17,7 @@ public class ResponseResult<T> implements Serializable{
 	public static final int RESPONSE_SUCCESS =200;
 	public static final int RESPONSE_FAIL =100;
 	public static final int RESPONSE_ERROR=300;
+	public static final int RESPONSE_RELOGIN=400;
 	
 	private int status;// 200 成功   100  失败   300异常
 	private String message;
@@ -100,6 +101,10 @@ public class ResponseResult<T> implements Serializable{
 	
 	public  ResponseResult<T> error(String mess){
 		return error(mess,null);
+	}
+	
+	public ResponseResult<T> relogin() {
+		return new ResponseResult<>(RESPONSE_RELOGIN, "登录已过期, 请重新登录");
 	}
 	
 	

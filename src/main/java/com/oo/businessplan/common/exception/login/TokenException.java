@@ -1,4 +1,4 @@
-package com.oo.businessplan.common.exception;
+package com.oo.businessplan.common.exception.login;
 
 public class TokenException extends Exception{
 
