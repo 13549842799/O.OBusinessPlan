@@ -2,32 +2,27 @@ package com.oo.businessplan.basic.entity;
 
 import java.sql.Timestamp;
 
-public class CreatorEntity<T> extends DeleteAbleEntity<T> {
+public abstract class CreatorWithStateEntity<T> extends StateAbleEntity<T> {
 	
 	private Integer creator;
-	
 	private Timestamp createTime;
 	
-	
-	
-	public CreatorEntity() {
+	public CreatorWithStateEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public CreatorEntity(Byte delflag) {
-		super(delflag);
+	public CreatorWithStateEntity(T id, Byte delflag, Byte state) {
+		super(id, delflag, state);
 		// TODO Auto-generated constructor stub
 	}
-	public CreatorEntity(T id, Byte delflag) {
+	public CreatorWithStateEntity(T id, Byte delflag) {
 		super(id, delflag);
 		// TODO Auto-generated constructor stub
 	}
-	public CreatorEntity(T id) {
+	public CreatorWithStateEntity(T id) {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 	public Integer getCreator() {
 		return creator;
 	}

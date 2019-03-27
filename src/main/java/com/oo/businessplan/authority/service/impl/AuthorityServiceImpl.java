@@ -27,17 +27,6 @@ public class AuthorityServiceImpl extends RedisCacheSupport<Authority>
 
 	@Autowired
 	private AuthorityMapper authorityMapper;
-	
-	/*@Override
-	public Authority getObject(String key,int expired, int timeUnit) {
-		return super.getObject(key, EntityConstants.REDIS_AUTHORITY_NAME, expired, timeUnit);
-	}
-
-	@Override
-	public List<Authority> getListObject(String key, int expired,
-			int timeUnit) {		
-		return super.getListObject(key, EntityConstants.REDIS_AUTHORITY_NAME, expired, timeUnit);
-	}*/
 	 
 	@Override
 	@Transactional

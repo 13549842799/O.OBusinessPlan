@@ -4,6 +4,7 @@ package com.oo.businessplan.article.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,6 @@ import com.oo.businessplan.article.pojo.entity.Diary;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
 import com.oo.businessplan.article.service.DiaryService;
 import com.oo.businessplan.basic.controller.BaseController;
-import com.oo.businessplan.common.enumeration.StatusFlag;
 import com.oo.businessplan.common.exception.AddErrorException;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
@@ -70,7 +70,7 @@ public class DiaryConroller extends BaseController{
 	 * @param request
 	 * @return
 	 */
-	@PostMapping("/add.do")
+	@PostMapping("/addOrUpdate.do")
 	@IgnoreSecurity
 	public ResponseResult<Diary>  createDiary(HttpServletRequest request,
 			@RequestBody(required=true) DiaryForm diary) {
@@ -81,17 +81,34 @@ public class DiaryConroller extends BaseController{
 			return response.fail("标题或者内容不能为null");
 		}
 		Integer adminId = currentAdminId(request);
-		diary.setCreator(adminId);
 		diary.setModifier(adminId);
-		diary.setState(StatusFlag.ENABLE.getCode());
+		if (diary.getId() == null) {
+			diary.setCreator(adminId);
+			diaryService.add(diary);			
+		 } else {
+			 if(diaryService.update(diary) != 1) {
+				 return response.fail("更新失败");
+			 }
+		 }
+		return response.success(diaryService.getById(diary));
 		
-		try {
-			diaryService.add(diary);
-			return response.success(diaryService.getById(diary));
-		} catch (AddErrorException e) {
-			e.printStackTrace();
-			return response.error(e.getMessage());
-		}
 	}
+	
+	@DeleteMapping("/delete.do")
+	@IgnoreSecurity
+	public ResponseResult<Diary> deleteDiary(HttpServletRequest request,
+			@RequestParam("id")Integer id) {
+		
+		ResponseResult<Diary> response = new ResponseResult<>();
+		Diary diary = new Diary(id);
+		diary.setModifier(currentAdminId(request));
+		if (diaryService.delete(diary)) {
+			return response.success();
+		}
+		return response.fail("删除异常");
+		
+	}
+	
+	
 
 }

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.article.mapper.ClassifyMapper">
+
+     <resultMap id="ClassifyMap" type="classify">
+        <id property="id" column="id"/>
+        <result property="delflag" column="delflag"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="createTime"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="childType" column="childType"/>
+    </resultMap>
+
+     <sql id="base_column">
+        cl.id,cl.delflag,cl.creator,cl.createTime,cl.name,cl.type,cl.childType
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO classify
+        (
+            <trim>
+                <if test="delflag != null ">
+                delflag,
+                </if>
+                <if test="creator != null ">
+                creator,
+                </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
+                <if test="name != null ">
+                name,
+                </if>
+                <if test="type != null ">
+                type,
+                </if>
+                <if test="childType != null ">
+                childType
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim>
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                #{creator},
+                </if>
+                <if test="createTime != null ">
+                #{createTime},
+                </if>
+                <if test="name != null ">
+                #{name},
+                </if>
+                <if test="type != null ">
+                #{type},
+                </if>
+                <if test="childType != null ">
+                #{childType}
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE classify set delflag = #{delflag}
+         WHERE id = #{ id })
+    </update>
+
+    <update id="update" parameterType="classify">
+        UPDATE classify SET 
+            <trim>
+                <if test="delflag != null ">
+                delflag = #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                creator = #{creator},
+                </if>
+                <if test="createTime != null ">
+                createTime = #{createTime},
+                </if>
+                <if test="name != null ">
+                name = #{name},
+                </if>
+                <if test="type != null ">
+                type = #{type},
+                </if>
+                <if test="childType != null ">
+                childType = #{childType}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="classify">
+        UPDATE classify SET 
+            delflag = #{delflag,jdbcType=TINYINT},
+            creator = #{creator},
+            createTime = #{createTime},
+            name = #{name},
+            type = #{type},
+            childType = #{childType}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="classify" parameterType="classify">
+        SELECT 
+        <include refid="base_column"/>
+        FROM classify cl
+        WHERE cl.id = #{id} AND cl.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="classify" parameterType="classify">
+        SELECT 
+        <include refid="base_column"/>
+        FROM classify cl
+        WHERE 
+    <trim>
+        <if test=" != null ">
+        AND cl.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test=" != null ">
+        AND cl.`creator` = #{creator}
+        </if>
+        <if test=" != null ">
+        AND cl.`createTime` = #{createTime}
+        </if>
+        <if test=" != null ">
+        AND cl.`name` = #{name}
+        </if>
+        <if test=" != null ">
+        AND cl.`type` = #{type}
+        </if>
+        <if test=" != null ">
+        AND cl.`childType` = #{childType}
+        </if>
+    </trim>
+    </select>
+
+</mapper>

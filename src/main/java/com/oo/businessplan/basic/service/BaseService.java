@@ -62,6 +62,6 @@ public interface BaseService<T> {
 	 * @param id
 	 * @return
 	 */
-	boolean delete(int id);
+	boolean delete(T t);
 
 }

@@ -9,14 +9,14 @@ import org.apache.ibatis.annotations.Update;
 import com.oo.businessplan.admin.pojo.entity.Admin;
 import com.oo.businessplan.admin.pojo.form.AdminForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
-import com.oo.businessplan.basic.mapper.BaseMapper;
+import com.oo.businessplan.basic.mapper.RedisCacheMapper;
 
 /**
  * 
  * @author cyz
  *
  */
-public interface AdminMapper extends BaseMapper<Admin>{
+public interface AdminMapper extends RedisCacheMapper<Admin>{
 	
 	 /**
 	  * 更改admin的状态

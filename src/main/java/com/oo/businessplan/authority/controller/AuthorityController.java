@@ -147,8 +147,7 @@ public class AuthorityController extends BaseController{
 			@RequestBody(required = true) Authority auth) {
 		
 		ResponseResult<Authority> response = new ResponseResult<>();
-		
-        if (authService.delete(auth.getId())) {
+        if (authService.delete(auth)) {
 			return response.success();
 		}
         return response.error(SystemKey.ERROR_KEY);

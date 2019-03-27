@@ -1,11 +1,17 @@
 package test1;
 
-import com.oo.businessplan.basic.entity.IdEntity;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
+import com.oo.businessplan.article.pojo.entity.Diary;
 
 public class CreateTest {
 
 	public static void main(String[] args) {
-		System.out.println(IdEntity.class.getSuperclass() == Object.class);
+		//System.out.println(IdEntity.class.getSuperclass() == Object.class);
+		Class<Diary> cls = Diary.class;
+		Field[] fs = cls.getDeclaredFields();
 	}
 
 }

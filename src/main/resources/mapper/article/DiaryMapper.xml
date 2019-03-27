@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.article.mapper.DiaryMapper">
+
+     <resultMap id="DiaryMap" type="diary">
+        <id property="id" column="id"/>
+        <result property="delflag" column="delflag"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modifierTime" column="modifierTime"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="classify" column="classify"/>
+        <result property="date" column="date"/>
+        <result property="labels" column="labels"/>
+    </resultMap>
+
+     <sql id="base_column">
+        di.id,di.delflag,di.creator,di.createTime,di.modifier,di.modifierTime,di.title,di.content,di.classify,di.date,di.labels
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO diary
+        (
+            <trim>
+                <if test="delflag != null ">
+                delflag,
+                </if>
+                <if test="creator != null ">
+                creator,
+                </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
+                <if test="modifier != null ">
+                modifier,
+                </if>
+                <if test="modifierTime != null ">
+                modifierTime,
+                </if>
+                <if test="title != null ">
+                title,
+                </if>
+                <if test="content != null ">
+                content,
+                </if>
+                <if test="classify != null ">
+                classify,
+                </if>
+                <if test="date != null ">
+                date,
+                </if>
+                <if test="labels != null ">
+                labels
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim>
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                #{creator},
+                </if>
+                <if test="createTime != null ">
+                #{createTime},
+                </if>
+                <if test="modifier != null ">
+                #{modifier},
+                </if>
+                <if test="modifierTime != null ">
+                #{modifierTime},
+                </if>
+                <if test="title != null ">
+                #{title},
+                </if>
+                <if test="content != null ">
+                #{content},
+                </if>
+                <if test="classify != null ">
+                #{classify},
+                </if>
+                <if test="date != null ">
+                #{date},
+                </if>
+                <if test="labels != null ">
+                #{labels}
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE diary set delflag = #{delflag} , modifier = #{modifier},modifierTime = {modifierTime}
+         WHERE id = #{ id })
+    </update>
+
+    <update id="update" parameterType="diary">
+        UPDATE diary SET 
+            <trim>
+                <if test="delflag != null ">
+                delflag = #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                creator = #{creator},
+                </if>
+                <if test="createTime != null ">
+                createTime = #{createTime},
+                </if>
+                <if test="modifier != null ">
+                modifier = #{modifier},
+                </if>
+                <if test="modifierTime != null ">
+                modifierTime = #{modifierTime},
+                </if>
+                <if test="title != null ">
+                title = #{title},
+                </if>
+                <if test="content != null ">
+                content = #{content},
+                </if>
+                <if test="classify != null ">
+                classify = #{classify},
+                </if>
+                <if test="date != null ">
+                date = #{date},
+                </if>
+                <if test="labels != null ">
+                labels = #{labels}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="diary">
+        UPDATE diary SET 
+            delflag = #{delflag,jdbcType=TINYINT},
+            creator = #{creator},
+            createTime = #{createTime},
+            modifier = #{modifier},
+            modifierTime = #{modifierTime},
+            title = #{title},
+            content = #{content},
+            classify = #{classify},
+            date = #{date},
+            labels = #{labels}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="diary" parameterType="diary">
+        SELECT 
+        <include refid="base_column"/>
+        FROM diary di
+        WHERE di.id = #{id} AND di.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="diary" parameterType="diary">
+        SELECT 
+        <include refid="base_column"/>
+        FROM diary di
+        WHERE 
+    <trim prefix="AND">
+        <if test=" != null ">
+        AND di.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test=" != null ">
+        AND di.`creator` = #{creator}
+        </if>
+        <if test=" != null ">
+        AND di.`createTime` = #{createTime}
+        </if>
+        <if test=" != null ">
+        AND di.`modifier` = #{modifier}
+        </if>
+        <if test=" != null ">
+        AND di.`modifierTime` = #{modifierTime}
+        </if>
+        <if test=" != null ">
+        AND di.`title` = #{title}
+        </if>
+        <if test=" != null ">
+        AND di.`content` = #{content}
+        </if>
+        <if test=" != null ">
+        AND di.`classify` = #{classify}
+        </if>
+        <if test=" != null ">
+        AND di.`date` = #{date}
+        </if>
+        <if test=" != null ">
+        AND di.`labels` = #{labels}
+        </if>
+    </trim>
+    </select>
+
+</mapper>

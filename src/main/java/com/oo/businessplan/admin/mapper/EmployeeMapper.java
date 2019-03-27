@@ -8,9 +8,9 @@ import org.apache.ibatis.annotations.Update;
 
 import com.oo.businessplan.admin.pojo.entity.Employee;
 import com.oo.businessplan.admin.pojo.form.EmployeeForm;
-import com.oo.businessplan.basic.mapper.BaseMapper;
+import com.oo.businessplan.basic.mapper.RedisCacheMapper;
 
-public interface EmployeeMapper extends BaseMapper<Employee>{
+public interface EmployeeMapper extends RedisCacheMapper<Employee>{
 
 	 @Select("SELECT * FROM employee WHERE eid=#{eid,jdbcType=INTEGER} AND stateId=IFNULL(#{state,jdbcType=TINYINT},stateId) AND delflag=#{delflag,jdbcType=TINYINT}")
   	 Employee findEmployeeById(@Param("eid")int eid,@Param("state")Byte state,@Param("delfalg")Byte delflag );

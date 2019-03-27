@@ -8,14 +8,8 @@ import com.oo.businessplan.article.pojo.entity.Diary;
  */
 public class DiaryForm extends Diary {
 	
-	private String labelIds;
 
-	public String getLabelIds() {
-		return labelIds;
-	}
-
-	public void setLabelIds(String labelIds) {
-		this.labelIds = labelIds;
-	}
+	
+	
 
 }

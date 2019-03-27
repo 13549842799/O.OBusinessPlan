@@ -2,15 +2,14 @@ package com.oo.businessplan.authority.mapper;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.AuthorityWithKey;
-import com.oo.businessplan.basic.mapper.BaseMapper;
+import com.oo.businessplan.basic.mapper.RedisCacheMapper;
 
-public interface AuthorityMapper extends BaseMapper<Authority>{
+public interface AuthorityMapper extends RedisCacheMapper<Authority>{
 	
 	/**
     * 根据账号用户名获取有效的权限列表

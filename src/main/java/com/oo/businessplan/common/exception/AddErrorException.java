@@ -1,7 +1,12 @@
 package com.oo.businessplan.common.exception;
 
-public class AddErrorException extends Exception {
+public class AddErrorException extends RuntimeException {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5073660646948517330L;
+
 	public AddErrorException(ErrorType type) {
 		super(type.getMessage());
 	}

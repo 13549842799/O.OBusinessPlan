@@ -1,6 +1,7 @@
 package com.oo.businessplan.article.pojo;
 
 import com.oo.businessplan.basic.entity.ModifierEntity;
+import com.oo.businessplan.basic.entity.ModifierWithStateEntity;
 
 /**
  * 
@@ -16,6 +17,20 @@ public abstract class AbstractArticle<T> extends ModifierEntity<T> {
 	
 	private Integer classify; // 分类
 
+	
+	public AbstractArticle() {
+		super();
+	}
+	
+	public AbstractArticle(T id, Byte delflag) {
+		super(id, delflag);
+	}
+
+	public AbstractArticle(T id) {
+		super(id);
+	}
+
+	
 	public String getTitle() {
 		return title;
 	}

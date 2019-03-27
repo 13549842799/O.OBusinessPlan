@@ -3,14 +3,14 @@ package com.oo.businessplan.authority.pojo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import com.oo.businessplan.basic.entity.ModifierEntity;
+import com.oo.businessplan.basic.entity.ModifierWithStateEntity;
 
 /**
  * 角色类
  * @author cyz
  *
  */
-public class Role extends ModifierEntity<Integer> implements Serializable{
+public class Role extends ModifierWithStateEntity<Integer> implements Serializable{
 	
 	private static final long serialVersionUID = 3142859976836736060L;
 	private String code;//编码

@@ -5,8 +5,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.oo.businessplan.common.util.DateUtil;
 import com.oo.businessplan.common.util.FieldMeta;
@@ -392,7 +396,7 @@ public class BeanUtils {
 	 * @param c
 	 * @throws Exception
 	 */
-	public void createBeanXml(Class c) throws Exception {
+	public void createBeanXml(Class c, String idName, Class type) throws Exception {
 		String cName = c.getName();
 		String beanName = getLastChar(cName);
 		String moduleName = getModuleName(cName);
@@ -416,7 +420,7 @@ public class BeanUtils {
 				ioe.printStackTrace();
 			}
 		}
-		String[] args = fingByArg(c);
+		List<List<fieldMap>> args = fingByArg(c);
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		buffer.append(RT_1).append(
@@ -429,22 +433,52 @@ public class BeanUtils {
 		buffer.append(RT_2).append(BLANK_4).append(" <resultMap id=\"").append(beanName);
 		buffer.append("Map\" type=\"").append(alia).append("\">");
 		buffer.append(RT_1).append(BLANK_8).append("<id property=\"id\" column=\"id\"/>");
-		for (String arg : args) {
+		for (fieldMap arg : args.get(0)) {
 			if (!arg.equals("id")) {
-				buffer.append(RT_1).append(BLANK_8).append("<result property=\"").append(arg);
-				buffer.append("\" column=\"").append(arg).append("\"/>");
+				buffer.append(RT_1).append(BLANK_8).append("<result property=\"").append(arg.field.getName());
+				buffer.append("\" column=\"").append(arg.field.getName()).append("\"/>");
+			}
+		}
+		if ( args.get(1).size() > 0) {
+			for (fieldMap arg : args.get(1)) {
+				buffer.append(RT_1).append(BLANK_8).append("<association property=\"").append(arg.field.getName());
+				buffer.append("\" javaType=\"").append(arg.cls.getSimpleName().toLowerCase()).append("\">");
+				buffer.append(RT_1).append(BLANK_12).append("<id property=\"id\" column=\"id\"/>");
+				for (Field tf : arg.childs) {
+					if (!tf.getName().equals("id")) {
+						buffer.append(RT_1).append(BLANK_12).append("<result property=\"").append(tf.getName());
+						buffer.append("\" column=\"").append(tf.getName()).append("\"/>");
+					}				
+				}
+				buffer.append(RT_1).append(BLANK_8).append("</association>");
+			}
+		}
+		if ( args.get(2).size() > 0) {
+			for (fieldMap arg : args.get(2)) {
+				buffer.append(RT_1).append(BLANK_8).append("<collection property=\"").append(arg.field.getName());
+				buffer.append("\" ofType=\"").append(arg.cls.getSimpleName().toLowerCase()).append("\">");
+				buffer.append(RT_1).append(BLANK_12).append("<id property=\"id\" column=\"id\"/>");
+				for (Field tf : arg.childs) {
+					if (!tf.getName().equals("id")) {
+						buffer.append(RT_1).append(BLANK_12).append("<result property=\"").append(tf.getName());
+						buffer.append("\" column=\"").append(tf.getName()).append("\"/>");
+					}				
+				}
+				buffer.append(RT_1).append(BLANK_8).append("</collection>");
 			}
 		}
 		buffer.append(RT_1).append(BLANK_4).append("</resultMap>");
 
 		buffer.append(RT_2).append(BLANK_4).append(" <sql id=\"base_column\">");
 		buffer.append(RT_1).append(BLANK_8);
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("serialVersionUID")) {
+		buffer.append(a).append(".id,");
+		List<fieldMap> fms = args.get(0);
+		for (int i = 0; i < fms.size(); i++) {
+			if (fms.get(i).field.getName().equals("serialVersionUID")) {
 				continue;
 			}
-			buffer.append(a).append(".").append(args[i]);
-			if (i < args.length - 1) {
+			buffer.append(a).append(".").append(fms.get(i).field.getName());
+			if (i < fms.size() - 1) {
 				buffer.append(",");
 			}
 		}
@@ -470,41 +504,36 @@ public class BeanUtils {
 		buffer.append(RT_1).append(BLANK_8).append("</where>");
 		buffer.append(RT_1).append(BLANK_4).append("</select>");*/
         //add方法
-		buffer.append(RT_2).append(BLANK_4).append("<insert id=\"add\" useGeneratedKeys=\"true\" keyProperty=\"").append(args[0]).append("\">");
+		buffer.append(RT_2).append(BLANK_4).append("<insert id=\"add\" useGeneratedKeys=\"true\" keyProperty=\"").append("id").append("\">");
 		buffer.append(RT_1).append(BLANK_8).append("INSERT INTO ").append(tableName);
 		buffer.append(RT_1).append(BLANK_8).append("(");
 		buffer.append(RT_1).append(BLANK_12).append("<trim>");
-		for (int i = 0; i < args.length; i++) {
-			if (!args[i].equals(args[0])) {
+		for (int i = 0; i < fms.size(); i++) {
 				buffer.append(RT_1).append(BLANK_16)
-				.append("<if test=\"").append(args[i]).append(" != null \">");
-				buffer.append(RT_1).append(BLANK_16).append(args[i]);
-				if (i < args.length - 1) {
+				.append("<if test=\"").append(fms.get(i).field.getName()).append(" != null \">");
+				buffer.append(RT_1).append(BLANK_16).append(fms.get(i).field.getName());
+				if (i < fms.size() - 1) {
 					buffer.append(",");
 				}
 				buffer.append(RT_1).append(BLANK_16).append("</if>");				
-			}
 		}
 		buffer.append(RT_1).append(BLANK_12).append("</trim>");
 		buffer.append(RT_1).append(BLANK_8).append(")");
 		buffer.append(RT_1).append(BLANK_8).append("VALUES (");
 		buffer.append(RT_1).append(BLANK_12).append("<trim>");
-		for (int i = 0; i < args.length; i++) {
-			if (!args[i].equals(args[0])) {
+		for (int i = 0; i < fms.size(); i++) {
 				buffer.append(RT_1).append(BLANK_16)
-				.append("<if test=\"").append(args[i]).append(" != null \">");
+				.append("<if test=\"").append(fms.get(i).field.getName()).append(" != null \">");
 				buffer.append(RT_1).append(BLANK_16)
-				      .append("#{").append(args[i]);
-				if (args[i].equals("delflag")||args[i].equals("state")) {
+				      .append("#{").append(fms.get(i).field.getName());
+				if (fms.get(i).field.getName().equals("delflag")||fms.get(i).field.getName().equals("state")) {
 					buffer.append(",jdbcType=TINYINT");
 				}
 				buffer.append("}");
-				if (i < args.length - 1) {
+				if (i < fms.size() - 1) {
 					buffer.append(",");
 				}
 				buffer.append(RT_1).append(BLANK_16).append("</if>");				
-				
-			}
 		}
 		buffer.append(RT_1).append(BLANK_12).append("</trim>");
 		buffer.append(RT_1).append(BLANK_8).append(")");
@@ -514,43 +543,71 @@ public class BeanUtils {
 		buffer.append(RT_2).append(BLANK_4).append("<update id=\"delete\" ").append(">");
 		buffer.append(RT_1).append(BLANK_8).append("UPDATE ").append(tableName);
 		buffer.append(" set delflag = #{delflag}");
-		buffer.append(RT_1).append(BLANK_8).append(" WHERE id = #{ key })");
+		if (contain(fms,"modifier")) {
+			buffer.append(" , modifier = #{modifier},modifierTime = {modifierTime}");
+		}
+		buffer.append(RT_1).append(BLANK_8).append(" WHERE id = #{ id })");
 		buffer.append(RT_1).append(BLANK_4).append("</update>");
 		
 		//state方法
-		if (contain(args,"state")) {
+		if (contain(fms,"state")) {
 			buffer.append(RT_2).append(BLANK_4).append("<update id=\"state\" ").append(">");
 			buffer.append(RT_1).append(BLANK_8).append("UPDATE ").append(tableName);
 			buffer.append(" set state = #{state}");
+			if (contain(fms,"modifier")) {
+				buffer.append(" , modifier = #{modifier},modifierTime = {modifierTime}");
+			}
 			buffer.append(RT_1).append(BLANK_8).append(" WHERE id = #{ key })");
 			buffer.append(RT_1).append(BLANK_4).append("</update>");
 		}
 
+		/*
+		 * update
+		 */
 		buffer.append(RT_2).append(BLANK_4).append("<update id=\"update\" parameterType=\"");
 		buffer.append(alia).append("\">");
 		buffer.append(RT_1).append(BLANK_8).append("UPDATE ").append(tableName).append(" SET ");
 		buffer.append(RT_1).append(BLANK_12).append("<trim>");
-		for (int i = 0; i < args.length; i++) {
-			if (!args[i].equals(args[0])) {
-				buffer.append(RT_1).append(BLANK_16)
-				.append("<if test=\"").append(args[i]).append(" != null \">");
-				
-				buffer.append(RT_1).append(BLANK_16).append(args[i]).append(" = ")
-				      .append("#{").append(args[i]);
-				if (args[i].equals("delflag")||args[i].equals("state")) {
+		for (int i = 0; i < fms.size(); i++) {
+				buffer.append(RT_1).append(BLANK_16).append("<if test=\"").append(fms.get(i).field.getName()).append(" != null \">");				
+				buffer.append(RT_1).append(BLANK_16).append(fms.get(i).field.getName()).append(" = ")
+				      .append("#{").append(fms.get(i).field.getName());
+				if (fms.get(i).field.getName().equals("delflag")||fms.get(i).field.getName().equals("state")) {
 					buffer.append(",jdbcType=TINYINT");
 				}
 				buffer.append("}");
-				if (i < args.length - 1) {
+				if (i < fms.size() - 1) {
 					buffer.append(",");
 				}
 				buffer.append(RT_1).append(BLANK_16).append("</if>");
-			}
 		}
 		buffer.append(RT_1).append(BLANK_12).append("</trim>");
 		buffer.append(RT_1).append(BLANK_8).append(" WHERE id = #{id}");
 		buffer.append(RT_1).append(BLANK_4).append("</update>");
 		
+		/*
+		 * updateFull
+		 */
+		buffer.append(RT_2).append(BLANK_4).append("<update id=\"updateFull\" parameterType=\"");
+		buffer.append(alia).append("\">");
+		buffer.append(RT_1).append(BLANK_8).append("UPDATE ").append(tableName).append(" SET ");
+		for (int i = 0; i < fms.size(); i++) {			
+				buffer.append(RT_1).append(BLANK_12).append(fms.get(i).field.getName()).append(" = ")
+				      .append("#{").append(fms.get(i).field.getName());
+				if (fms.get(i).field.getName().equals("delflag")||fms.get(i).field.getName().equals("state")) {
+					buffer.append(",jdbcType=TINYINT");
+				}
+				buffer.append("}");
+				if (i < fms.size() - 1) {
+					buffer.append(",");
+				}
+		}
+		buffer.append(RT_1).append(BLANK_8).append(" WHERE id = #{id}");
+		buffer.append(RT_1).append(BLANK_4).append("</update>");
+		
+		/*
+		 * getById
+		 */
 		buffer.append(RT_2).append(BLANK_4).append("<select id=\"getById\" resultType=\"");
 		buffer.append(alia).append("\" parameterType=\"").append(alia).append("\">");
 		buffer.append(RT_1).append(BLANK_8).append("SELECT ");
@@ -569,23 +626,23 @@ public class BeanUtils {
 		buffer.append(RT_1).append(BLANK_8).append("FROM ").append(tableName).append(BLANK_1).append(a);
 		buffer.append(RT_1).append(BLANK_8).append("WHERE ");
 		buffer.append(RT_1).append(BLANK_4).append("<trim>");
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 0; i < fms.size(); i++) {
 			buffer.append(RT_1).append(BLANK_8).append("<if test=\"").append(" != null \">");
-			if (args[i].equals("state")||args[i].equals("delflag")) {
+			if (fms.get(i).field.getName().equals("state")||fms.get(i).field.getName().equals("delflag")) {
 				buffer.append(RT_1).append(BLANK_8).append("AND ")
-			      .append(a).append(".`").append(args[i]).append("` = #{").append(args[i]).append(",jdbcType=TINYINT}");
+			      .append(a).append(".`").append(fms.get(i).field.getName()).append("` = #{").append(fms.get(i).field.getName()).append(",jdbcType=TINYINT}");
 				buffer.append(RT_1).append(BLANK_8).append("</if>");
 				continue;
 			}
 			buffer.append(RT_1).append(BLANK_8).append("AND ")
-			      .append(a).append(".`").append(args[i]).append("` = #{").append(args[i]).append("}");
+			      .append(a).append(".`").append(fms.get(i).field.getName()).append("` = #{").append(fms.get(i).field.getName()).append("}");
 			buffer.append(RT_1).append(BLANK_8).append("</if>");
 		}		
 		buffer.append(RT_1).append(BLANK_4).append("</trim>");
 		buffer.append(RT_1).append(BLANK_4).append("</select>");
 		
 		
-		buffer.append(RT_2).append(BLANK_4).append("<select id=\"getByStr\" resultType=\"");
+		/*buffer.append(RT_2).append(BLANK_4).append("<select id=\"getByStr\" resultType=\"");
 		buffer.append(alia).append("\" parameterType=\"").append(alia).append("\">");
 		buffer.append(RT_1).append(BLANK_8).append("SELECT ");
 		buffer.append(RT_1).append(BLANK_8).append("<include refid=\"base_column\"/>");
@@ -614,7 +671,7 @@ public class BeanUtils {
 				      .append(a).append(".state)");
 			}
 		}
-		buffer.append(RT_1).append(BLANK_4).append("</select>");
+		buffer.append(RT_1).append(BLANK_4).append("</select>");*/
 
 		buffer.append(RT_2).append("</mapper>");
 		FileWriter fw = new FileWriter(f);
@@ -710,33 +767,141 @@ public class BeanUtils {
 
 		return DateUtil.formatyyyy_MM_dd_HH_mm_ss(new Date());
 	}
+	
+	private class fieldMap {
+		
+		public fieldMap (Class cls, Field field) {
+			this.cls = cls;
+			this.field = field;
+		}
+		
+		Class cls;
+		Field field;
+		List<Field> childs = new ArrayList<>();
+		
+		public String toString () {
+			String cstr = "";
+			for (int i=0;i<childs.size();i++) {
+			  cstr +=","+childs.get(i).getName();
+			}
+			return field.getName() +":childs:" +cstr;
+		}
+	}
 
 	/**
 	 * 使用Java反射来获取javaBean的参数值， 将参数值拼接为操作内容
 	 */
-	public String[] fingByArg(Class c) throws Exception {
-
-		Field[] fields = c.getDeclaredFields();
-		String[] rs = new String[fields.length];
-		int i = 0;
-		for (Field f : fields) {
-			rs[i] = f.getName();
-			i++;
+	public List<List<fieldMap>> fingByArg(Class c) throws Exception {
+        
+		List<List<fieldMap>> list = new ArrayList<>(3);
+		do {
+			list.add(new ArrayList<fieldMap>());
+		} while (list.size()<3);
+		List<Field> fields = new ArrayList<>();
+		findSupClass(c, fields);
+		fields.forEach(o->System.out.println(o.getName()+":"+o.getType().getName()));
+		Type temp = null;
+		for (Field o : fields) {
+			if (checkBasicType(o.getType())) {
+				list.get(0).add(new fieldMap(o.getType(), o));
+			} else if (o.getType().getSimpleName().equals("String[]") || o.getType().getSimpleName().equals("List") || o.getType().getSimpleName().equals("Set")) {
+				temp = o.getGenericType();
+				
+				if (temp instanceof ParameterizedType) {
+					ParameterizedType p = (ParameterizedType)temp;
+					Class cc = ((Class)p.getActualTypeArguments()[0]);
+					fieldMap fi = new fieldMap(cc, o);
+					list.get(2).add(fi);
+					List<Field> childs = new ArrayList<>();
+					findSupClass(cc, childs);
+					for (Field ch : childs) {
+						if (checkBasicType(ch.getType())) {
+							fi.childs.add(ch);
+						}
+					}
+					//list.get(2).add();
+				} 
+			} else {
+                   temp = o.getGenericType();				
+				   if (temp instanceof ParameterizedType) {
+					ParameterizedType p = (ParameterizedType)temp;
+					Class cc = ((Class)p.getActualTypeArguments()[0]);
+					fieldMap fi = new fieldMap(cc, o);
+					list.get(1).add(fi);
+					List<Field> childs = new ArrayList<>();
+					findSupClass(cc, childs);
+					for (Field ch : childs) {
+						if (checkBasicType(ch.getType())) {
+							fi.childs.add(ch);
+						}
+					}
+					//list.get(2).add();
+				} 
+			}
 		}
-
-		return rs;
+		/*for (Field o : fields) {
+			String type = o.getType().getSimpleName();
+			switch (type) {
+			case "Integer":
+			case "int":
+			case "Byte":
+			case "byte":
+			case "Timestamp":
+			case "Date":
+			case "Long":
+			case "long":
+			case "Double":
+			case "double":
+			case "BigDecimal":
+			case "Float":
+			case "Boolean":
+			case "boolean":
+			case "String":
+				list.get(0).add(o.getType());
+				break;
+			case "String[]":
+			case "List":
+			case "Set":
+				temp = o.getGenericType();
+				if (temp instanceof ParameterizedType) {
+					ParameterizedType p = (ParameterizedType)temp;
+					list.get(2).add(((Class)p.getActualTypeArguments()[0]));
+				}
+				break;
+			default:
+				list.get(1).add(o.getType());
+				break;
+			}
+		}*/
+		
+		return list;
 	}
 	
-	private String[] findSupClass(Class c, String[] fields) {
-		if (c == Object.class) {
-			return fields;
+	private String[] basetypes = {"Integer","int","Byte","byte","Timestamp", "Date", "Long", "long", "Double", "double", "BigDecimal", "Float", "Boolean", "boolean", "String"};
+	
+	private boolean checkBasicType (Class type) {
+		for (int i=0;i<basetypes.length;i++) {
+            if (basetypes[i].equals(type.getSimpleName())) {
+            	return true;
+            }
 		}
-		
+		return false;
+	}
+	
+	/**
+	 * 逐级查找属性
+	 * @param c
+	 * @param fields
+	 */
+	private void findSupClass(Class c, List<Field> fields) {
+		if (c == Object.class) {
+			return;
+		}		
+		findSupClass(c.getSuperclass(), fields);
 		Field[] fs = c.getDeclaredFields();
-		fields = Arrays.copyOf(fields, fields.length+fs.length);
-		
-		
-		return null;
+		for (int i=0; i < fs.length; i++) {
+			fields.add(fs[i]);
+		}		
 	}
 
 	/**
@@ -764,9 +929,9 @@ public class BeanUtils {
 		return rs;
 	}
 	
-	public boolean contain(String[] args,String str){
-		for (int i = 0; i < args.length; i++) {
-			if(args[i].equals(str)){
+	public boolean contain(List<fieldMap> args,String str){
+		for (int i = 0; i < args.size(); i++) {
+			if(args.get(i).field.getName().equals(str)){
 				return true;
 			}
 		}

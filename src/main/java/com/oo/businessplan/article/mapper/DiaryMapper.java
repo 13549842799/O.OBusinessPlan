@@ -9,5 +9,7 @@ import com.oo.businessplan.basic.mapper.BaseMapper;
  *
  */
 public interface DiaryMapper extends BaseMapper<Diary>{
+	
+	
 
 }

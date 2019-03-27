@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.oo.businessplan.basic.mapper.RedisCacheMapper;
 import com.oo.businessplan.basic.service.RedisCacheService;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
@@ -21,6 +22,9 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 	
 	@Autowired
     protected RedisTokenManager tokenManager;
+	
+	@Autowired
+	protected RedisCacheMapper<T> redisMapper;
 	
 	private final HKeyMap hkey = new HKeyMap();
 	
@@ -40,7 +44,7 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 		@SuppressWarnings("unchecked")
 		T t =(T)tokenManager.getValueFromMap(key, hkey.get(objName), expired, timeUnit);
 		if (t==null) {
-			t = baseMapper.getByStr(key,DeleteFlag.VALID.getCode(), state);
+			t = redisMapper.getByStr(key,DeleteFlag.VALID.getCode(), state);
 			tokenManager.saveForMap(key, hkey.get(objName), t, expired, timeUnit);
 		}
 		
@@ -74,7 +78,7 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 		@SuppressWarnings("unchecked")
 		List<T> t =(List<T>)tokenManager.getValueFromMap(key, hkey.get(objName), expired, timeUnit);
 		if (t==null) {
-			t = baseMapper.getListByStr(key, DeleteFlag.VALID.getCode(), state);
+			t = redisMapper.getListByStr(key, DeleteFlag.VALID.getCode(), state);
 			tokenManager.saveForMap(key, hkey.get(objName), t, expired, timeUnit);
 		}
 		

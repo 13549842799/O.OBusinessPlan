@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import com.oo.businessplan.authority.pojo.Resource;
-import com.oo.businessplan.basic.mapper.BaseMapper;
+import com.oo.businessplan.basic.mapper.RedisCacheMapper;
 
 
 /**
@@ -15,7 +14,7 @@ import com.oo.businessplan.basic.mapper.BaseMapper;
  * @author cyz
  * @version 创建时间：2018-08-10 22:05:41
  */
-public interface ResourceMapper extends BaseMapper<Resource> {
+public interface ResourceMapper extends RedisCacheMapper<Resource> {
 	
 	/**
 	 * 通过账号的id获取此账号下所有权限关联的资源

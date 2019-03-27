@@ -247,9 +247,10 @@ public class ResourceController extends BaseController{
               @RequestParam(required=true,value="id")int id){
 		  
 		  ResponseResult<Object> response = new ResponseResult<>();
-		  
+		 Resource r = new Resource();
+		 r.setId(id);
 		  try {
-             return resourceService.delete(id) ? 
+             return resourceService.delete(r) ? 
             		 response.success() : response.fail("");
 		  } catch (Exception e) {
 			e.printStackTrace();

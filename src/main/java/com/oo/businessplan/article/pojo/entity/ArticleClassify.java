@@ -1,13 +1,13 @@
 package com.oo.businessplan.article.pojo.entity;
 
-import com.oo.businessplan.basic.entity.CreatorEntity;
+import com.oo.businessplan.basic.entity.CreatorWithStateEntity;
 
 /**
  * 文章分类表，包括系统分类和用户自定义分类
  * @author cyz
  *
  */
-public class ArticleClassify extends CreatorEntity<Integer> {
+public class ArticleClassify extends CreatorWithStateEntity<Integer> {
 	
 	private String name;
 
