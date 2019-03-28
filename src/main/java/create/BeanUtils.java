@@ -83,9 +83,7 @@ public class BeanUtils {
 		System.out.println(cName);
 		System.out.println(daoUrl);
 		System.out.println(daoPath);
-		if (1==1) {
-			return;
-		}
+
 		String fileName = System.getProperty("user.dir") + "/src/main/java/" + daoPath + "/" + getLastChar(cName)
 				+ "Mapper.java";
 		File f = new File(fileName);
@@ -154,7 +152,7 @@ public class BeanUtils {
 		buffer.append(";").append(RT_2);
 		buffer.append("import org.springframework.beans.factory.annotation.Autowired;").append(RT_1);
 		buffer.append("import org.springframework.stereotype.Service;").append(RT_1);
-		buffer.append("import com.lesso.common.service.impl.BaseServiceImpl;").append(RT_1);
+		buffer.append("import com.oo.businessplan.basic.service.impl.BaseServiceImpl;").append(RT_1);
 		buffer.append("import ").append(getPackageName(cName)).append(".mapper.");
 		buffer.append(beanName).append("Mapper;").append(RT_1);
 		buffer.append("import ").append(getPackageName(cName)).append(".service.");
@@ -210,7 +208,7 @@ public class BeanUtils {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package ").append(daoUrl);
 		buffer.append(";").append(RT_2);
-		buffer.append("import com.lesso.common.service.BaseService;").append(RT_1);
+		buffer.append("import com.oo.businessplan.basic.service.BaseService;").append(RT_1);
 		buffer.append("import ").append(cName).append(";").append(RT_1);
 
 		buffer.append(RT_2).append(ANNOTATION.replace(ANNOTATION_AUTHOR_NAME, authorName));
@@ -236,7 +234,8 @@ public class BeanUtils {
 		String beanName = getLastChar(cName);
 		String lowName = getLowercaseChar(beanName);
 		String moduleName = getModuleName(cName);
-		String daoUrl = getPackageName(cName) + ".control";
+		
+		String daoUrl = getPackageName(cName) + ".controller";
 		String daoPath = daoUrl.replace(".", "/");
 		String jspPath = getPackageName(cName).replace(".", "/");
 		jspPath = jspPath.substring(4);
@@ -259,8 +258,6 @@ public class BeanUtils {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package ").append(daoUrl);
 		buffer.append(";").append(RT_2);
-		buffer.append("import java.io.UnsupportedEncodingException;").append(RT_1);
-		buffer.append("import java.security.NoSuchAlgorithmException;").append(RT_1);
 		buffer.append("import java.util.List;").append(RT_1);
 		buffer.append("import java.util.Map;").append(RT_1);
 		buffer.append("import java.util.HashMap;").append(RT_1);
@@ -269,19 +266,17 @@ public class BeanUtils {
 		buffer.append("import org.springframework.beans.factory.annotation.Autowired;").append(RT_1);
 		buffer.append("import org.springframework.web.bind.annotation.PathVariable;").append(RT_1);
 		buffer.append("import org.springframework.web.bind.annotation.RequestBody;").append(RT_1);
+		buffer.append("import org.springframework.web.bind.annotation.DeleteMapping;").append(RT_1);
+		buffer.append("import org.springframework.web.bind.annotation.GetMapping;").append(RT_1);
+		buffer.append("import org.springframework.web.bind.annotation.PostMapping;").append(RT_1);
 		buffer.append("import org.springframework.web.bind.annotation.RequestMapping;").append(RT_1);
 		buffer.append("import org.springframework.web.bind.annotation.RequestMethod;").append(RT_1);
 		buffer.append("import org.springframework.web.bind.annotation.RequestParam;").append(RT_1);
 		buffer.append("import org.springframework.web.bind.annotation.RestController;").append(RT_1);
-		buffer.append("import io.swagger.annotations.Api;").append(RT_1);
-		buffer.append("import io.swagger.annotations.ApiOperation;").append(RT_1);
-		buffer.append("import io.swagger.annotations.ApiParam;").append(RT_2);
 		
-		buffer.append("import com.lesso.common.constant.ValidationMessge;").append(RT_1);
-		buffer.append("import com.lesso.common.control.BaseController;").append(RT_1);
-		buffer.append("import com.lesso.common.network.Response;").append(RT_1);
-		buffer.append("import com.lesso.common.security.IgnoreSecurity;").append(RT_1);
-		buffer.append("import com.github.pagehelper.PageInfo;").append(RT_1);
+		buffer.append("import com.oo.businessplan.basic.controller.BaseController;").append(RT_1);
+		buffer.append("import com.oo.businessplan.common.pageModel.ResponseResult;").append(RT_1);
+		buffer.append("import com.oo.businessplan.common.security.IgnoreSecurity;").append(RT_1);
 		
 		buffer.append("import ").append(getPackageName(cName)).append(".service.");
 		buffer.append(beanName).append("Service;").append(RT_1);
@@ -290,28 +285,21 @@ public class BeanUtils {
 		buffer.append(RT_2).append(ANNOTATION.replace(ANNOTATION_AUTHOR_NAME, authorName));
 		buffer.append("@RestController").append(RT_1);
 		buffer.append("@RequestMapping(value = \"/api/").append(moduleName).append("/").append(lowName).append("\")").append(RT_1);
-		buffer.append("@Api(description = \"").append(tableDes).append("接口\")").append(RT_1);
 		buffer.append("public class ").append(beanName);
 		buffer.append("Controller extends BaseController{");
 		buffer.append(RT_2).append(BLANK_4).append("@Autowired");
 		buffer.append(RT_1).append(BLANK_4).append(beanName);
 		buffer.append("Service ").append(lowName).append("Service;");
 
-		buffer.append(RT_2).append(BLANK_4).append("@ApiOperation(value = \"查找").append(tableDes).append("列表\")");
-		buffer.append(RT_1).append(BLANK_4).append("@IgnoreSecurity(val = false)");
-		buffer.append(RT_1).append(BLANK_4).append("@RequestMapping(value = \"/list\", method = RequestMethod.GET)");
-		buffer.append(RT_1).append(BLANK_4).append("public Response list(HttpServletRequest request,");
-		buffer.append("@ApiParam(value = \"关键字\", required = false) @RequestParam(required = false, value = \"keyword\") String keyword) {");
-		buffer.append(RT_1).append(BLANK_8).append("Map map = new HashMap();");
-		buffer.append(RT_1).append(BLANK_8).append("map.put(\"keyword\", keyword);");
-		buffer.append(RT_1).append(BLANK_8).append("map.put(\"tenantId\", getTenantId(request));");
-		buffer.append(RT_1).append(BLANK_8).append("List<Map> list = ").append(lowName).append("Service.findListByMap(map);");
-		buffer.append(RT_1).append(BLANK_8).append("Response response = new Response();");
-		buffer.append(RT_1).append(BLANK_8).append("return response.success(list);");
+		buffer.append(RT_1).append(BLANK_4).append("@IgnoreSecurity");
+		buffer.append(RT_1).append(BLANK_4).append("@GetMapping(value = \"/list.re\")");
+		buffer.append(RT_1).append(BLANK_4).append("public ResponseResult<List<").append(beanName).append(">> list(HttpServletRequest request) {");
+		buffer.append(RT_1).append(BLANK_8).append("ResponseResult<List<").append(beanName).append(">> response = new ResponseResult<>();");
+		buffer.append(RT_1).append(RT_1).append(BLANK_8).append("return response.success();");
 	    buffer.append(RT_1).append(BLANK_4).append("}");
 	    
 	    
-	    buffer.append(RT_2).append(BLANK_4).append("@ApiOperation(value = \"查找").append(tableDes).append("列表(分页)\")");
+	    /*buffer.append(RT_2).append(BLANK_4).append("@ApiOperation(value = \"查找").append(tableDes).append("列表(分页)\")");
 		buffer.append(RT_1).append(BLANK_4).append("@IgnoreSecurity(val = false)");
 		buffer.append(RT_1).append(BLANK_4).append("@RequestMapping(value = \"/page\", method = RequestMethod.GET)");
 		buffer.append(RT_1).append(BLANK_4).append("public Response page(HttpServletRequest request,");
@@ -380,7 +368,7 @@ public class BeanUtils {
 	    buffer.append(RT_1).append(BLANK_8).append("map.put(\"modify\", getEmployeeName(request));");
 	    buffer.append(RT_1).append(BLANK_8).append("map.put(\"modifyId\", getEmployeeId(request));");
 	    buffer.append(RT_1).append(BLANK_8).append("return getResult(").append(lowName).append("Service.delete(map));");
-	    buffer.append(RT_1).append(BLANK_4).append("}");
+	    buffer.append(RT_1).append(BLANK_4).append("}");*/
 
 		buffer.append(RT_1).append("}");
 		FileWriter fw = new FileWriter(f);
@@ -900,6 +888,9 @@ public class BeanUtils {
 		findSupClass(c.getSuperclass(), fields);
 		Field[] fs = c.getDeclaredFields();
 		for (int i=0; i < fs.length; i++) {
+			if (fs[i].getName().equals("serialVersionUID")) {
+				continue;
+			}
 			fields.add(fs[i]);
 		}		
 	}

@@ -1,9 +1,15 @@
 package com.oo.businessplan.basic.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class CreatorEntity<T> extends DeleteAbleEntity<T> {
+public class CreatorEntity<T> extends DeleteAbleEntity<T> implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7650539991301923796L;
+
 	private Integer creator;
 	
 	private Timestamp createTime;

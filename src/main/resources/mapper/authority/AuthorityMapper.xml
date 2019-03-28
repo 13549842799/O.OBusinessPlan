@@ -61,6 +61,11 @@
             </trim>
         )
     </insert>
+    
+    <insert id="insertOrUpdate" parameterType="authority">
+        INSERT INTO authority (id, roid, reid, type, level, delflag) 
+        ON DUPLICATE KEY UPDATE type = VALUES(type), level = VALUES(level), delflag = #{delflag}
+    </insert>
 
     <update id="delete" >
         UPDATE authority set delflag = #{delflag}
@@ -178,6 +183,28 @@
            au.delflag = #{delflag, jdbcType=TINYINT}
         AND
            re.delflag = #{delflag, jdbcType=TINYINT}
+    </select>
+    
+    <select id="getAuthoritiesByAdminIdAndType" resultType="authority">
+        SELECT
+            DISTINCT <include refid="base_column"/>
+        FROM
+           admin ad 
+        LEFT JOIN
+           admin_ role ar ON ad.id ar.aid
+        LEFT JOIN
+           role ro ON ar.rid = ro.id
+        LEFT JOIN
+           authority au ON ro.id = au.roid
+        WHERE
+            ad.id = #{adminId}
+        AND ar.delflag = #{delflag, jdbcType=TINYINT}
+        AND ro.delflag = #{delflag, jdbcType=TINYINT}
+        AND ro.state = #{state, jdbcType=TINYINT}
+        AND au.delflag = #{delflag, jdbcType=TINYINT}
+        <if test="type != null">
+        AND au.type = #{type, jdbcType=TINYINT}
+        </if>
     </select>
 
 </mapper>

@@ -16,9 +16,14 @@ public class Authority extends DeleteAbleEntity<Integer> implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 2531977273592100538L;
+	
+	public static final byte UNAWARD = 1;//类型:不可授予
+	
+	public static final byte AWARD = 2; //类型：可授予
+	
 	private Integer roid;
 	private Integer reid;
-	private Byte type;
+	private Byte type; //权限类型 ，是否可授予给别人
 	private Byte level;
 	
 	public Authority() {super();}
@@ -37,6 +42,14 @@ public class Authority extends DeleteAbleEntity<Integer> implements Serializable
 		this(roid, reid);
 		this.type = type;
 		this.setDelflag(delflag);
+	}
+	
+	/**
+	 * 判断当前权限是否可授予
+	 * @return
+	 */
+	public boolean isAwardAble() {
+		return this.type == AWARD;
 	}
 	
 	public Integer getReid() {

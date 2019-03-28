@@ -67,6 +67,14 @@ public class AuthorityServiceImpl extends RedisCacheSupport<Authority>
 		
 		return (Map<String, Byte>) objKey;
 	}
+	
+	
+
+	@Override
+	public List<Authority> getListByAccountAndType(Integer adminId, Byte type) {
+		
+		return authorityMapper.getAuthoritiesByAdminIdAndType(adminId, type, DeleteFlag.VALID.getCode(), StatusFlag.ENABLE.getCode());
+	}
 
 	/**
 	 * 核心思路：因为分配给网站的编号即是权限的编号，又因为子权限的编号是以父权限

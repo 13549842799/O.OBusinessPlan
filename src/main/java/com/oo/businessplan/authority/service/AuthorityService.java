@@ -33,6 +33,14 @@ public interface AuthorityService extends BaseService<Authority>{
 	Map<String, Byte> getKeyMap(String account);
 	
 	/**
+	 * 根据当前的用户和权限类型参数获取对应的权限列表
+	 * @param adminId
+	 * @param type
+	 * @return
+	 */
+	List<Authority> getListByAccountAndType(Integer adminId, Byte type);
+	
+	/**
 	 * 通过一下两个参数获取对应的权限列表（获取某个角色的指向特定资源的权限组）
 	 * @param roId 角色id
 	 * @param reId 资源id数组

@@ -1,7 +1,13 @@
 package com.oo.businessplan.basic.entity;
 
-public abstract class IdEntity <T> {
+import java.io.Serializable;
+
+public abstract class IdEntity <T> implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4275034184543847794L;
 	private T id; //主键
 	
 	public IdEntity () {}

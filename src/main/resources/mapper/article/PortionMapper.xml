@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.article.mapper.PortionMapper">
+
+     <resultMap id="PortionMap" type="portion">
+        <id property="id" column="id"/>
+        <result property="delflag" column="delflag"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modifierTime" column="modifierTime"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="classify" column="classify"/>
+        <result property="novelId" column="novelId"/>
+        <result property="wordsNum" column="wordsNum"/>
+    </resultMap>
+
+     <sql id="base_column">
+        po.id,po.delflag,po.creator,po.createTime,po.modifier,po.modifierTime,po.title,po.content,po.classify,po.novelId,po.wordsNum
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO portion
+        (
+            <trim>
+                <if test="delflag != null ">
+                delflag,
+                </if>
+                <if test="creator != null ">
+                creator,
+                </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
+                <if test="modifier != null ">
+                modifier,
+                </if>
+                <if test="modifierTime != null ">
+                modifierTime,
+                </if>
+                <if test="title != null ">
+                title,
+                </if>
+                <if test="content != null ">
+                content,
+                </if>
+                <if test="classify != null ">
+                classify,
+                </if>
+                <if test="novelId != null ">
+                novelId,
+                </if>
+                <if test="wordsNum != null ">
+                wordsNum
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim>
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                #{creator},
+                </if>
+                <if test="createTime != null ">
+                #{createTime},
+                </if>
+                <if test="modifier != null ">
+                #{modifier},
+                </if>
+                <if test="modifierTime != null ">
+                #{modifierTime},
+                </if>
+                <if test="title != null ">
+                #{title},
+                </if>
+                <if test="content != null ">
+                #{content},
+                </if>
+                <if test="classify != null ">
+                #{classify},
+                </if>
+                <if test="novelId != null ">
+                #{novelId},
+                </if>
+                <if test="wordsNum != null ">
+                #{wordsNum}
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE portion set delflag = #{delflag} , modifier = #{modifier},modifierTime = {modifierTime}
+         WHERE id = #{ id })
+    </update>
+
+    <update id="update" parameterType="portion">
+        UPDATE portion SET 
+            <trim>
+                <if test="delflag != null ">
+                delflag = #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                creator = #{creator},
+                </if>
+                <if test="createTime != null ">
+                createTime = #{createTime},
+                </if>
+                <if test="modifier != null ">
+                modifier = #{modifier},
+                </if>
+                <if test="modifierTime != null ">
+                modifierTime = #{modifierTime},
+                </if>
+                <if test="title != null ">
+                title = #{title},
+                </if>
+                <if test="content != null ">
+                content = #{content},
+                </if>
+                <if test="classify != null ">
+                classify = #{classify},
+                </if>
+                <if test="novelId != null ">
+                novelId = #{novelId},
+                </if>
+                <if test="wordsNum != null ">
+                wordsNum = #{wordsNum}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="portion">
+        UPDATE portion SET 
+            delflag = #{delflag,jdbcType=TINYINT},
+            creator = #{creator},
+            createTime = #{createTime},
+            modifier = #{modifier},
+            modifierTime = #{modifierTime},
+            title = #{title},
+            content = #{content},
+            classify = #{classify},
+            novelId = #{novelId},
+            wordsNum = #{wordsNum}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="portion" parameterType="portion">
+        SELECT 
+        <include refid="base_column"/>
+        FROM portion po
+        WHERE po.id = #{id} AND po.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="portion" parameterType="portion">
+        SELECT 
+        <include refid="base_column"/>
+        FROM portion po
+        WHERE 
+    <trim>
+        <if test=" != null ">
+        AND po.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test=" != null ">
+        AND po.`creator` = #{creator}
+        </if>
+        <if test=" != null ">
+        AND po.`createTime` = #{createTime}
+        </if>
+        <if test=" != null ">
+        AND po.`modifier` = #{modifier}
+        </if>
+        <if test=" != null ">
+        AND po.`modifierTime` = #{modifierTime}
+        </if>
+        <if test=" != null ">
+        AND po.`title` = #{title}
+        </if>
+        <if test=" != null ">
+        AND po.`content` = #{content}
+        </if>
+        <if test=" != null ">
+        AND po.`classify` = #{classify}
+        </if>
+        <if test=" != null ">
+        AND po.`novelId` = #{novelId}
+        </if>
+        <if test=" != null ">
+        AND po.`wordsNum` = #{wordsNum}
+        </if>
+    </trim>
+    </select>
+
+</mapper>

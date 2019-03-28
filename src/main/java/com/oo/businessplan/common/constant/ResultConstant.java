@@ -15,6 +15,8 @@ public interface ResultConstant {
 	/**
 	 * 不存在此对象
 	 */
+	public static final String SELECT_OBJECT = "请选择对象";
+	
 	public static final String NOT_EXIST_PARENT ="当前上级不存在";
 	
 	public static final String NOT_EXIST_EMPLOYEE ="不存在此职员";

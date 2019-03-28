@@ -26,6 +26,16 @@ public interface AuthorityMapper extends RedisCacheMapper<Authority>{
     * @return
     */
    List<Authority> getAuthorities(Map<String, Object> params);
+   
+   /**
+    * 通过账号的id和权限的类型(非必传)获取权限列表
+    * @param adminId
+    * @param type
+    * @param delflag 未删除的
+    * @param state  正常的
+    * @return
+    */
+   List<Authority> getAuthoritiesByAdminIdAndType(@Param("adminId") int adminId, @Param("type") Byte type, @Param("delflag") byte delflag, @Param("state") byte state);
 
    void insertOrUpdate(List<Authority> list);
 

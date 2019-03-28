@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.article.mapper.InspirationMapper">
+
+     <resultMap id="InspirationMap" type="inspiration">
+        <id property="id" column="id"/>
+        <result property="delflag" column="delflag"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modifierTime" column="modifierTime"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="classify" column="classify"/>
+    </resultMap>
+
+     <sql id="base_column">
+        in.id,in.delflag,in.creator,in.createTime,in.modifier,in.modifierTime,in.title,in.content,in.classify
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Inspiration
+        (
+            <trim>
+                <if test="delflag != null ">
+                delflag,
+                </if>
+                <if test="creator != null ">
+                creator,
+                </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
+                <if test="modifier != null ">
+                modifier,
+                </if>
+                <if test="modifierTime != null ">
+                modifierTime,
+                </if>
+                <if test="title != null ">
+                title,
+                </if>
+                <if test="content != null ">
+                content,
+                </if>
+                <if test="classify != null ">
+                classify
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim>
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                #{creator},
+                </if>
+                <if test="createTime != null ">
+                #{createTime},
+                </if>
+                <if test="modifier != null ">
+                #{modifier},
+                </if>
+                <if test="modifierTime != null ">
+                #{modifierTime},
+                </if>
+                <if test="title != null ">
+                #{title},
+                </if>
+                <if test="content != null ">
+                #{content},
+                </if>
+                <if test="classify != null ">
+                #{classify}
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE Inspiration set delflag = #{delflag} , modifier = #{modifier},modifierTime = {modifierTime}
+         WHERE id = #{ id })
+    </update>
+
+    <update id="update" parameterType="inspiration">
+        UPDATE Inspiration SET 
+            <trim>
+                <if test="delflag != null ">
+                delflag = #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                creator = #{creator},
+                </if>
+                <if test="createTime != null ">
+                createTime = #{createTime},
+                </if>
+                <if test="modifier != null ">
+                modifier = #{modifier},
+                </if>
+                <if test="modifierTime != null ">
+                modifierTime = #{modifierTime},
+                </if>
+                <if test="title != null ">
+                title = #{title},
+                </if>
+                <if test="content != null ">
+                content = #{content},
+                </if>
+                <if test="classify != null ">
+                classify = #{classify}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="inspiration">
+        UPDATE Inspiration SET 
+            delflag = #{delflag,jdbcType=TINYINT},
+            creator = #{creator},
+            createTime = #{createTime},
+            modifier = #{modifier},
+            modifierTime = #{modifierTime},
+            title = #{title},
+            content = #{content},
+            classify = #{classify}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="inspiration" parameterType="inspiration">
+        SELECT 
+        <include refid="base_column"/>
+        FROM Inspiration in
+        WHERE in.id = #{id} AND in.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="inspiration" parameterType="inspiration">
+        SELECT 
+        <include refid="base_column"/>
+        FROM Inspiration in
+        WHERE 
+    <trim>
+        <if test=" != null ">
+        AND in.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test=" != null ">
+        AND in.`creator` = #{creator}
+        </if>
+        <if test=" != null ">
+        AND in.`createTime` = #{createTime}
+        </if>
+        <if test=" != null ">
+        AND in.`modifier` = #{modifier}
+        </if>
+        <if test=" != null ">
+        AND in.`modifierTime` = #{modifierTime}
+        </if>
+        <if test=" != null ">
+        AND in.`title` = #{title}
+        </if>
+        <if test=" != null ">
+        AND in.`content` = #{content}
+        </if>
+        <if test=" != null ">
+        AND in.`classify` = #{classify}
+        </if>
+    </trim>
+    </select>
+
+</mapper>

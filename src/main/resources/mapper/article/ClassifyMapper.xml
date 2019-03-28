@@ -75,12 +75,6 @@
                 <if test="delflag != null ">
                 delflag = #{delflag,jdbcType=TINYINT},
                 </if>
-                <if test="creator != null ">
-                creator = #{creator},
-                </if>
-                <if test="createTime != null ">
-                createTime = #{createTime},
-                </if>
                 <if test="name != null ">
                 name = #{name},
                 </if>
@@ -92,6 +86,9 @@
                 </if>
             </trim>
          WHERE id = #{id}
+         <if test="creator">
+         AND creator = #{creator}
+         </if>
     </update>
 
     <update id="updateFull" parameterType="classify">

@@ -75,8 +75,15 @@ public class ResponseResult<T> implements Serializable{
 		this.data = data;
 	}
 	
+	private ResponseResult<T> setValue(int status, String message, T data) {
+		this.message = message;
+		this.data = data;
+		this.status = status;
+		return this;
+	}
+	
 	public  ResponseResult<T> success(String mess,T t){
-		return new ResponseResult<T>(RESPONSE_SUCCESS,mess,t);
+		return setValue(RESPONSE_SUCCESS, mess, t);
 	}
 	
 	public ResponseResult<T> success(){
@@ -88,7 +95,7 @@ public class ResponseResult<T> implements Serializable{
 	}
 	
 	public  ResponseResult<T> fail(String mess,T t){
-		return new ResponseResult<T>(RESPONSE_FAIL,mess,t);
+		return setValue(RESPONSE_FAIL, mess, t);
 	}
 	
 	public ResponseResult<T> fail(String mess){
@@ -96,15 +103,44 @@ public class ResponseResult<T> implements Serializable{
 	}
 	
 	public  ResponseResult<T> error(String mess,T t){
-		return new ResponseResult<T>(RESPONSE_ERROR,mess,t);
+		return setValue(RESPONSE_ERROR, mess, t);
 	}
 	
 	public  ResponseResult<T> error(String mess){
 		return error(mess,null);
 	}
 	
+	/**
+	 * 重新登录提示的返回信息
+	 * @return
+	 */
 	public ResponseResult<T> relogin() {
-		return new ResponseResult<>(RESPONSE_RELOGIN, "登录已过期, 请重新登录");
+		return setValue(RESPONSE_RELOGIN, "登录已过期, 请重新登录", null);
+	}
+	
+	/**
+	 * 执行更新操作后返回前端的制式信息
+	 * @param result
+	 * @return
+	 */
+	public ResponseResult<T> updateResult(int result) {
+		switch (result) {
+		case 0:
+			return fail("更新失败，当前更新数为0");
+		case 1:
+			return success();
+		default:
+			return error("更新失败，当前更新涉及多条数据");
+		}
+	}
+	
+	/**
+	 * 执行删除操作后返回前端的制式信息
+	 * @param result
+	 * @return
+	 */
+	public ResponseResult<T> deleteResult(boolean result) {
+		return result ? success() : fail("删除失败");
 	}
 	
 	

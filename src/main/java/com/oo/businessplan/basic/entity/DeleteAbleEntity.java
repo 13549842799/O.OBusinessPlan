@@ -1,9 +1,15 @@
 package com.oo.businessplan.basic.entity;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class DeleteAbleEntity<T> extends IdEntity<T> {
+public abstract class DeleteAbleEntity<T> extends IdEntity<T> implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7754940750598412837L;
 	private Byte delflag; //删除标志 0-删除 1-整除
 	
 	public DeleteAbleEntity() {}

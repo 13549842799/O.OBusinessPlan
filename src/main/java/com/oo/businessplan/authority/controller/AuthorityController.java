@@ -3,6 +3,7 @@ package com.oo.businessplan.authority.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,60 +64,48 @@ public class AuthorityController extends BaseController{
 		return response.success(list);
 	}
 	
-	@ApiOperation("为角色添加权限")
+	/**
+	 * 为角色添加权限
+	 * @param request
+	 * @param auths
+	 * @return
+	 */
 	@PostMapping(value="/add.do")
 	@IgnoreSecurity()
 	public ResponseResult<Authority> addAuthority(
 			HttpServletRequest request,
-			/*@ApiParam(value="角色id")
-			@RequestParam(value="roleId", required=true)int roleId,
-			@ApiParam(value="资源id数组")
-			@RequestParam(value="resourceIds", required=true)int[] resourceIds,
-			@ApiParam(value="类型数组 与上面的参数一一对应")
-			@RequestParam(value="types", required=true)int[] types,*/
-			@ApiParam(value="权限数组参数")
 			@RequestBody(required = true) Authority[] auths) {
 		ResponseResult<Authority> response = new ResponseResult<>();
 		
-		/*if (resourceIds == null || resourceIds.length == 0 
-				|| types == null || types.length == 0 || resourceIds.length != types.length) {
-			return response.error("请求参数错误");
-		}*/
-		
 		if (auths.length == 0) {
-			return response.error("请求参数错误");
+			return response.error(ResultConstant.PARAMETER_ERROR);
 		}
 		
-		List<Authority> contain = new ArrayList<>();
+		/*
+		 * 查找当前用户拥有的可授予类型的权限，然后判断要新增或删除的权限是否在这些可授予权限内
+		 */
+		List<Authority> adminAuths = authService.getListByAccountAndType(currentAdminId(request), Authority.AWARD);
 		
-		int[] resourceIds = new int[auths.length];	
-		int roleId = auths[0].getRoid();
-		for (int i = 0; i < auths.length; i++) {
-			resourceIds[i] = auths[i].getReid();
+		if (adminAuths == null || adminAuths.size() == 0) {
+			return response.fail("没有可授予的权限");
 		}
 		
-		List<Authority> list = authService.getAuthorities(roleId, resourceIds);
-		Authority temp = null;
-		if (list != null && list.size() > 0) {
-			Authority keyParam = new Authority(roleId);
-			Map<String, Authority> map = util.createMapFromList(list);
-			for (int i = 0; i < resourceIds.length; i++) {
-				keyParam.setReid(resourceIds[i]);
-				if ((temp = map.get(keyParam)) != null) {
-					temp.setDelflag(DeleteFlag.VALID.getCode());
-					temp.setType((byte)auths[i].getType());
-				} else {
-					temp = new Authority(roleId, resourceIds[i], (byte)auths[i].getType(), 
-							DeleteFlag.VALID.getCode());
-				}
-				contain.add(temp);
+		Map<Integer, List<Authority>> authMap = adminAuths.stream().collect(Collectors.groupingBy(Authority::getReid));
+		
+		List<Authority> contain = new ArrayList<>();	
+		
+		List<Authority> tempList = null;
+		for (int i=0; i < auths.length; i++) {
+			tempList = authMap.get(auths[i].getReid());
+			if (tempList != null && tempList.size() > 0) {
+				contain.add(auths[i]);
 			}
-		}
-		
-		if (authService.insertOrUpdateForBatch(contain)) {
-			return response.success();
-		}		
-		return response.error("网络异常");
+		 }
+		 
+		 if (authService.insertOrUpdateForBatch(contain)) {
+			 return response.success();
+		 }		
+		 return response.error("网络异常");
 	}
 	
 	@ApiOperation("为角色修改权限")

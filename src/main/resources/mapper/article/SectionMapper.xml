@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.article.mapper.SectionMapper">
+
+     <resultMap id="SectionMap" type="section">
+        <id property="id" column="id"/>
+        <result property="delflag" column="delflag"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modifierTime" column="modifierTime"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="classify" column="classify"/>
+        <result property="portionId" column="portionId"/>
+        <result property="remark" column="remark"/>
+        <result property="wordsNum" column="wordsNum"/>
+    </resultMap>
+
+     <sql id="base_column">
+        se.id,se.delflag,se.creator,se.createTime,se.modifier,se.modifierTime,se.title,se.content,se.classify,se.portionId,se.remark,se.wordsNum
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO section
+        (
+            <trim>
+                <if test="delflag != null ">
+                delflag,
+                </if>
+                <if test="creator != null ">
+                creator,
+                </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
+                <if test="modifier != null ">
+                modifier,
+                </if>
+                <if test="modifierTime != null ">
+                modifierTime,
+                </if>
+                <if test="title != null ">
+                title,
+                </if>
+                <if test="content != null ">
+                content,
+                </if>
+                <if test="classify != null ">
+                classify,
+                </if>
+                <if test="portionId != null ">
+                portionId,
+                </if>
+                <if test="remark != null ">
+                remark,
+                </if>
+                <if test="wordsNum != null ">
+                wordsNum
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim>
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                #{creator},
+                </if>
+                <if test="createTime != null ">
+                #{createTime},
+                </if>
+                <if test="modifier != null ">
+                #{modifier},
+                </if>
+                <if test="modifierTime != null ">
+                #{modifierTime},
+                </if>
+                <if test="title != null ">
+                #{title},
+                </if>
+                <if test="content != null ">
+                #{content},
+                </if>
+                <if test="classify != null ">
+                #{classify},
+                </if>
+                <if test="portionId != null ">
+                #{portionId},
+                </if>
+                <if test="remark != null ">
+                #{remark},
+                </if>
+                <if test="wordsNum != null ">
+                #{wordsNum}
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE section set delflag = #{delflag} , modifier = #{modifier},modifierTime = {modifierTime}
+         WHERE id = #{ id })
+    </update>
+
+    <update id="update" parameterType="section">
+        UPDATE section SET 
+            <trim>
+                <if test="delflag != null ">
+                delflag = #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="creator != null ">
+                creator = #{creator},
+                </if>
+                <if test="createTime != null ">
+                createTime = #{createTime},
+                </if>
+                <if test="modifier != null ">
+                modifier = #{modifier},
+                </if>
+                <if test="modifierTime != null ">
+                modifierTime = #{modifierTime},
+                </if>
+                <if test="title != null ">
+                title = #{title},
+                </if>
+                <if test="content != null ">
+                content = #{content},
+                </if>
+                <if test="classify != null ">
+                classify = #{classify},
+                </if>
+                <if test="portionId != null ">
+                portionId = #{portionId},
+                </if>
+                <if test="remark != null ">
+                remark = #{remark},
+                </if>
+                <if test="wordsNum != null ">
+                wordsNum = #{wordsNum}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="section">
+        UPDATE section SET 
+            delflag = #{delflag,jdbcType=TINYINT},
+            creator = #{creator},
+            createTime = #{createTime},
+            modifier = #{modifier},
+            modifierTime = #{modifierTime},
+            title = #{title},
+            content = #{content},
+            classify = #{classify},
+            portionId = #{portionId},
+            remark = #{remark},
+            wordsNum = #{wordsNum}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="section" parameterType="section">
+        SELECT 
+        <include refid="base_column"/>
+        FROM section se
+        WHERE se.id = #{id} AND se.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="section" parameterType="section">
+        SELECT 
+        <include refid="base_column"/>
+        FROM section se
+        WHERE 
+    <trim>
+        <if test=" != null ">
+        AND se.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test=" != null ">
+        AND se.`creator` = #{creator}
+        </if>
+        <if test=" != null ">
+        AND se.`createTime` = #{createTime}
+        </if>
+        <if test=" != null ">
+        AND se.`modifier` = #{modifier}
+        </if>
+        <if test=" != null ">
+        AND se.`modifierTime` = #{modifierTime}
+        </if>
+        <if test=" != null ">
+        AND se.`title` = #{title}
+        </if>
+        <if test=" != null ">
+        AND se.`content` = #{content}
+        </if>
+        <if test=" != null ">
+        AND se.`classify` = #{classify}
+        </if>
+        <if test=" != null ">
+        AND se.`portionId` = #{portionId}
+        </if>
+        <if test=" != null ">
+        AND se.`remark` = #{remark}
+        </if>
+        <if test=" != null ">
+        AND se.`wordsNum` = #{wordsNum}
+        </if>
+    </trim>
+    </select>
+
+</mapper>
