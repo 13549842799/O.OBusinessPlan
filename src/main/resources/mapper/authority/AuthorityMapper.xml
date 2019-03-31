@@ -11,6 +11,18 @@
         <result property="resourceName" column="name"/>
         <result property="delflag" column="delflag"/>
     </resultMap>
+    
+    <resultMap id="AuthorityAndResourceMap" type="authorityWithKey">
+        <id property="id" column="id"/>
+        <result property="roid" column="roid"/>
+        <result property="reid" column="reid"/>
+        <result property="type" column="type"/>
+        <result property="key" column="key"/>
+        <result property="resourceName" column="name"/>
+        <result property="rPid" column="rPid"/>
+        <result property="rid" column="rid"/>
+        <result property="delflag" column="delflag"/>
+    </resultMap>
 
      <sql id="base_column">
         au.id,au.roid,au.reid,au.type,au.`level`,au.delflag
@@ -182,6 +194,20 @@
         AND
            au.delflag = #{delflag, jdbcType=TINYINT}
         AND
+           re.delflag = #{delflag, jdbcType=TINYINT}
+    </select>
+    
+    <select id="getAuthorityWithResourceByRole" resultMap="AuthorityMap">
+        SELECT
+            <include refid="all_column"/>, re.pid as rPid, re.id as rid
+        FROM
+           resource re
+        LEFT JOIN
+           ( SELECT au.* FROM authority au 
+                 LEFT JOIN role ro ON ro.id = au.roid 
+                 WHERE ro.id = #{roleId} 
+                 AND au.delflag = #{delflag, jdbcType=TINYINT}) au ON au.reid = re.id 
+        WHERE
            re.delflag = #{delflag, jdbcType=TINYINT}
     </select>
     
