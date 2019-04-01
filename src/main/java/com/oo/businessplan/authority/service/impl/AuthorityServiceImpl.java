@@ -1,8 +1,11 @@
 package com.oo.businessplan.authority.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import com.oo.businessplan.additional.pojo.WebMessage;
 import com.oo.businessplan.authority.mapper.AuthorityMapper;
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.AuthorityWithKey;
+import com.oo.businessplan.authority.pojo.Resource;
 import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.basic.service.UtilService;
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
@@ -115,7 +119,28 @@ public class AuthorityServiceImpl extends RedisCacheSupport<Authority>
 	@Override
 	public List<AuthorityWithKey> getfullList(int roleId) {
 		
-		return authorityMapper.getAuthorityByRole(roleId, DeleteFlag.VALID.getCode());
+		List<AuthorityWithKey> list = authorityMapper
+				.getAuthorityWithResourceByRole(roleId, DeleteFlag.VALID.getCode());
+		System.out.println(list.size());
+		list = getResourceTree(list, null);
+		System.out.println(list);
+		return list;
+	}
+	
+    public List<AuthorityWithKey> getResourceTree(List<AuthorityWithKey> all, AuthorityWithKey current) {
+		
+		List<AuthorityWithKey> childs = new ArrayList<>();
+		AuthorityWithKey node = null;
+		for (int i = 0, len = all.size(); i < len; i++) {
+			node = all.get(i);
+			if ((current == null && node.getrPid() == null)
+					|| (current != null && Objects.equals(current.getRid(), node.getrPid()))) {
+				childs.add(node);
+				node.setChilds(getResourceTree(all, node));			
+			}
+		}
+		
+		return childs;
 	}
 	
 	

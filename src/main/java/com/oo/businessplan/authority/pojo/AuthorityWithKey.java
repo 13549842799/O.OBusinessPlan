@@ -1,10 +1,15 @@
 package com.oo.businessplan.authority.pojo;
 
+import java.util.List;
+
 public final class AuthorityWithKey extends Authority  {
 
 	private static final long serialVersionUID = -3778249512939499830L;
 	private String key;
 	private String resourceName;
+	private Integer rPid;
+	private Integer rid;
+	private List<AuthorityWithKey> childs;
 
 	public String getKey() {
 		return key;
@@ -20,6 +25,31 @@ public final class AuthorityWithKey extends Authority  {
 
 	public void setResourceName(String resourceName) {
 		this.resourceName = resourceName;
+	}
+
+	public Integer getrPid() {
+		return rPid;
+	}
+
+	public void setrPid(Integer rPid) {
+		this.rPid = rPid;
+	}   
+	public List<AuthorityWithKey> getChilds() {
+		return childs;
+	}
+
+	public void setChilds(List<AuthorityWithKey> childs) {
+		this.childs = childs;
+	}
+	
+	
+
+	public Integer getRid() {
+		return rid;
+	}
+
+	public void setRid(Integer rid) {
+		this.rid = rid;
 	}
 
 	@Override

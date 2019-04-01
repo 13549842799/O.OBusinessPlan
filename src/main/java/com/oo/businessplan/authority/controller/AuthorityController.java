@@ -49,6 +49,7 @@ public class AuthorityController extends BaseController{
 		
 		List<AuthorityWithKey> list = authService.getfullList(roleId);
 		
+		
 		return response.success(list);
 	}
 	

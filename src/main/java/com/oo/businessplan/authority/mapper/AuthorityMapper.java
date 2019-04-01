@@ -41,5 +41,8 @@ public interface AuthorityMapper extends RedisCacheMapper<Authority>{
 
    List<AuthorityWithKey> getAuthorityByRole(@Param("roleId")int roleId, 
 		   @Param("delflag")byte delflag);
+   
+   List<AuthorityWithKey> getAuthorityWithResourceByRole(@Param("roleId")int roleId, 
+		   @Param("delflag")byte delflag);
 
 }
