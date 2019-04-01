@@ -13,25 +13,16 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.AuthorityWithKey;
-import com.oo.businessplan.authority.pojo.Resource;
 import com.oo.businessplan.authority.service.AuthorityService;
-import com.oo.businessplan.authority.service.ResourceService;
-import com.oo.businessplan.authority.service.RoleService;
 import com.oo.businessplan.basic.controller.BaseController;
-import com.oo.businessplan.basic.service.UtilService;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
-import com.oo.businessplan.common.enumeration.StatusFlag;
-import com.oo.businessplan.common.exception.ObjectNotExistException;
-import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 
@@ -46,9 +37,6 @@ public class AuthorityController extends BaseController{
 	
 	@Autowired
 	private AuthorityService authService;
-	
-	@Autowired
-	private UtilService<Authority> util;
 	
 	@ApiOperation("获取角色拥有的权限列表")
 	@GetMapping(value="/list.re")
