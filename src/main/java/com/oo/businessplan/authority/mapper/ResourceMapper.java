@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.oo.businessplan.authority.pojo.Resource;
+import com.oo.businessplan.authority.pojo.ResourceAuths;
 import com.oo.businessplan.basic.mapper.RedisCacheMapper;
 
 
@@ -49,6 +50,8 @@ public interface ResourceMapper extends RedisCacheMapper<Resource> {
     List<Resource> getModuleResourcesList(@Param("adminId")Integer adminId,
     		@Param("adminCode")String adminCode,@Param("type")int type,@Param("delflag")byte delflag,
     		@Param("state")byte state);
+
+	List<ResourceAuths> getResourcesWithAuth(@Param("roleId")int roleId, @Param("delflag")byte delflag);
     
   
 }

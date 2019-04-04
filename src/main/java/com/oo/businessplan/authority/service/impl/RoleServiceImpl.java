@@ -32,13 +32,15 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 	RedisTokenManager tokenManager;
 
 	@Override
+	@Transactional
 	public Map<String,String> giveRole(int[] roleIds, int adminId, Integer creator) {	
 		 Map<String,String> result = new HashMap<>();
 		  try {
-			roleMapper.giveRolesBatch(roleIds, adminId, creator);
-			return result;
+		    roleMapper.giveRolesBatch(roleIds, adminId, creator);
+		    return result;
 		  } catch (SQLException e) {
 			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			result.put(SystemKey.ERROR_KEY,"角色赋予重复");
 			return result;
 		  }

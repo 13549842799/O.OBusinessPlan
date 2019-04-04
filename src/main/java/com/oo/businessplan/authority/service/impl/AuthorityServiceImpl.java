@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import com.oo.businessplan.additional.pojo.WebMessage;
 import com.oo.businessplan.authority.mapper.AuthorityMapper;
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.AuthorityWithKey;
-import com.oo.businessplan.authority.pojo.Resource;
 import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.basic.service.UtilService;
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;

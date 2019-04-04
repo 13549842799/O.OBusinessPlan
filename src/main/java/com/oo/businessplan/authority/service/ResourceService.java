@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Queue;
 
 import com.oo.businessplan.authority.pojo.Resource;
+import com.oo.businessplan.authority.pojo.ResourceAuths;
 import com.oo.businessplan.basic.service.BaseService;
-import com.oo.businessplan.common.exception.ObjectNotExistException;
-import com.oo.businessplan.common.exception.UpdateErrorException;
 
 public interface ResourceService extends BaseService<Resource> {
 	
@@ -25,6 +24,13 @@ public interface ResourceService extends BaseService<Resource> {
 	 * @return
 	 */
 	public List<Resource> getResourceTree(List<Resource> all, Resource current);
+
+	/**
+	 * 
+	 * @param roleId
+	 * @return
+	 */
+	public List<ResourceAuths> getFullList(int roleId);
     
 	
 }

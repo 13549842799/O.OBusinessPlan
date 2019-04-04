@@ -1,7 +1,6 @@
 package com.oo.businessplan.authority.pojo;
 
 import java.io.Serializable;
-import java.util.logging.Level;
 
 import com.oo.businessplan.basic.entity.DeleteAbleEntity;
 

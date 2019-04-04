@@ -10,16 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.oo.businessplan.authority.mapper.ResourceMapper;
 import com.oo.businessplan.authority.pojo.Resource;
+import com.oo.businessplan.authority.pojo.ResourceAuths;
 import com.oo.businessplan.authority.service.ResourceService;
-import com.oo.businessplan.basic.service.RedisCacheService;
-import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
-import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
-import com.oo.businessplan.common.exception.ObjectNotExistException;
-import com.oo.businessplan.common.exception.UpdateErrorException;
-import com.oo.businessplan.common.util.StringUtil;
+
 
 @Service("resourceService")
 public class ResourceServiceImpl extends RedisCacheSupport<Resource> implements ResourceService {
@@ -83,15 +79,12 @@ public class ResourceServiceImpl extends RedisCacheSupport<Resource> implements 
 	}
 
 
+	@Override
+	public List<ResourceAuths> getFullList(int roleId) {
 
-	/*@Override
-	public Resource getObject(String key, int expired, int timeUnit) {
-		return super.getObject(key,EntityConstants.REDIS_RESOURCE_NAME, expired, timeUnit);
+		return resourceMapper.getResourcesWithAuth(roleId, DeleteFlag.VALID.getCode());
 	}
 
-	@Override
-	public List<Resource> getListObject(String key, int expired, int timeUnit) {
-		return super.getListObject(key, EntityConstants.REDIS_RESOURCE_NAME, expired, timeUnit);
-	}*/
+	
 	
 }

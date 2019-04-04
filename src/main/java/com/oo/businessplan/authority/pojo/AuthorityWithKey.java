@@ -1,8 +1,9 @@
 package com.oo.businessplan.authority.pojo;
 
+import java.io.Serializable;
 import java.util.List;
 
-public final class AuthorityWithKey extends Authority  {
+public final class AuthorityWithKey extends Authority implements Serializable  {
 
 	private static final long serialVersionUID = -3778249512939499830L;
 	private String key;

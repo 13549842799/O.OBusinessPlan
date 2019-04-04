@@ -15,6 +15,15 @@
         <result property="state" column="state"/>
         <result property="delflag" column="delflag"/>
     </resultMap>
+    
+    <resultMap type="resourceAuths" id="withAutnMap" extends="ResourceMap" >
+        <association property="authority" javaType="authority">
+            <id property="id" column="auId"/>  
+            <result property="type" column="auType"/>  
+            <result property="level" column="level"/>
+            <result property="delflag" column="audelflag"/>
+        </association>
+    </resultMap>
 
      <sql id="base_column">
         re.id,re.pid,re.name,re.request_url,re.style,re.type
@@ -282,6 +291,20 @@
         ro.state=#{state,jdbcType=TINYINT}
     AND
         re.state=#{state,jdbcType=TINYINT}
+    </select>
+    
+    <select id="getResourcesWithAuth" resultMap="withAutnMap">
+        SELECT
+            re.id as id,re.pid as pid,re.name,au.id as auId,au.type as auType, au.level as level, au.delflag as audelflag
+        FROM
+           resource re
+        LEFT JOIN
+           ( SELECT au.* FROM authority au 
+                 LEFT JOIN role ro ON ro.id = au.roid 
+                 WHERE ro.id = #{roleId} 
+                 AND au.delflag = #{delflag, jdbcType=TINYINT}) au ON au.reid = re.id 
+        WHERE
+           re.delflag = #{delflag, jdbcType=TINYINT}
     </select>
 
 </mapper>

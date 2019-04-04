@@ -1,8 +1,10 @@
 package com.oo.businessplan.authority.controller;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,12 +15,15 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.AuthorityWithKey;
+import com.oo.businessplan.authority.pojo.Resource;
 import com.oo.businessplan.authority.service.AuthorityService;
+import com.oo.businessplan.authority.service.ResourceService;
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.constant.SystemKey;
@@ -37,6 +42,23 @@ public class AuthorityController extends BaseController{
 	
 	@Autowired
 	private AuthorityService authService;
+	
+	@Autowired
+	private ResourceService resourceService;
+	
+	@ApiOperation(value = "获取树形格式的资源携带权限的列表")
+	  @RequestMapping(value="/tree.re",method=RequestMethod.GET)
+	  @IgnoreSecurity()
+	  public ResponseResult<Object>  treeResources(
+		HttpServletRequest request,
+		@RequestParam(value="roleId", required=true)int roleId){
+		  	  
+		ResponseResult<Object> response = new ResponseResult<>();
+		Queue<Resource> queue = new LinkedList<>(resourceService.getFullList(roleId));
+		List<Resource> list = resourceService.getResourceTree(queue, null);
+		
+		return response.success(list);	  
+	  }
 	
 	@ApiOperation("获取角色拥有的权限列表")
 	@GetMapping(value="/list.re")
