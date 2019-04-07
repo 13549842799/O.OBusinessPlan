@@ -17,6 +17,12 @@ public class ResourceAuths extends Resource implements Serializable {
 	public void setAuthority(Authority authority) {
 		this.authority = authority;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString()+" ,authority=" + authority + "";
+	}
+	
 	
 	
 }

@@ -47,7 +47,7 @@ public class Authority extends DeleteAbleEntity<Integer> implements Serializable
 	 * 判断当前权限是否可授予
 	 * @return
 	 */
-	public boolean isAwardAble() {
+	public boolean checkAwardAble() {
 		return this.type == AWARD;
 	}
 	

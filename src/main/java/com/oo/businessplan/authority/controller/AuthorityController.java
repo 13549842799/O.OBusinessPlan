@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.AuthorityWithKey;
 import com.oo.businessplan.authority.pojo.Resource;
+import com.oo.businessplan.authority.pojo.ResourceAuths;
 import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.authority.service.ResourceService;
 import com.oo.businessplan.basic.controller.BaseController;
@@ -56,7 +58,7 @@ public class AuthorityController extends BaseController{
 		ResponseResult<Object> response = new ResponseResult<>();
 		Queue<Resource> queue = new LinkedList<>(resourceService.getFullList(roleId));
 		List<Resource> list = resourceService.getResourceTree(queue, null);
-		
+		list.forEach(o->System.out.println(o));
 		return response.success(list);	  
 	  }
 	
