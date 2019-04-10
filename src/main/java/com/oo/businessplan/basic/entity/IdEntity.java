@@ -24,5 +24,12 @@ public abstract class IdEntity <T> implements Serializable{
 	public void setId(T id) {
 		this.id = id;
 	}
+
+	@Override
+	public String toString() {
+		return "[id=" + id + "";
+	}
+	
+	
 	
 }

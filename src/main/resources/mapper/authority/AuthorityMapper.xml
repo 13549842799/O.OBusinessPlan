@@ -75,8 +75,12 @@
     </insert>
     
     <insert id="insertOrUpdate" parameterType="authority">
-        INSERT INTO authority (id, roid, reid, type, level, delflag) 
-        ON DUPLICATE KEY UPDATE type = VALUES(type), level = VALUES(level), delflag = #{delflag}
+        INSERT INTO authority (id, roid, reid, type, level, delflag)
+        VALUES 
+        <foreach collection="list" item="l" separator=",">
+        (#{l.id}, #{l.roid}, #{l.reid}, #{l.type, jdbcType=TINYINT}, #{l.level, jdbcType=TINYINT}, #{l.delflag, jdbcType=TINYINT})
+        </foreach>
+        ON DUPLICATE KEY UPDATE type = VALUES(type), level = VALUES(level), delflag = VALUES(delflag)
     </insert>
 
     <update id="delete" >
@@ -203,7 +207,7 @@
         FROM
            admin ad 
         LEFT JOIN
-           admin_ role ar ON ad.id ar.aid
+           admin_role ar ON ad.id = ar.aid
         LEFT JOIN
            role ro ON ar.rid = ro.id
         LEFT JOIN

@@ -107,6 +107,13 @@ public class Authority extends DeleteAbleEntity<Integer> implements Serializable
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + ", roid=" + roid + ", reid=" + reid + ", type=" + type + ", level=" + level + "]" ;
+	}
+	
+	
 	
 
 }

@@ -36,6 +36,13 @@ public abstract class DeleteAbleEntity<T> extends IdEntity<T> implements Seriali
 	public void setDelflag(Byte delflag) {
 		this.delflag = delflag;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + ", delflag=" + delflag + " ";
+	}
+	
+	
 	
 	
 

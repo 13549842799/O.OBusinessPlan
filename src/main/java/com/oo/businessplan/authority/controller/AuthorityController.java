@@ -114,7 +114,7 @@ public class AuthorityController extends BaseController{
 				contain.add(auths[i]);
 			}
 		 }
-		 
+		 contain.forEach(o->System.out.println(o));
 		 if (authService.insertOrUpdateForBatch(contain)) {
 			 return response.success();
 		 }		
