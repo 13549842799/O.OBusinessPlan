@@ -144,8 +144,8 @@ public class RolesController extends BaseController{
 	  }
 	  
 	  @ApiOperation(value = "启用/禁用 角色")
-	  @RequestMapping(value="/{id}/state.do",method=RequestMethod.PATCH)
-	  @IgnoreSecurity(authority=false)
+	  @RequestMapping(value="/s/{id}/state.do",method=RequestMethod.PATCH)
+	  @IgnoreSecurity()
 	  public ResponseResult<Object> stateRole(
 			  HttpServletRequest request,
 			  @PathVariable("id")Integer id) {

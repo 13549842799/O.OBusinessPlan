@@ -14,6 +14,17 @@
         <result property="state" column="state"/>
         <result property="delflag" column="delflag"/>
     </resultMap>
+    
+    <resultMap id="PadminMap" type="padmin">
+        <id property="id" column="id"/>
+        <result property="accountname" column="accountname"/>
+        <result property="state" column="state"/>
+        <result property="relatedName" column="relatedName"/>
+        <collection property="roles" ofType="role">
+            <id property="id" column="roid"/>
+            <result property="name" column="roname"/>
+        </collection>
+    </resultMap>
 
      <sql id="base_column">
         ad.id,ad.accountname,ad.password,ad.nikename,ad.avatar,ad.relatedid,ad.autologin_mac,ad.createtime,ad.state,ad.delflag
@@ -190,10 +201,11 @@
     </select>
     
     <select id="getListByForm" 
-            resultType="padmin" 
+            resultMap="PadminMap" 
             parameterType="adminForm">
 	SELECT
-	   *
+	   ad.id as id, ad.accountname as accountname, ad.state as state,
+	   em.name as relatedName, ro.id as roid, ro.name as roname
 	FROM
 	    admin ad
 	LEFT JOIN
@@ -202,10 +214,6 @@
 	    admin_role ad_ro ON ad.id=ad_ro.aid
 	LEFT JOIN
 	    role ro ON ro.id=ad_ro.rid
-	INNER JOIN
-	    authority_role au_ro ON ro.id=au_ro.r_id
-	LEFT JOIN
-	    authority au ON au_ro.a_id=au.id
 	WHERE
 	    ad.delflag=#{delflag,jdbcType=TINYINT}
 	AND

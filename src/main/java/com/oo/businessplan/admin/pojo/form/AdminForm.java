@@ -12,6 +12,7 @@ public class AdminForm extends PageParams{
 	private Byte delflag;
 	private String relatedName;
 	private String relatedCode;
+	private Byte roleDelflag;
 	public Integer getId() {
 		return id;
 	}
@@ -53,6 +54,12 @@ public class AdminForm extends PageParams{
 	}
 	public void setRelatedCode(String relatedCode) {
 		this.relatedCode = relatedCode;
+	}
+	public Byte getRoleDelflag() {
+		return roleDelflag;
+	}
+	public void setRoleDelflag(Byte roleDelflag) {
+		this.roleDelflag = roleDelflag;
 	}
 	
 	
