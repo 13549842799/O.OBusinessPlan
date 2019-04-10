@@ -10,6 +10,9 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.oo.businessplan.admin.mapper.AdminMapper;
+import com.oo.businessplan.admin.pojo.form.AdminForm;
+import com.oo.businessplan.admin.pojo.page.Padmin;
 import com.oo.businessplan.authority.mapper.AuthorityMapper;
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
@@ -31,10 +34,14 @@ public class MyBatisTest {
 	
 	@Test
 	public void test() {
-		AuthorityMapper  authMapper = context.getBean("authorityMapper", AuthorityMapper.class);
-		List<Authority> auths = authMapper.getAuthoritiesByAdminIdAndType(1, Authority.AWARD, DeleteFlag.VALID.getCode(), StatusFlag.ENABLE.getCode());
-	    Map<Integer, List<Authority>> authMap = auths.stream().collect(Collectors.groupingBy(Authority::getReid));
-	    System.out.println(authMap);
+		AdminMapper  am = context.getBean("adminMapper", AdminMapper.class);
+		AdminForm adminForm = new AdminForm();
+	    adminForm.setState(StatusFlag.ENABLE.getCode());
+	    adminForm.setDelflag(DeleteFlag.VALID.getCode());
+	    List<Padmin> ads = am.getListByForm(adminForm);
+	    ads.forEach(System.out::println);
 	}
+	
+	
 
 }

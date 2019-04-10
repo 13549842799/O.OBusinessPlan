@@ -25,6 +25,10 @@ public class Padmin extends Admin implements Serializable{
 	public void setRelatedName(String relatedName) {
 		this.relatedName = relatedName;
 	}
+	@Override
+	public String toString() {
+		return "Padmin [relatedid=" + relatedid + ", relatedName=" + relatedName + "]";
+	}
 	 
 	 
 

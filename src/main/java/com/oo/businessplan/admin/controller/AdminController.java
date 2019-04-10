@@ -5,7 +5,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,7 +31,6 @@ import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.exception.CheckObjectExistException;
 import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
-import com.oo.businessplan.common.exception.login.PasswordValidException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.redis.RedisTokenManager;
@@ -302,7 +300,7 @@ public class AdminController extends BaseController{
 	   }
 
 	   @ApiOperation(value = "账号列表")
-	   @RequestMapping(value="/admins.r", method=RequestMethod.GET)
+	   @RequestMapping(value="/admins.re", method=RequestMethod.GET)
 	   @IgnoreSecurity(val=false)
 	   public ResponseResult<List<Padmin>> adminList(HttpServletRequest request,
 			   @ApiParam(value = "用户名", required = false)  @RequestParam(required=false,value="accountName")String accountName,

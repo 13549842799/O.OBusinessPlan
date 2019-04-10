@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.auth.AuthenticationException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.common.constant.EntityConstants;
-import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.exception.login.TokenException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.ResponseResult;
@@ -83,13 +81,15 @@ public class SecurityAspect {
 	     //3.判断是否拥有权限
 	     //3.1判断是否需要权限校检
 	     if (method.getAnnotation(IgnoreSecurity.class).authority()) {
-	    	 //3.2 判断是否拥有权限
-			 String uri  = request.getRequestURI().replaceAll(request.getContextPath(), "");
+	    	 String uri  = request.getRequestURI().replaceAll(request.getContextPath(), "");
+	    	 //3.2判断请求的操作类型 读/写
 			 Byte neetLevel = (byte)(uri.endsWith(".do") ? 2 : 1);
 			 Map<String, Byte> authMap = authorityService.getKeyMap(userCode);
 			 Byte level = null;
 			 String[] tempArr = uri.split("/");
-			 String key = tempArr[tempArr.length-2];
+			//3.2  判断url类型 是否是 xx/s/number/xx.xx 这种形式的
+			 String key = tempArr[tempArr.length-3].equals("s") ? tempArr[tempArr.length-4] : tempArr[tempArr.length-2];
+			 System.out.println("key:"+key);
 			 if (authMap == null || authMap.isEmpty() || (level = authMap.get(key)) == null 
 					 || level < neetLevel ) {
 				 new ResponseResult<>().responseFailMessage(response, "权限不足");
