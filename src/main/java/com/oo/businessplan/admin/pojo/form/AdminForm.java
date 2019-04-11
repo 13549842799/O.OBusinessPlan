@@ -12,6 +12,7 @@ public class AdminForm extends PageParams{
 	private Byte delflag;
 	private String relatedName;
 	private String relatedCode;
+	private Byte roleState;
 	private Byte roleDelflag;
 	public Integer getId() {
 		return id;
@@ -60,6 +61,12 @@ public class AdminForm extends PageParams{
 	}
 	public void setRoleDelflag(Byte roleDelflag) {
 		this.roleDelflag = roleDelflag;
+	}
+	public Byte getRoleState() {
+		return roleState;
+	}
+	public void setRoleState(Byte roleState) {
+		this.roleState = roleState;
 	}
 	
 	

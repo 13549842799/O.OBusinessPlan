@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.additional.pojo.WebMessage;
 import com.oo.businessplan.admin.mapper.AdminMapper;
 import com.oo.businessplan.admin.mapper.EmployeeMapper;
@@ -128,9 +130,12 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	}
 
 	@Override
-	public List<Padmin> getAdminList(AdminForm adminForm) {
+	public PageInfo<Padmin> getAdminList(AdminForm adminForm) {
 		
-		return adminMapper.getListByForm(adminForm);
+		PageHelper.startPage(adminForm.getPageNum(), adminForm.getPageSize());
+		List<Padmin> list = adminMapper.getListByForm(adminForm);
+		PageInfo<Padmin> page = new PageInfo<>(list);
+		return page;
 	}
 
 	@Override

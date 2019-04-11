@@ -211,18 +211,22 @@
 	LEFT JOIN
 	    employee em ON ad.relatedid=em.eid
 	LEFT JOIN
-	    admin_role ad_ro ON ad.id=ad_ro.aid
+	    admin_role ar ON ad.id=ar.aid
 	LEFT JOIN
-	    role ro ON ro.id=ad_ro.rid
+	    role ro ON ro.id=ar.rid
 	WHERE
 	    ad.delflag=#{delflag,jdbcType=TINYINT}
 	AND
-	    ro.delflag=#{delflag,jdbcType=TINYINT}    
-	<if test="state!=null">
+	    ro.delflag=#{delflag,jdbcType=TINYINT}   
 	AND
-	    ro.state =#{state,jdbcType=TINYINT}
+	    ar.delflag = #{roleDelflag, jdbcType=TINYINT}
+	<if test="state!=null">
 	AND 
 	    ad.state=#{state,jdbcType=TINYINT}
+	</if>
+	<if test="roleState != null">
+	AND
+	    ro.state =#{roleState, jdbcType=TINYINT}
 	</if>
 	<if test="id !=null">
 	AND ad.id =#{id,jdbcType=INTEGER}

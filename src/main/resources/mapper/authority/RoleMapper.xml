@@ -59,6 +59,14 @@
     </foreach>
     </if>
     </insert>    
+    
+    <insert id="insertOrUpdate" parameterType="adminRole">
+        INSERT INTO admin_role (aid, rid, creator, createTime, modifier, delflag) VALUES
+        <foreach collection="list" separator="," item="l">
+        (#{l.aid}, #{l.rid}, #{l.creator}, #{l.createTime}, #{l.modifier}, #{l.delflag, jdbcType=TINYINT})
+        </foreach>
+        ON DUPLICATE KEY UPDATE modifier = VALUES(modifier), delflag = VALUES(delflag)
+    </insert>
 	
     <select id="getById" resultType="role" parameterType="role">
         SELECT 

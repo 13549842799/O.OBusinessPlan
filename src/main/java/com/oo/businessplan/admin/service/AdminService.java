@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.additional.pojo.WebMessage;
 import com.oo.businessplan.admin.pojo.entity.Admin;
 import com.oo.businessplan.admin.pojo.form.AdminForm;
@@ -35,7 +36,7 @@ public interface AdminService extends BaseService<Admin>{
 
 	Map<String, String> alterPassword(String oldPass, String newPass, String verificationCode, String phoneNo);
 
-	List<Padmin> getAdminList(AdminForm adminForm);
+	PageInfo<Padmin> getAdminList(AdminForm adminForm);
 
 	Admin registAdmin(String employeeCode,Integer creator) throws ObjectNotExistException,ObjectExistException, NoSuchAlgorithmException, UnsupportedEncodingException;
 

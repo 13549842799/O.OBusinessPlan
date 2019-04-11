@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.additional.pojo.WebMessage;
 import com.oo.businessplan.additional.service.WebMessageService;
 import com.oo.businessplan.admin.pojo.entity.Admin;
@@ -27,6 +28,7 @@ import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
+import com.oo.businessplan.common.enumeration.StatusFlag;
 import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.exception.CheckObjectExistException;
 import com.oo.businessplan.common.exception.NullUserException;
@@ -300,18 +302,18 @@ public class AdminController extends BaseController{
 	   }
 
 	   @ApiOperation(value = "账号列表")
-	   @RequestMapping(value="/system/admins.re", method=RequestMethod.GET)
-	   @IgnoreSecurity(val=false)
-	   public ResponseResult<List<Padmin>> adminList(HttpServletRequest request,
+	   @RequestMapping(value="/adminsys/admins.re", method=RequestMethod.GET)
+	   @IgnoreSecurity(authority = false)
+	   public ResponseResult<PageInfo<Padmin>> adminList(HttpServletRequest request,
 			   @ApiParam(value = "用户名", required = false)  @RequestParam(required=false,value="accountName")String accountName,
 			   @ApiParam(value = "昵称", required = false)  @RequestParam(required=false,value="nikename")String nikename,
 			   @ApiParam(value = "状态  0-禁用 1-正常", required = false)  @RequestParam(required=false,value="state")Byte state,
 			   @ApiParam(value = "员工名称", required = false)  @RequestParam(required=false,value="relatedName")String relatedName,
 			   @ApiParam(value = "员工编号", required = false)  @RequestParam(required=false,value="relatedCode")String relatedCode,
-			   @ApiParam(value = "页数", required = false)  @RequestParam(required=false,value="pageNo")Integer pageNo,
+			   @ApiParam(value = "页数", required = false)  @RequestParam(required=false,value="pageNum")Integer pageNo,
 			   @ApiParam(value = "页容量", required = false)  @RequestParam(required=false,value="pageSize")Integer pageSize){
 		    
-		    ResponseResult<List<Padmin>> response = new ResponseResult<>();
+		    ResponseResult<PageInfo<Padmin>> response = new ResponseResult<>();
 		    
 		    AdminForm adminForm = new AdminForm();
 		    adminForm.setAccountname(accountName);
@@ -321,10 +323,12 @@ public class AdminController extends BaseController{
 		    adminForm.setRelatedName(relatedName);
 		    adminForm.setRelatedCode(relatedCode);
 		    adminForm.setPageNum(pageNo);
-		    
-		    List<Padmin> admins = adminService.getAdminList(adminForm);
-	    
-		    return response.success(admins);
+		    adminForm.setPageSize(pageSize);
+		    adminForm.setRoleState(StatusFlag.ENABLE.getCode());
+		    adminForm.setRoleDelflag(DeleteFlag.VALID.getCode());
+		    PageInfo<Padmin> page = adminService.getAdminList(adminForm);
+
+		    return response.success(page);
 		   
 	   }
 	   

@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.oo.businessplan.authority.pojo.AdminRole;
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.Role;
 import com.oo.businessplan.authority.pojo.RolePage;
@@ -22,14 +23,14 @@ public interface RoleMapper extends BaseMapper<Role>{
 	 * @param creator
 	 * @throws SQLException
 	 */
-    void giveRolesBatch(@Param("roleIds")int[] roleIds,@Param("adminId")int adminId,@Param("creator")Integer creator) throws SQLException;
+    @Deprecated
+	void giveRolesBatch(@Param("roleIds")int[] roleIds,@Param("adminId")int adminId,@Param("creator")Integer creator) throws SQLException;
     
     /**
      * 
-     * @param authorities
-     * @return
+     * @param ar
      */
-    int addRelationBetweenAdminAndRole(Authority[] authorities);
+    void insertOrUpdate(List<AdminRole> list);
 
     /**
      * 

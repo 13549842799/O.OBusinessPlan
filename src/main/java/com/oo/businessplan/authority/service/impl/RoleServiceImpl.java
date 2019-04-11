@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.oo.businessplan.authority.mapper.RoleMapper;
+import com.oo.businessplan.authority.pojo.AdminRole;
 import com.oo.businessplan.authority.pojo.Role;
 import com.oo.businessplan.authority.pojo.RolePage;
 import com.oo.businessplan.authority.service.RoleService;
@@ -19,6 +20,8 @@ import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
 import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
+import com.oo.businessplan.common.exception.UpdateErrorException;
+import com.oo.businessplan.common.exception.UpdateErrorException.ErrorType;
 import com.oo.businessplan.common.redis.RedisTokenManager;
 
 @Service("roleService")
@@ -95,6 +98,20 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 	public List<RolePage> getFullList(RolePage param) {
 		return roleMapper.getFullList(param);
 	}
+
+	@Override
+	@Transactional()
+	public void insertOrUpdateRelation(List<AdminRole> ar) {		
+		try {
+			roleMapper.insertOrUpdate(ar);
+		} catch (Exception e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			throw new UpdateErrorException(ErrorType.INSERT_OR_UPDATE_ERROR);
+		}
+	}
+	
+	
     
 	
 	

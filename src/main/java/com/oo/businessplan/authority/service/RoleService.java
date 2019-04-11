@@ -3,6 +3,8 @@ package com.oo.businessplan.authority.service;
 import java.util.List;
 import java.util.Map;
 
+import com.oo.businessplan.authority.controller.RolesController;
+import com.oo.businessplan.authority.pojo.AdminRole;
 import com.oo.businessplan.authority.pojo.Role;
 import com.oo.businessplan.authority.pojo.RolePage;
 import com.oo.businessplan.basic.service.BaseService;
@@ -16,6 +18,12 @@ public interface RoleService extends BaseService<Role>{
 	 * @param creator 创建人id（admin）
 	 */
 	Map<String,String> giveRole(int[] roleIds,int adminId,Integer creator);
+	
+	/**
+	 * 为用户添加角色或者为用户删除角色
+	 * @param ar
+	 */
+	void insertOrUpdateRelation(List<AdminRole> ar);
     
 	/**
 	 * 获取对应用户所拥有的角色(角色必须未被删除和必须是启用状态的)，

@@ -256,7 +256,7 @@
     
     <select id="getModuleResourcesList" resultType="resource">
     SELECT
-         re.*
+         DISTINCT re.*
     FROM
         admin ad
     INNER JOIN
@@ -305,6 +305,7 @@
                  AND au.delflag = #{delflag, jdbcType=TINYINT}) au ON au.reid = re.id 
         WHERE
            re.delflag = #{delflag, jdbcType=TINYINT}
+        ORDER BY re.id
     </select>
 
 </mapper>

@@ -1,15 +1,12 @@
 package com.oo.businessplan.authority.controller;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oo.businessplan.admin.pojo.entity.Admin;
 import com.oo.businessplan.admin.service.AdminService;
+import com.oo.businessplan.authority.pojo.AdminRole;
 import com.oo.businessplan.authority.pojo.Role;
 import com.oo.businessplan.authority.pojo.RolePage;
 import com.oo.businessplan.authority.service.RoleService;
@@ -31,9 +29,7 @@ import com.oo.businessplan.basic.service.CodeServie;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
-import com.oo.businessplan.common.enumeration.StatusFlag;
 import com.oo.businessplan.common.exception.AddErrorException;
-import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
@@ -203,27 +199,23 @@ public class RolesController extends BaseController{
 	  @ApiOperation("给用户添加角色")
 	  @PostMapping(value="/addToUser.do")
 	  @IgnoreSecurity()
-	  public ResponseResult<Object> addRoleToUser(
+	  public ResponseResult<List<Role>> addRoleToUser(
 			  HttpServletRequest request,
-			  @ApiParam(value = "用户id", required = true)
-			  @RequestParam(value="userId", required= true)Integer userId,
-			  @ApiParam(value = "角色id数组", required = true)
-			  @RequestParam(value="roleIds", required= true)int[] roleIds) {
+			  @RequestBody List<AdminRole> adminrs) {
 		  
-		  ResponseResult<Object> response = new ResponseResult<>();
-		  
-		  Admin admin = adminService.getById(new Admin(userId, DeleteFlag.VALID.getCode()));
-		  if (admin == null) {
-			return response.fail(ResultConstant.NOT_EXIST_ADMIN);
-		  }
-
-		  Map<String,String> result = roleService.giveRole(roleIds, 
-				userId, currentAdminId(request));
-		  if (result.get(SystemKey.ERROR_KEY) != null) {
-			return response.fail(result.get(SystemKey.ERROR_KEY));
-		  }
+		  ResponseResult<List<Role>> response = new ResponseResult<>();
+          
+		  Integer currentAdmin = currentAdminId(request);		  
+		  for (AdminRole ar : adminrs) {
+			if (ar.getDelflag() == 1) {
+				ar.setCreator(currentAdmin);
+				ar.setCreateTime(new Timestamp(new Date().getTime()));
+			}
+			ar.setModifier(currentAdmin);
+		  }		  
+		  roleService.insertOrUpdateRelation(adminrs);
 		  //获取当前用户拥有角色
-		  List<Role> adminRoles = roleService.getRolesOfAdmin(userId, true);			 
+		  List<Role> adminRoles = roleService.getRolesOfAdmin(currentAdmin, true);			 
 		  return response.success(adminRoles);
 		  
 	  }
