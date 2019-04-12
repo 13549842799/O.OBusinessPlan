@@ -36,5 +36,11 @@ public interface RedisCacheService<T> {
 	 * @return
 	 */
 	 List<T> getListObject(String key,int expired,int timeUnit);
+	 
+	 /**
+	  * 重设超时时间
+	  * @param key
+	  */
+	 void resetExpire(String key);
 
 }

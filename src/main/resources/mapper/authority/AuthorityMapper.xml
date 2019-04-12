@@ -35,7 +35,7 @@
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO authority
         (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="id != null ">
                 id,
                 </if>
@@ -54,7 +54,7 @@
             </trim>
         )
         VALUES (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="id != null ">
                 #{id},
                 </if>

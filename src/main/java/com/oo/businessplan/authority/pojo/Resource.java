@@ -39,7 +39,7 @@ public class Resource extends StateAbleEntity<Integer> implements Serializable{
 	}
 	
 	public Resource(Integer id, Integer pid, String name, Byte type, Byte state, Byte delflag) {
-		super(pid, delflag, state);
+		super(id, delflag, state);
 		this.pid = pid;
 		this.name = name;
 		this.type = type;	

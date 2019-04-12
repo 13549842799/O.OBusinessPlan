@@ -2,19 +2,25 @@ package com.oo.businessplan.authority.controller;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.Resource;
+import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.authority.service.ResourceService;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.basic.service.RedisCacheService;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.exception.AddErrorException;
@@ -34,6 +40,10 @@ public class ResourceController extends BaseController{
 
 	  @Autowired
 	  private ResourceService resourceService;
+	  
+	  @Autowired
+	  private AuthorityService authService;
+	  
 	  
 	  @ApiOperation(value = "获取树形格式的资源列表")
 	  @RequestMapping(value="/tree.re",method=RequestMethod.GET)
@@ -80,7 +90,9 @@ public class ResourceController extends BaseController{
 	  @ApiOperation(value = "添加资源")
 	  @RequestMapping(value="/add.do",method=RequestMethod.POST)
 	  @IgnoreSecurity()
+	  @Transactional
 	  public ResponseResult<Object>  addResource(
+		HttpServletRequest request,
 	    @ApiParam(value = "父id", required = false)  
 	    @RequestParam(required=false,value="pid")Integer pid,
 	    @ApiParam(value = "名称", required = true)  
@@ -123,11 +135,24 @@ public class ResourceController extends BaseController{
 				   , key, state, DeleteFlag.VALID.getCode());
 		try {
 			resourceService.add(resource);
+			resource.getIdAsInt();
+			synSuperAdminAuths (getAccountName(request), resource.getIdAsInt());
 			return response.success(resourceService.getById(resource));
 		} catch (AddErrorException e) {
 			e.printStackTrace();
 			return response.fail(e.getMessage());
+		} catch (Exception e) {
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			e.printStackTrace();
+			return response.fail(e.getMessage());
 		}
+	  }
+	  
+	  private void synSuperAdminAuths (String accountname, int resourceId) {
+		  Authority auth = new Authority(1, resourceId, Authority.AWARD, DeleteFlag.VALID.getCode());
+		  auth.setLevel(Authority.READWRITE);
+		  authService.add(auth);
+		  authService.resetAuthsRedis(accountname);
 	  }
 	  
 	  /**
@@ -148,6 +173,7 @@ public class ResourceController extends BaseController{
 	  @RequestMapping(value="/update.do",method=RequestMethod.POST)
 	  @IgnoreSecurity()
 	  public ResponseResult<Object>  updateResource(
+		HttpServletRequest request,
 	    @ApiParam(value = "id", required = true)  
 		@RequestParam(required=true,value="id")Integer id,
 	    @ApiParam(value = "父id", required = false)  
@@ -211,6 +237,9 @@ public class ResourceController extends BaseController{
         		Queue<Resource> queue = new LinkedList<>(childs);
         		resource.setChilds(resourceService.getResourceTree(queue, resource));
 			}
+        	if (!Objects.equals(resource.getKey(), old.getKey())) {
+        		authService.resetAuthsRedis(getAccountName(request));
+        	}
 			return response.success(resource);
 		default:
 			return response.error("更新异常");

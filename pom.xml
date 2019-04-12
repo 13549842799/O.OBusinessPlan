@@ -4,27 +4,28 @@
   <artifactId>O.OBusinessPlan</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
- 
+  <properties>
+      <mybatis></mybatis>
+  </properties>
  
   <dependencies>
+      <dependency>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+          <version>4.5.3</version>
+      </dependency>
   
-       <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.3</version>
-        </dependency>
-  
-  <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-    </dependency>
+      <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <version>1.2.17</version>
+      </dependency>
     
-    <dependency>
-      <groupId>com.alibaba</groupId>
-      <artifactId>fastjson</artifactId>
-      <version>1.2.7</version>
-    </dependency>
+      <dependency>
+	      <groupId>com.alibaba</groupId>
+	      <artifactId>fastjson</artifactId>
+	      <version>1.2.7</version>
+	  </dependency>
     
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -41,7 +42,7 @@
 	   <dependency>
 		<groupId>org.mybatis</groupId>
 		<artifactId>mybatis</artifactId>
-		<version>3.2.8</version>
+		<version>3.4.5</version>
 		</dependency>
 		 <dependency>
 		<groupId>junit</groupId>

@@ -57,6 +57,7 @@ public class ClassifyController extends BaseController {
 		ResponseResult<List<Classify>> response = new ResponseResult<>();
 		
 		Classify cls = new Classify();
+		cls.setCreator(currentAdminId(request));
 		cls.setType(type);
 		cls.setChildType(childType);
 		cls.setDelflag(DeleteFlag.VALID.getCode());
@@ -78,7 +79,8 @@ public class ClassifyController extends BaseController {
 			HttpServletRequest request,
 			@RequestBody Classify cls) {			
 		cls.setType(Classify.CUSTOMCLASSIFY);
-		return addCommon(request, cls);
+		cls.setCreator(currentAdminId(request));
+		return addCommon(cls);
 	}
 	
 	/**
@@ -94,15 +96,14 @@ public class ClassifyController extends BaseController {
 			HttpServletRequest request,
 			@RequestBody Classify cls) {
 		cls.setType(Classify.SYSTEMCLASSIFY);
-		return addCommon(request, cls);
+		return addCommon(cls);
 	}
 	
-	private ResponseResult<Classify> addCommon(HttpServletRequest request, Classify cls) {
+	private ResponseResult<Classify> addCommon(Classify cls) {
 		ResponseResult<Classify> response = new ResponseResult<>();
 		if (cls.getChildType() == null || StringUtil.isEmpty(cls.getName())) {
 			return response.fail(ResultConstant.PARAMETER_REQUIRE_NULL);
 		}		
-		cls.setCreator(currentAdminId(request));
 		cls.setCreateTime(new Timestamp(new Date().getTime()));
 		clsService.add(cls);
 		

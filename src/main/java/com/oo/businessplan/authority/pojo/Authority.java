@@ -20,6 +20,10 @@ public class Authority extends DeleteAbleEntity<Integer> implements Serializable
 	
 	public static final byte AWARD = 2; //类型：可授予
 	
+	public static final byte READONLY = 1; // 只读
+	
+	public static final byte READWRITE =2; // 读写
+	
 	private Integer roid;
 	private Integer reid;
 	private Byte type; //权限类型 ，是否可授予给别人

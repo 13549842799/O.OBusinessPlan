@@ -112,6 +112,14 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 		}
 	}
 	
+	/**
+	 * 重置hash的存在时间为0
+	 * @param key
+	 */
+	public void resetExpire(String key) {
+		tokenManager.expire(key);
+	}
+	
 	private final class HKeyMap {
 		private Map<String, String> keyMap = new HashMap<>();
 		

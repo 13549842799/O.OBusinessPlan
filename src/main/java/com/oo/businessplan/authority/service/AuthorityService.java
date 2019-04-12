@@ -50,4 +50,11 @@ public interface AuthorityService extends BaseService<Authority>{
 
 	List<AuthorityWithKey> getfullList(int roleId);
 	
+	/**
+	 * 
+	 * @param account
+	 * @return 
+	 */
+	Map<String, Byte> resetAuthsRedis(String account);
+	
 }

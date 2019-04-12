@@ -47,30 +47,33 @@ public class AuthorityServiceImpl extends RedisCacheSupport<Authority>
 	@Override
 	public Map<String, Byte> getKeyMap(String account) {
 		
-		/*Object objKey = tokenManager.getValueFromMap(account, 
-				EntityConstants.REDIS_AUTHORITY_Map_NAME,EXPIRED, TIMEUNIT);*/
-		Object objKey = null;
+		Object objKey = tokenManager.getValueFromMap(account, 
+				EntityConstants.REDIS_AUTHORITY_Map_NAME,EXPIRED, TIMEUNIT);
 		if ( objKey == null ) {
-			List<Authority> auths = authorityMapper.getListByStr(account,
-					DeleteFlag.VALID.getCode(),StatusFlag.ENABLE.getCode());
-			if ( auths != null && auths.size()>0) {
-				Map<String, Byte> authMap = new HashMap<>();
-				AuthorityWithKey temp = null;
-				for (int i = 0,len = auths.size(); i < len; i++) {
-					temp = (AuthorityWithKey)auths.get(i);
-					authMap.put(temp.getKey(), temp.getLevel());
-				}
-				authMap.remove(null);//移除key为null的键值对
-				tokenManager.saveForMap(account, EntityConstants.REDIS_AUTHORITY_Map_NAME,
-						authMap, EXPIRED, TIMEUNIT);
-				return authMap;
-			}
+			return resetAuthsRedis(account);
 		}
 		
 		return (Map<String, Byte>) objKey;
 	}
 	
-	
+	@Override
+	public Map<String, Byte> resetAuthsRedis(String account) {
+		List<Authority> auths = authorityMapper.getListByStr(account,
+				DeleteFlag.VALID.getCode(),StatusFlag.ENABLE.getCode());
+		Map<String, Byte> authMap = new HashMap<>();
+		if ( auths != null && auths.size()>0) {
+			AuthorityWithKey temp = null;
+			for (int i = 0,len = auths.size(); i < len; i++) {
+				temp = (AuthorityWithKey)auths.get(i);
+				authMap.put(temp.getKey(), temp.getLevel());
+			}
+			authMap.remove(null);//移除key为null的键值对
+			tokenManager.saveForMap(account, EntityConstants.REDIS_AUTHORITY_Map_NAME,
+					authMap, EXPIRED, TIMEUNIT);
+			return authMap;
+		}
+		return authMap;
+	}
 
 	@Override
 	public List<Authority> getListByAccountAndType(Integer adminId, Byte type) {
