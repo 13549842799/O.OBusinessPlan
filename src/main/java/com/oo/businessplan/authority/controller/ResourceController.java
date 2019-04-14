@@ -135,9 +135,9 @@ public class ResourceController extends BaseController{
 				   , key, state, DeleteFlag.VALID.getCode());
 		try {
 			resourceService.add(resource);
-			resource.getIdAsInt();
 			synSuperAdminAuths (getAccountName(request), resource.getIdAsInt());
-			return response.success(resourceService.getById(resource));
+			resource = resourceService.getById(resource);
+			return response.success(resource);
 		} catch (AddErrorException e) {
 			e.printStackTrace();
 			return response.fail(e.getMessage());

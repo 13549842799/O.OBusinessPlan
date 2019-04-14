@@ -114,23 +114,20 @@
         <include refid="base_column"/>
         FROM classify cl
         WHERE 
-    <trim>
-        <if test=" != null ">
+    <trim prefixOverrides="AND">
+        <if test="delflag != null ">
         AND cl.`delflag` = #{delflag,jdbcType=TINYINT}
         </if>
-        <if test=" != null ">
-        AND cl.`creator` = #{creator}
+        <if test="creator != null ">
+        AND (cl.`creator` = #{creator} OR cl.`type` = 1)
         </if>
-        <if test=" != null ">
-        AND cl.`createTime` = #{createTime}
-        </if>
-        <if test=" != null ">
+        <if test="name != null ">
         AND cl.`name` = #{name}
         </if>
-        <if test=" != null ">
+        <if test="type != null ">
         AND cl.`type` = #{type}
         </if>
-        <if test=" != null ">
+        <if test="childType != null ">
         AND cl.`childType` = #{childType}
         </if>
     </trim>

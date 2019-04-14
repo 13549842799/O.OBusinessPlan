@@ -17,6 +17,8 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.oo.businessplan.admin.mapper.AdminMapper;
 import com.oo.businessplan.admin.pojo.form.AdminForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
+import com.oo.businessplan.article.mapper.ClassifyMapper;
+import com.oo.businessplan.article.pojo.entity.Classify;
 import com.oo.businessplan.authority.mapper.AuthorityMapper;
 import com.oo.businessplan.authority.mapper.ResourceMapper;
 import com.oo.businessplan.authority.pojo.Authority;
@@ -66,6 +68,19 @@ public class MyBatisTest {
 	   
 	}
 	
+	@Test
+	public void testClassify() {
+		ClassifyMapper cm   = context.getBean("classifyMapper", ClassifyMapper.class);
+		Classify classify  = new Classify();
+		classify.setDelflag(DeleteFlag.VALID.getCode());
+		try {
+			List<Classify> list = cm.getList(classify);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	   
+	}
 	
 
 }

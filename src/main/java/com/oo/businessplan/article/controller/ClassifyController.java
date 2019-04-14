@@ -51,8 +51,8 @@ public class ClassifyController extends BaseController {
 	@IgnoreSecurity
 	public ResponseResult<List<Classify>> classifyList(
 			HttpServletRequest request,
-			@RequestParam(value="type")Byte type,
-			@RequestParam(value="childType")Byte childType) {
+			@RequestParam(value="type", required=false)Byte type,
+			@RequestParam(value="childType", required=false)Byte childType) {
 		
 		ResponseResult<List<Classify>> response = new ResponseResult<>();
 		
