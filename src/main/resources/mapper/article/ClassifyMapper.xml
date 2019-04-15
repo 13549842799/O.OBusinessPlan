@@ -10,16 +10,17 @@
         <result property="name" column="name"/>
         <result property="type" column="type"/>
         <result property="childType" column="childType"/>
+        <result property="count" column="count"/>
     </resultMap>
 
      <sql id="base_column">
-        cl.id,cl.delflag,cl.creator,cl.createTime,cl.name,cl.type,cl.childType
+        cl.id,cl.delflag,cl.creator,cl.createTime,cl.name,cl.type,cl.childType, cl.count
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO classify
         (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 delflag,
                 </if>
@@ -41,7 +42,7 @@
             </trim>
         )
         VALUES (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 #{delflag,jdbcType=TINYINT},
                 </if>
@@ -66,12 +67,12 @@
 
     <update id="delete" >
         UPDATE classify set delflag = #{delflag}
-         WHERE id = #{ id })
+         WHERE id = #{ id }
     </update>
 
     <update id="update" parameterType="classify">
         UPDATE classify SET 
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 delflag = #{delflag,jdbcType=TINYINT},
                 </if>
@@ -94,8 +95,6 @@
     <update id="updateFull" parameterType="classify">
         UPDATE classify SET 
             delflag = #{delflag,jdbcType=TINYINT},
-            creator = #{creator},
-            createTime = #{createTime},
             name = #{name},
             type = #{type},
             childType = #{childType}
@@ -122,7 +121,7 @@
         AND (cl.`creator` = #{creator} OR cl.`type` = 1)
         </if>
         <if test="name != null ">
-        AND cl.`name` = #{name}
+        AND cl.`name` LIKE CONCAT(#{name}, '%')
         </if>
         <if test="type != null ">
         AND cl.`type` = #{type}

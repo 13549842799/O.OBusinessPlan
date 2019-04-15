@@ -1,12 +1,10 @@
 package com.oo.businessplan.basic.service.impl;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +15,6 @@ import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
 import com.oo.businessplan.common.exception.AddErrorException;
 import com.oo.businessplan.common.exception.AddErrorException.ErrorType;
-import com.oo.businessplan.common.redis.RedisTokenManager;
 
 public abstract class BaseServiceImpl<T> {
 	
@@ -82,6 +79,7 @@ public abstract class BaseServiceImpl<T> {
 	}
 	
 	public boolean delete(T t) {
+		fullDelSign(t);
 		return baseMapper.delete(t) == 1;
 	}
 	
@@ -90,15 +88,23 @@ public abstract class BaseServiceImpl<T> {
 	 * @param t
 	 */
 	private void fullDeleteSign (T t) {
+		fullDeleteSign(t, DeleteFlag.VALID.getCode()); 
+	}
+	
+	private void fullDelSign(T t) {
+		fullDeleteSign(t, DeleteFlag.DELETE.getCode()); 
+	}
+	
+	private void fullDeleteSign(T t, byte delflag) {
 		Class<? extends Object> cls = t.getClass();
 		try {
 			Method method = cls.getMethod("setDelflag", Byte.class);
 			if (method != null) {
-				method.invoke(t, DeleteFlag.VALID.getCode());
+				method.invoke(t, delflag);
 			}				
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
-		} 
+		}
 	}
 
 }

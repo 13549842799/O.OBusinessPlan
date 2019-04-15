@@ -1,5 +1,6 @@
 package com.oo.businessplan.article.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Classify;
 import com.oo.businessplan.article.service.ClassifyService;
 import com.oo.businessplan.basic.controller.BaseController;
@@ -49,21 +51,25 @@ public class ClassifyController extends BaseController {
 	 */
 	@GetMapping("/list.re")
 	@IgnoreSecurity
-	public ResponseResult<List<Classify>> classifyList(
+	public ResponseResult<PageInfo<Classify>> classifyList(
 			HttpServletRequest request,
+			@RequestParam(value="pageNum", required=false)Integer pageNum,
+			@RequestParam(value="pageSize", required=false)Integer pageSize,
+			@RequestParam(value="name", required=false)String name,
 			@RequestParam(value="type", required=false)Byte type,
 			@RequestParam(value="childType", required=false)Byte childType) {
 		
-		ResponseResult<List<Classify>> response = new ResponseResult<>();
+		ResponseResult<PageInfo<Classify>> response = new ResponseResult<>();
 		
 		Classify cls = new Classify();
 		cls.setCreator(currentAdminId(request));
 		cls.setType(type);
 		cls.setChildType(childType);
+		cls.setName(name);
 		cls.setDelflag(DeleteFlag.VALID.getCode());
-		List<Classify> list = clsService.getList(cls);
-		
-		return response.success(list);
+		PageInfo<Classify> page = clsService.getPage(cls, pageNum, pageSize);
+		System.out.println(page.getList());
+		return response.success(page);
 	}
 	
 	/**
@@ -105,8 +111,8 @@ public class ClassifyController extends BaseController {
 			return response.fail(ResultConstant.PARAMETER_REQUIRE_NULL);
 		}		
 		cls.setCreateTime(new Timestamp(new Date().getTime()));
-		clsService.add(cls);
-		
+		clsService.add(cls, Integer.class);
+
 		return response.success(cls);
 	}
 	
@@ -168,15 +174,22 @@ public class ClassifyController extends BaseController {
 	 * @param id
 	 * @return
 	 */
-	@DeleteMapping("/{id}/delete.do")
+	@DeleteMapping("/s/{id}/delete.do")
 	@IgnoreSecurity
+	
 	public ResponseResult<Classify> classifyDelete(HttpServletRequest request,
 			@PathVariable("id")int id) {
 		ResponseResult<Classify> response = new ResponseResult<>();
 		Classify cls = new Classify();
 		cls.setId(id);
+		cls.setDelflag(DeleteFlag.VALID.getCode());
+		
+		cls = clsService.getById(cls);
+		if (cls == null) {
+		  return response.fail("不存在此分类");
+		}
+		
 		cls.setCreator(currentAdminId(request));
-		cls.setDelflag(DeleteFlag.DELETE.getCode());
 		
 		boolean result = clsService.delete(cls);
 		response.deleteResult(result);
@@ -190,15 +203,18 @@ public class ClassifyController extends BaseController {
 	}
 	
 	
-	@GetMapping("/{id}/valid/count.re")
+	@GetMapping("/{id}/count.re")
 	@IgnoreSecurity
 	public ResponseResult<Integer> classifyCheckArticles(HttpServletRequest request,
 			@PathVariable("id")int id) {
 		ResponseResult<Integer> response = new ResponseResult<>();
 		Classify cls = new Classify();
 		cls.setId(id);
-		cls.setCreator(currentAdminId(request));
-		cls.setDelflag(DeleteFlag.DELETE.getCode());			
+		cls.setDelflag(DeleteFlag.VALID.getCode());
+		cls = clsService.getById(cls);
+		if (cls == null) {
+		  return response.fail("不存在此分类");
+		}
 		return response.success(clsService.articleCountOfClassify(cls));
 	}
 	
