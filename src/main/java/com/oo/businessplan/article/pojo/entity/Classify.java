@@ -1,6 +1,7 @@
 package com.oo.businessplan.article.pojo.entity;
 
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import com.oo.businessplan.basic.entity.CreatorEntity;
  * @param <T> 分类对应的文章的类型 
  * @param <R> 对应的文章类id的类型
  */
-public class Classify extends CreatorEntity<Integer> {
+public class Classify extends CreatorEntity<Integer> implements Serializable{
 	
 	/**
 	 * 
@@ -48,6 +49,8 @@ public class Classify extends CreatorEntity<Integer> {
 	
 	private Byte childType; // 1-日记 2-总结 3-备忘  4-灵感 5-小说
 	
+	private int count = 0; //拥有文章数
+	
 	public Classify() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -80,7 +83,7 @@ public class Classify extends CreatorEntity<Integer> {
 	 * 当前分类是否属于系统分类
 	 * @return
 	 */
-	public boolean isSystemClassify() {
+	public boolean systemClassify() {
 		return this.type == SYSTEMCLASSIFY;
 	}
 
@@ -108,5 +111,14 @@ public class Classify extends CreatorEntity<Integer> {
 	public void setChildType(Byte childType) {
 		this.childType = childType;
 	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+	
 
 }

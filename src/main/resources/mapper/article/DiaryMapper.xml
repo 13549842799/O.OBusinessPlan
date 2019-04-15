@@ -94,7 +94,7 @@
 
     <update id="delete" >
         UPDATE diary set delflag = #{delflag} , modifier = #{modifier},modifierTime = {modifierTime}
-         WHERE id = #{ id })
+         WHERE id = #{ id }
     </update>
 
     <update id="update" parameterType="diary">
