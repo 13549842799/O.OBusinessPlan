@@ -134,8 +134,8 @@ public class ResourceController extends BaseController{
 		   (null, pid, name, request_url, null, style, type, describes
 				   , key, state, DeleteFlag.VALID.getCode());
 		try {
-			resourceService.add(resource);
-			synSuperAdminAuths (getAccountName(request), resource.getIdAsInt());
+			resourceService.add(resource, Integer.class);
+			synSuperAdminAuths (getAccountName(request), resource.getId());
 			resource = resourceService.getById(resource);
 			return response.success(resource);
 		} catch (AddErrorException e) {

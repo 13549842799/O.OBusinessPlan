@@ -1,6 +1,8 @@
 package test1;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +16,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.admin.mapper.AdminMapper;
 import com.oo.businessplan.admin.pojo.form.AdminForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
 import com.oo.businessplan.article.mapper.ClassifyMapper;
 import com.oo.businessplan.article.pojo.entity.Classify;
+import com.oo.businessplan.article.service.ClassifyService;
 import com.oo.businessplan.authority.mapper.AuthorityMapper;
 import com.oo.businessplan.authority.mapper.ResourceMapper;
 import com.oo.businessplan.authority.pojo.Authority;
@@ -72,14 +77,29 @@ public class MyBatisTest {
 	public void testClassify() {
 		ClassifyMapper cm   = context.getBean("classifyMapper", ClassifyMapper.class);
 		Classify classify  = new Classify();
+		classify.setChildType((byte)1);
+		classify.setCreator(1);
 		classify.setDelflag(DeleteFlag.VALID.getCode());
 		try {
+			PageHelper.startPage(1,15);
 			List<Classify> list = cm.getList(classify);
+			PageInfo<Classify> page = new PageInfo<>(list);
+			System.out.println(page);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	   
+	}
+	
+	@Test
+	public void testId () throws  NoSuchMethodException {
+		ClassifyMapper cm   = context.getBean("classifyMapper", ClassifyMapper.class);
+		Classify classify  = new Classify();
+		classify.setId(1);
+		classify.setDelflag(DeleteFlag.VALID.getCode());
+		classify = cm.getById(classify);
+		System.out.println(cm.checkTheClassifyArticleCount(classify.getThisTarget(), 1, classify.getCreator(), DeleteFlag.VALID.getCode()));
 	}
 	
 

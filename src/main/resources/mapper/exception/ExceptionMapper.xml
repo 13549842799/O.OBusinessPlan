@@ -17,7 +17,7 @@
                 position,
                 </if>
                 <if test="message != null ">
-                delflag,
+                message,
                 </if>
                 <if test="createTime != null ">
                 createTime,

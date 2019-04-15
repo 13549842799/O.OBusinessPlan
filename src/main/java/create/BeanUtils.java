@@ -473,29 +473,11 @@ public class BeanUtils {
 		
 		buffer.append(RT_1).append(BLANK_4).append(" </sql>");
 	
-
-		/*buffer.append(RT_2).append(BLANK_4).append("<select id=\"findListByMap\" resultMap=\"");
-		buffer.append(beanName).append("Map\" parameterType=\"java.util.Map\">");
-		buffer.append(RT_1).append(BLANK_8).append("select ");
-		buffer.append(RT_1).append(BLANK_8).append("<include refid=\"base_column\"/>");
-		buffer.append(RT_1).append(BLANK_8).append("from ").append(tableName).append(" a ");
-		buffer.append(RT_1).append(BLANK_8).append("<where>");
-		buffer.append(RT_1).append(BLANK_12).append("<if test=\"delflag != null\">");
-		buffer.append(RT_1).append(BLANK_16).append("and a.delflag = #{delflag}");
-        buffer.append(RT_1).append(BLANK_12).append("</if>");
-        buffer.append(RT_1).append(BLANK_12).append("<if test=\"tenantId != null\">");
-		buffer.append(RT_1).append(BLANK_16).append("and a.tenantId = #{tenantId}");
-        buffer.append(RT_1).append(BLANK_12).append("</if>");
-        buffer.append(RT_1).append(BLANK_12).append("<if test=\"keyword != null\">");
-        buffer.append(RT_1).append(BLANK_16).append("and a.name like concat('%', #{keyword}, '%')");
-		buffer.append(RT_1).append(BLANK_12).append("</if>");
-		buffer.append(RT_1).append(BLANK_8).append("</where>");
-		buffer.append(RT_1).append(BLANK_4).append("</select>");*/
         //add方法
 		buffer.append(RT_2).append(BLANK_4).append("<insert id=\"add\" useGeneratedKeys=\"true\" keyProperty=\"").append("id").append("\">");
 		buffer.append(RT_1).append(BLANK_8).append("INSERT INTO ").append(tableName);
 		buffer.append(RT_1).append(BLANK_8).append("(");
-		buffer.append(RT_1).append(BLANK_12).append("<trim>");
+		buffer.append(RT_1).append(BLANK_12).append("<trim suffixOverrides=\",\">");
 		for (int i = 0; i < fms.size(); i++) {
 				buffer.append(RT_1).append(BLANK_16)
 				.append("<if test=\"").append(fms.get(i).field.getName()).append(" != null \">");
@@ -508,7 +490,7 @@ public class BeanUtils {
 		buffer.append(RT_1).append(BLANK_12).append("</trim>");
 		buffer.append(RT_1).append(BLANK_8).append(")");
 		buffer.append(RT_1).append(BLANK_8).append("VALUES (");
-		buffer.append(RT_1).append(BLANK_12).append("<trim>");
+		buffer.append(RT_1).append(BLANK_12).append("<trim suffixOverrides=\",\">");
 		for (int i = 0; i < fms.size(); i++) {
 				buffer.append(RT_1).append(BLANK_16)
 				.append("<if test=\"").append(fms.get(i).field.getName()).append(" != null \">");
@@ -534,7 +516,7 @@ public class BeanUtils {
 		if (contain(fms,"modifier")) {
 			buffer.append(" , modifier = #{modifier},modifierTime = {modifierTime}");
 		}
-		buffer.append(RT_1).append(BLANK_8).append(" WHERE id = #{ id })");
+		buffer.append(RT_1).append(BLANK_8).append(" WHERE id = #{ id }");
 		buffer.append(RT_1).append(BLANK_4).append("</update>");
 		
 		//state方法
@@ -555,7 +537,7 @@ public class BeanUtils {
 		buffer.append(RT_2).append(BLANK_4).append("<update id=\"update\" parameterType=\"");
 		buffer.append(alia).append("\">");
 		buffer.append(RT_1).append(BLANK_8).append("UPDATE ").append(tableName).append(" SET ");
-		buffer.append(RT_1).append(BLANK_12).append("<trim>");
+		buffer.append(RT_1).append(BLANK_12).append("<trim suffixOverrides=\",\">");
 		for (int i = 0; i < fms.size(); i++) {
 				buffer.append(RT_1).append(BLANK_16).append("<if test=\"").append(fms.get(i).field.getName()).append(" != null \">");				
 				buffer.append(RT_1).append(BLANK_16).append(fms.get(i).field.getName()).append(" = ")
@@ -613,7 +595,7 @@ public class BeanUtils {
 		buffer.append(RT_1).append(BLANK_8).append("<include refid=\"base_column\"/>");
 		buffer.append(RT_1).append(BLANK_8).append("FROM ").append(tableName).append(BLANK_1).append(a);
 		buffer.append(RT_1).append(BLANK_8).append("WHERE ");
-		buffer.append(RT_1).append(BLANK_4).append("<trim>");
+		buffer.append(RT_1).append(BLANK_4).append("<trim prefixOverrides=\"AND\">");
 		for (int i = 0; i < fms.size(); i++) {
 			buffer.append(RT_1).append(BLANK_8).append("<if test=\"").append(" != null \">");
 			if (fms.get(i).field.getName().equals("state")||fms.get(i).field.getName().equals("delflag")) {
@@ -629,37 +611,6 @@ public class BeanUtils {
 		buffer.append(RT_1).append(BLANK_4).append("</trim>");
 		buffer.append(RT_1).append(BLANK_4).append("</select>");
 		
-		
-		/*buffer.append(RT_2).append(BLANK_4).append("<select id=\"getByStr\" resultType=\"");
-		buffer.append(alia).append("\" parameterType=\"").append(alia).append("\">");
-		buffer.append(RT_1).append(BLANK_8).append("SELECT ");
-		buffer.append(RT_1).append(BLANK_8).append("<include refid=\"base_column\"/>");
-		buffer.append(RT_1).append(BLANK_8).append("FROM ").append(tableName).append(BLANK_1).append(a);
-		buffer.append(RT_1).append(BLANK_8).append("WHERE ").append(a).append(".`")
-		              .append(args[1]).append("` = #{key} AND ").append(a).append(".`delflag` = #{delflag,jdbcType=TINYINT}");
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("state")) {
-				buffer.append(" AND ").append(a)
-				      .append(".`state` =IFNULL(#{state,jdbcType=TINYINT},")
-			          .append(a).append(".state)");
-			}
-		}
-		buffer.append(RT_1).append(BLANK_4).append("</select>");
-		
-		buffer.append(RT_2).append(BLANK_4).append("<select id=\"getListByStr\" resultType=\"");
-		buffer.append(alia).append("\" parameterType=\"").append(alia).append("\">");
-		buffer.append(RT_1).append(BLANK_8).append("SELECT ");
-		buffer.append(RT_1).append(BLANK_8).append("<include refid=\"base_column\"/>");
-		buffer.append(RT_1).append(BLANK_8).append("FROM ").append(tableName).append(BLANK_1).append(a);
-		buffer.append(RT_1).append(BLANK_8).append("WHERE ").append(a).append(".`")
-		              .append(args[1]).append("` = #{key} AND ").append(a).append(".`delflag` = #{delflag,jdbcType=TINYINT}");
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("state")) {
-				buffer.append(" AND ").append(a).append(".`state` =IFNULL(#{state,jdbcType=TINYINT},")
-				      .append(a).append(".state)");
-			}
-		}
-		buffer.append(RT_1).append(BLANK_4).append("</select>");*/
 
 		buffer.append(RT_2).append("</mapper>");
 		FileWriter fw = new FileWriter(f);

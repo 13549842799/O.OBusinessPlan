@@ -1,8 +1,10 @@
 package com.oo.businessplan.basic.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
+import com.oo.businessplan.basic.entity.IdEntity;
 import com.oo.businessplan.common.exception.AddErrorException;
 
 public interface BaseService<T> {
@@ -26,6 +28,27 @@ public interface BaseService<T> {
 	 * @param t
 	 */
 	void add(T t) throws AddErrorException;
+	
+	/**
+	 * 继承了IdEntity的实体类的添加方法，
+	 * 因为IdEntity中是泛型的id，所以获取自增主键的时候id的类型会有问题导致调用get方法出错
+	 * 所以重新设置了id的类型
+	 * @param t
+	 * @param cls
+	 * @throws AddErrorException
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	default void add(T t,  Class cls) throws AddErrorException {
+		add(t);
+		if (t instanceof IdEntity) {
+			try {
+				((IdEntity<?>)t).mainTainId(cls);
+			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+	};
 	
 	/**
 	 * 变量更新

@@ -1,12 +1,16 @@
 package com.oo.businessplan.article.pojo.entity;
 
 import java.util.Date;
-import java.util.List;
 
 import com.oo.businessplan.article.pojo.AbstractArticle;
 
 public class Diary extends AbstractArticle<Integer> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8616956690644129662L;
+
 	private Date date ;// 日记日期
 	
 	private String labels; //格式 标签1,标签2,标签3...

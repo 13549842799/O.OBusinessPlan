@@ -1,6 +1,9 @@
 package com.oo.businessplan.basic.entity;
 
+import java.beans.Transient;
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 public abstract class IdEntity <T> implements Serializable{
 	
@@ -9,6 +12,8 @@ public abstract class IdEntity <T> implements Serializable{
 	 */
 	private static final long serialVersionUID = -4275034184543847794L;
 	private T id; //主键
+	@SuppressWarnings("rawtypes")
+	private static final Class[] params = new Class[] {String.class};
 	
 	public IdEntity () {}
 	
@@ -25,8 +30,21 @@ public abstract class IdEntity <T> implements Serializable{
 		this.id = id;
 	}
     
+	@Transient
 	public Integer getIdAsInt() {
 		return id == null ? null : Integer.parseInt(id.toString());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public T mainTainId (Class<T> cls) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if (!(id instanceof Number)) {
+			return id;
+		}
+		String str = String.valueOf(id);
+		Constructor<T> cons = cls.getConstructor(params);
+		Object o = cons.newInstance(new Object[] {str});
+        this.id = (T)o;
+		return this.id;
 	}
 	
 	@Override

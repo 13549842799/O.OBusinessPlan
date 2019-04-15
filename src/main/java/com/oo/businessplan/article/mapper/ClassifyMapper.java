@@ -23,7 +23,7 @@ public interface ClassifyMapper extends BaseMapper<Classify> {
 	 * @return
 	 */
 	@Select("SELECT COUNT(0) FROM classify cl LEFT JOIN ${table} t ON t.classify=cl.id WHERE t.delflag=#{delflag, jdbcType=TINYINT} AND t.creator = #{creator}")
-	int checkTheClassifyArticleCount(@Param("table")String table,@Param("id") int id,@Param("table") int creator, @Param("delflag") byte delflag);
+	int checkTheClassifyArticleCount(@Param("table")String table,@Param("id") int id,@Param("creator") int creator, @Param("delflag") byte delflag);
 	
 	/**
 	 * 更新对应类型文章的分类
@@ -33,6 +33,6 @@ public interface ClassifyMapper extends BaseMapper<Classify> {
 	 * @param newClassifyId
 	 */
 	@Update("UPDATE ${table} SET classify = #{newId} WHERE classify=#{oldClassifyId} AND creator = #{creator}")
-	void moveArticle(@Param("table")String table,@Param("table") int creator,@Param("oldId") int oldClassifyId, @Param("newId") int newClassifyId);
+	void moveArticle(@Param("table")String table,@Param("creator") int creator,@Param("oldClassifyId") int oldClassifyId, @Param("newId") int newClassifyId);
 
 }

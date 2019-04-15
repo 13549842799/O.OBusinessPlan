@@ -1,5 +1,6 @@
 package com.oo.businessplan.article.service;
 
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Classify;
 import com.oo.businessplan.basic.service.BaseService;
 
@@ -27,5 +28,14 @@ public interface ClassifyService extends BaseService<Classify> {
 	 * @param newClassifyId 新的分类的id
 	 */
 	void moveArticleFromOldClassify(Classify cls, int newClassifyId);
+
+	/**
+	 * 获取分页类型的列表
+	 * @param cls
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	PageInfo<Classify> getPage(Classify cls, Integer pageNum, Integer pageSize);
 
 }
