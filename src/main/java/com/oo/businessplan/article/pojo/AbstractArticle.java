@@ -16,7 +16,6 @@ public abstract class AbstractArticle<T> extends ModifierEntity<T> {
 	private String content; //内容 
 	
 	private Integer classify; // 分类
-
 	
 	public AbstractArticle() {
 		super();

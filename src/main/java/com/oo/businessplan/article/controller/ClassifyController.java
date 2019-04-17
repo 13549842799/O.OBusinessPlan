@@ -176,7 +176,6 @@ public class ClassifyController extends BaseController {
 	 */
 	@DeleteMapping("/s/{id}/delete.do")
 	@IgnoreSecurity
-	
 	public ResponseResult<Classify> classifyDelete(HttpServletRequest request,
 			@PathVariable("id")int id) {
 		ResponseResult<Classify> response = new ResponseResult<>();
