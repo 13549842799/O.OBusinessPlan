@@ -2,9 +2,16 @@ package com.oo.businessplan.basic.entity;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class ModifierEntity<T> extends CreatorEntity<T> {
 	
-    private Integer modifier;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4813606217462294137L;
+
+	private Integer modifier;
 	
 	private Timestamp modifierTime;
 
@@ -36,6 +43,7 @@ public class ModifierEntity<T> extends CreatorEntity<T> {
 		this.modifier = modifier;
 	}
 
+	@JsonFormat(pattern="YYYY年MM月dd日  HH:mm:ss")
 	public Timestamp getModifierTime() {
 		return modifierTime;
 	}

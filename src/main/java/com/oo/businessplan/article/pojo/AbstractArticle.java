@@ -11,6 +11,11 @@ import com.oo.businessplan.basic.entity.ModifierWithStateEntity;
  */
 public abstract class AbstractArticle<T> extends ModifierEntity<T> {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3606072351373120259L;
+
 	private String title; //标题
 	
 	private String content; //内容 

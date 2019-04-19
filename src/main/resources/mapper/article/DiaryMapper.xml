@@ -172,35 +172,35 @@
         <include refid="base_column"/>
         FROM diary di
         WHERE 
-    <trim prefix="AND">
-        <if test=" != null ">
+    <trim prefixOverrides="AND">
+        <if test="delflag != null ">
         AND di.`delflag` = #{delflag,jdbcType=TINYINT}
         </if>
-        <if test=" != null ">
+        <if test="creator != null ">
         AND di.`creator` = #{creator}
         </if>
-        <if test=" != null ">
+        <if test="createTime != null ">
         AND di.`createTime` = #{createTime}
         </if>
-        <if test=" != null ">
+        <if test="modifier != null ">
         AND di.`modifier` = #{modifier}
         </if>
-        <if test=" != null ">
+        <if test="modifierTime != null ">
         AND di.`modifierTime` = #{modifierTime}
         </if>
-        <if test=" != null ">
+        <if test="title != null ">
         AND di.`title` = #{title}
         </if>
-        <if test=" != null ">
+        <if test="content != null ">
         AND di.`content` = #{content}
         </if>
-        <if test=" != null ">
+        <if test="classify != null ">
         AND di.`classify` = #{classify}
         </if>
-        <if test=" != null ">
+        <if test="date != null ">
         AND di.`date` = #{date}
         </if>
-        <if test=" != null ">
+        <if test="labels != null ">
         AND di.`labels` = #{labels}
         </if>
     </trim>

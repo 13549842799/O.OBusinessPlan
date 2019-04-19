@@ -597,7 +597,7 @@ public class BeanUtils {
 		buffer.append(RT_1).append(BLANK_8).append("WHERE ");
 		buffer.append(RT_1).append(BLANK_4).append("<trim prefixOverrides=\"AND\">");
 		for (int i = 0; i < fms.size(); i++) {
-			buffer.append(RT_1).append(BLANK_8).append("<if test=\"").append(" != null \">");
+			buffer.append(RT_1).append(BLANK_8).append("<if test=\"").append(fms.get(i).field.getName()).append(" != null \">");
 			if (fms.get(i).field.getName().equals("state")||fms.get(i).field.getName().equals("delflag")) {
 				buffer.append(RT_1).append(BLANK_8).append("AND ")
 			      .append(a).append(".`").append(fms.get(i).field.getName()).append("` = #{").append(fms.get(i).field.getName()).append(",jdbcType=TINYINT}");

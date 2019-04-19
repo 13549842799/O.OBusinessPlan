@@ -1,6 +1,5 @@
 package com.oo.businessplan.basic.entity;
 
-import java.beans.Transient;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -28,11 +27,6 @@ public abstract class IdEntity <T> implements Serializable{
 
 	public void setId(T id) {
 		this.id = id;
-	}
-    
-	@Transient
-	public Integer getIdAsInt() {
-		return id == null ? null : Integer.parseInt(id.toString());
 	}
 	
 	@SuppressWarnings("unchecked")

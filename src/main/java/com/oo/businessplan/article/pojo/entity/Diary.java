@@ -2,6 +2,7 @@ package com.oo.businessplan.article.pojo.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oo.businessplan.article.pojo.AbstractArticle;
 
 public class Diary extends AbstractArticle<Integer> {
@@ -9,7 +10,12 @@ public class Diary extends AbstractArticle<Integer> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8616956690644129662L;
+	private static final long serialVersionUID = 7300831563149118606L;
+
+	/**
+	 * 
+	 */
+	
 
 	private Date date ;// 日记日期
 	
@@ -34,7 +40,7 @@ public class Diary extends AbstractArticle<Integer> {
 		super(id);
 	}
 	
-
+	@JsonFormat(pattern="YYYY年MM月dd日  HH:mm:ss")
 	public Date getDate() {
 		return date;
 	}

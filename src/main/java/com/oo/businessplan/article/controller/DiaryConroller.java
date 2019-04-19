@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Diary;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
 import com.oo.businessplan.article.service.DiaryService;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.exception.AddErrorException;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
@@ -46,16 +48,12 @@ public class DiaryConroller extends BaseController{
 	@IgnoreSecurity
 	public ResponseResult<PageInfo<Diary>>  diaryList(
 			HttpServletRequest request,
-			@RequestParam(value="pageNum", defaultValue="1")Integer pageNum,
-			@RequestParam(value="classify" ,required = false)Integer classify,
-			@RequestParam(value="status" ,required = false)Byte status,
-			@RequestParam("author") Integer author) {
-		
+			DiaryForm form) {
 		ResponseResult<PageInfo<Diary>> response = new ResponseResult<>();		
 		Integer adminId = currentAdminId(request);
-		
-		PageInfo<Diary> page = diaryService.getPage(pageNum, adminId, classify);
-		
+		form.setCreator(adminId);
+		form.setDelflag(DeleteFlag.VALID.getCode());
+		PageInfo<Diary> page = diaryService.getPage(form);	
 		return response.success(page);
 	}
 	
