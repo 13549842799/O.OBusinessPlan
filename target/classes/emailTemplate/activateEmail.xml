@@ -1,9 +1,0 @@
-<div bgcolor='#f1fcfa' style='border:1px solid #d9f4ee; font-size:14px; line-height:22px; color:#005aa0;padding-left:1px;padding-top:5px;   padding-bottom:5px;'>
-<span style='font-weight:bold;'>温馨提示：</span>
-<div style='width:950px;font-family:arial;'>
-欢迎使用NET微活动，您的注册码为：<br/>
-<h2 style='color:green'>${content}</h2><br/>
-本邮件由系统自动发出，请勿回复。<br/>
-感谢您的使用。<br/>杭州恩意替电子商务有限公司
-</div>"
-</div>
