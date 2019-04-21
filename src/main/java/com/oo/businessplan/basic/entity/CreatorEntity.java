@@ -3,6 +3,8 @@ package com.oo.businessplan.basic.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class CreatorEntity<T> extends DeleteAbleEntity<T> implements Serializable {
 	
 	/**
@@ -40,6 +42,7 @@ public class CreatorEntity<T> extends DeleteAbleEntity<T> implements Serializabl
 	public void setCreator(Integer creator) {
 		this.creator = creator;
 	}
+	@JsonFormat(pattern="YYYY年MM月dd日  HH:mm:ss")
 	public Timestamp getCreateTime() {
 		return createTime;
 	}

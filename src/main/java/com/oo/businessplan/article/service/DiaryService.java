@@ -3,6 +3,7 @@ package com.oo.businessplan.article.service;
 
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Diary;
+import com.oo.businessplan.article.pojo.form.DiaryForm;
 import com.oo.businessplan.basic.service.BaseService;
 
 /**
@@ -19,6 +20,6 @@ public interface DiaryService extends BaseService<Diary>{
 	 * @param pageNum
 	 * @return
 	 */
-	PageInfo<Diary> getPage(Integer pageNum, Integer adminId, Integer classify);
+	PageInfo<Diary> getPage(DiaryForm form);
 
 }

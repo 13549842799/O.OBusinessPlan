@@ -1,7 +1,5 @@
 package com.oo.businessplan.article.pojo.entity;
 
-import java.beans.Transient;
-
 import com.oo.businessplan.basic.entity.CreatorWithStateEntity;
 
 /**
@@ -45,8 +43,7 @@ public class Label extends CreatorWithStateEntity<Integer> {
 		this.adminId = adminId;
 	}
 	
-	@Transient
-	public boolean isSystem() {
+	public boolean systemLabel() {
 		return this.type == 0;
 	}
 

@@ -4,6 +4,11 @@ import java.sql.Timestamp;
 
 public class ModifierWithStateEntity<T> extends CreatorWithStateEntity<T> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2101899093142694418L;
+
 	private Integer modifier;
 	
 	private Timestamp modifierTime;

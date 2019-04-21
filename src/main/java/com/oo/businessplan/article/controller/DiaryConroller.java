@@ -6,17 +6,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Diary;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
 import com.oo.businessplan.article.service.DiaryService;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.exception.AddErrorException;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
@@ -45,22 +48,12 @@ public class DiaryConroller extends BaseController{
 	@IgnoreSecurity
 	public ResponseResult<PageInfo<Diary>>  diaryList(
 			HttpServletRequest request,
-			@RequestParam(value="pageNum", defaultValue="1")Integer pageNum,
-			@RequestParam(value="classify")Integer classify,
-			@RequestParam("author") Integer author) {
-		
+			DiaryForm form) {
 		ResponseResult<PageInfo<Diary>> response = new ResponseResult<>();		
 		Integer adminId = currentAdminId(request);
-
-		/*
-		 * 如果想要查询的日记的所属作者不等于当前登录约的用户，那么要验证当前用户是否拥有查看他人日记的权限
-		 */
-		if (!adminId.equals(author)) {
-			
-		}
-		
-		PageInfo<Diary> page = diaryService.getPage(pageNum, adminId, classify);
-		
+		form.setCreator(adminId);
+		form.setDelflag(DeleteFlag.VALID.getCode());
+		PageInfo<Diary> page = diaryService.getPage(form);	
 		return response.success(page);
 	}
 	
@@ -94,10 +87,10 @@ public class DiaryConroller extends BaseController{
 		
 	}
 	
-	@DeleteMapping("/delete.do")
+	@DeleteMapping("/s/{id}/delete.do")
 	@IgnoreSecurity
 	public ResponseResult<Diary> deleteDiary(HttpServletRequest request,
-			@RequestParam("id")Integer id) {
+			@PathVariable(name="id") Integer id) {
 		
 		ResponseResult<Diary> response = new ResponseResult<>();
 		Diary diary = new Diary(id);
