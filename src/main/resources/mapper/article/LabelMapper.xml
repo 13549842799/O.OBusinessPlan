@@ -153,7 +153,7 @@
         AND la.`type` = #{type}
         </if>
         <if test="adminId != null ">
-        AND la.`adminId` = #{adminId}
+        AND (la.`adminId` = #{adminId} OR la.`type` = 0)
         </if>
     </trim>
     </select>

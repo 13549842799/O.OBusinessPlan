@@ -11,7 +11,30 @@ public class Label extends CreatorWithStateEntity<Integer> {
 	
 	private static final long serialVersionUID = 472330572592879816L;
 	
-	public static final byte system = 0;
+	public static final byte SYSTEM = 0;
+	
+	public static final byte USER = 1;
+	
+	public Label () {}
+	
+	public Label(Integer id, Byte delflag, Byte state, Integer adminId, Byte type) {
+		super(id, delflag, state);
+		this.type = type;
+		this.adminId = adminId;
+	}
+
+
+	public Label(Integer id, Byte delflag, Byte state) {
+		super(id, delflag, state);
+	}
+
+	public Label(Integer id, Byte delflag) {
+		super(id, delflag);
+	}
+
+	public Label(Integer id) {
+		super(id);
+	}
 
 	private String name;
 	
