@@ -41,13 +41,11 @@ public class LabelController extends BaseController{
     @IgnoreSecurity
     @GetMapping(value = "/list.re")
     public ResponseResult<List<Label>> list(
-    		HttpServletRequest request,
-    		@RequestParam(value="type") Byte type,
-    		@RequestParam(value="status") Byte status) {
+    		HttpServletRequest request) {
         ResponseResult<List<Label>> response = new ResponseResult<>();
-        Label label = new Label(null, DeleteFlag.VALID.getCode(), status, currentAdminId(request), type);
+        System.out.println("输出：");
+        Label label = new Label(null, DeleteFlag.VALID.getCode());
         List<Label> labels = labelService.getList(label);
-        System.out.println(labels);
         return response.success(labels);
     }
     
@@ -62,11 +60,10 @@ public class LabelController extends BaseController{
         label.setCreator(adminId);
         label.setCreateTime(new Timestamp(new Date().getTime()));
         label.setDelflag(DeleteFlag.VALID.getCode());
-        label.setState(StatusFlag.ENABLE.getCode());
-        label.setType(Label.USER);
         
         labelService.add(label, Integer.class);
 
         return response.success(label);
     }
+    
 }
