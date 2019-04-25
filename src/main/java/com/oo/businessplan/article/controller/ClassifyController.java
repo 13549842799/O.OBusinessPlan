@@ -43,15 +43,15 @@ public class ClassifyController extends BaseController {
 	private ClassifyService clsService;
 	
 	/**
-	 * 用户获取自身的对应的分类
+	 * 用户获取自身的对应的分类分页列表
 	 * @param request
 	 * @param type
 	 * @param childType
 	 * @return
 	 */
-	@GetMapping("/list.re")
+	@GetMapping("/page.re")
 	@IgnoreSecurity
-	public ResponseResult<PageInfo<Classify>> classifyList(
+	public ResponseResult<PageInfo<Classify>> classifyPage(
 			HttpServletRequest request,
 			@RequestParam(value="pageNum", required=false)Integer pageNum,
 			@RequestParam(value="pageSize", required=false)Integer pageSize,
@@ -70,6 +70,33 @@ public class ClassifyController extends BaseController {
 		PageInfo<Classify> page = clsService.getPage(cls, pageNum, pageSize);
 		System.out.println(page.getList());
 		return response.success(page);
+	}
+	
+	/**
+	 * 用户获取自身的对应的分类列表
+	 * @param request
+	 * @param type
+	 * @param childType
+	 * @return
+	 */
+	@GetMapping("/list.re")
+	@IgnoreSecurity
+	public ResponseResult<List<Classify>> classifyList(
+			HttpServletRequest request,
+			@RequestParam(value="name", required=false)String name,
+			@RequestParam(value="type", required=false)Byte type,
+			@RequestParam(value="childType", required=false)Byte childType) {
+		
+		ResponseResult<List<Classify>> response = new ResponseResult<>();
+		
+		Classify cls = new Classify();
+		cls.setCreator(currentAdminId(request));
+		cls.setType(type);
+		cls.setChildType(childType);
+		cls.setName(name);
+		cls.setDelflag(DeleteFlag.VALID.getCode());
+		List<Classify> list = clsService.getList(cls);
+		return response.success(list);
 	}
 	
 	/**

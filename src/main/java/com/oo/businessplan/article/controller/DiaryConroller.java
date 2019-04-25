@@ -70,8 +70,8 @@ public class DiaryConroller extends BaseController{
 		
 		ResponseResult<Diary> response = new ResponseResult<>();
 		
-		if (StringUtil.isEmpty(diary.getTitle()) || StringUtil.isEmpty(diary.getContent())) {
-			return response.fail("标题或者内容不能为null");
+		if (StringUtil.isEmpty(diary.getTitle())) {
+			return response.fail("标题不能为空");
 		}
 		Integer adminId = currentAdminId(request);
 		diary.setModifier(adminId);
