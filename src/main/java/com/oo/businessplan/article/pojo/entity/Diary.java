@@ -16,7 +16,6 @@ public class Diary extends AbstractArticle<Integer> {
 	 * 
 	 */
 	
-
 	private Date date ;// 日记日期
 	
 	private String labels; //格式 标签1,标签2,标签3...
@@ -40,7 +39,7 @@ public class Diary extends AbstractArticle<Integer> {
 		super(id);
 	}
 	
-	@JsonFormat(pattern="YYYY年MM月dd日  HH:mm:ss")
+	@JsonFormat(pattern="yyyy-MM-dd")
 	public Date getDate() {
 		return date;
 	}

@@ -16,6 +16,13 @@
         <result property="labels" column="labels"/>
         <result property="status" column="status"/>
     </resultMap>
+    
+    <resultMap id="DiaryWithLabelMap" type="diaryForm" extends="DiaryMap">
+        <collection property="labelList" ofType="label">
+            <id property="id" column="l_id"/>
+            <result property="name" column="l_name"/>
+        </collection>
+    </resultMap>
 
      <sql id="base_column">
         di.id,di.delflag,di.creator,di.createTime,di.modifier,di.modifierTime,di.title,di.content,di.classify,di.date,di.labels, di.status
@@ -24,7 +31,7 @@
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO diary
         (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 delflag,
                 </if>
@@ -53,7 +60,7 @@
                 date,
                 </if>
                 <if test="labels != null ">
-                labels
+                labels,
                 </if>
                 <if test="status != null">
                 status
@@ -61,7 +68,7 @@
             </trim>
         )
         VALUES (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 #{delflag,jdbcType=TINYINT},
                 </if>
@@ -90,7 +97,7 @@
                 #{date},
                 </if>
                 <if test="labels != null ">
-                #{labels}
+                #{labels},
                 </if>
                 <if test="status != null">
                 #{status}
@@ -172,6 +179,20 @@
         <include refid="base_column"/>
         FROM diary di
         WHERE 
+    <include refid="listBase" />
+    </select>
+    
+    <select id="getListWithLabels" resultMap="DiaryWithLabelMap" parameterType="diaryForm">
+    SELECT 
+        <include refid="base_column"/>, la.id as l_id, la.name as l_name
+        FROM diary di
+        LEFT JOIN label la ON FIND_IN_SET(la.id, di.labels)
+        WHERE 
+    <include refid="listBase" />
+        
+    </select>
+    
+    <sql id="listBase">
     <trim prefixOverrides="AND">
         <if test="delflag != null ">
         AND di.`delflag` = #{delflag,jdbcType=TINYINT}
@@ -204,6 +225,6 @@
         AND di.`labels` = #{labels}
         </if>
     </trim>
-    </select>
+    </sql>
 
 </mapper>

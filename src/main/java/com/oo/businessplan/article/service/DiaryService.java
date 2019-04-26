@@ -20,6 +20,6 @@ public interface DiaryService extends BaseService<Diary>{
 	 * @param pageNum
 	 * @return
 	 */
-	PageInfo<Diary> getPage(DiaryForm form);
+	PageInfo<DiaryForm> getPage(DiaryForm form);
 
 }

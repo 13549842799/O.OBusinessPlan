@@ -46,14 +46,14 @@ public class DiaryConroller extends BaseController{
 	 */
 	@GetMapping("/list.re")
 	@IgnoreSecurity
-	public ResponseResult<PageInfo<Diary>>  diaryList(
+	public ResponseResult<PageInfo<DiaryForm>>  diaryList(
 			HttpServletRequest request,
 			DiaryForm form) {
-		ResponseResult<PageInfo<Diary>> response = new ResponseResult<>();		
+		ResponseResult<PageInfo<DiaryForm>> response = new ResponseResult<>();		
 		Integer adminId = currentAdminId(request);
 		form.setCreator(adminId);
 		form.setDelflag(DeleteFlag.VALID.getCode());
-		PageInfo<Diary> page = diaryService.getPage(form);	
+		PageInfo<DiaryForm> page = diaryService.getPage(form);	
 		return response.success(page);
 	}
 	

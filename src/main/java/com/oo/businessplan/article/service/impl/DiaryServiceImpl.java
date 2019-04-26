@@ -20,11 +20,11 @@ public class DiaryServiceImpl extends BaseServiceImpl<Diary> implements DiarySer
 	private DiaryMapper diaryMapper;
 
 	@Override
-	public PageInfo<Diary> getPage(DiaryForm form) {
+	public PageInfo<DiaryForm> getPage(DiaryForm form) {
 		
 		PageHelper.startPage(form.getPageNum(), form.getPageSize());
-		List<Diary> diaries = diaryMapper.getList(form);
-		PageInfo<Diary> page = new PageInfo<>(diaries);
+		List<DiaryForm> diaries = diaryMapper.getListWithLabels(form);
+		PageInfo<DiaryForm> page = new PageInfo<>(diaries);
 		return page;
 	}
 
