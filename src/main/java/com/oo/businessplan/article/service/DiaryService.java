@@ -22,4 +22,11 @@ public interface DiaryService extends BaseService<Diary>{
 	 */
 	PageInfo<DiaryForm> getPage(DiaryForm form);
 
+	/**
+	 * 通过日记id获取完整的日记（比如包含着标签列表等）
+	 * @param id
+	 * @return
+	 */
+	DiaryForm getCompleteDiary(int id);
+
 }

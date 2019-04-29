@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.exception.AddErrorException;
+import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.exception.login.LoginException;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.exception.mapper.ExceptionMapper;
@@ -71,5 +72,30 @@ public class GlobalExceptionHandler extends BaseController{
 		return new ResponseResult<>().fail("网络延迟，请及时联系管理员");
 	}
 	
+	/**
+	 * 权限不足异常处理
+	 * @param request
+	 * @param le
+	 * @return
+	 */
+	@ExceptionHandler(value=AuthorityNotEnoughException.class)
+	public ResponseResult<Object> authNotEnoughExceptionHandler(HttpServletRequest request, AuthorityNotEnoughException le) {
+		le.printStackTrace();
+		
+		return new ResponseResult<>().fail(le.getMessage());
+	}
+	
+	/**
+	 * 登录异常处理
+	 * @param request
+	 * @param le
+	 * @return
+	 */
+	@ExceptionHandler(value=LoginException.class)
+	public ResponseResult<Object> loginExceptionHandler(HttpServletRequest request, LoginException le) {
+		le.printStackTrace();
+		System.out.println("登录失效输出");
+		return new ResponseResult<>().relogin();
+	}
 
 }

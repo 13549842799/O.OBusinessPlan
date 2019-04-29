@@ -15,6 +15,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.common.constant.EntityConstants;
+import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
+import com.oo.businessplan.common.exception.login.LoginException;
 import com.oo.businessplan.common.exception.login.TokenException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.ResponseResult;
@@ -75,8 +77,7 @@ public class SecurityAspect {
 	     SessionInfo sessionInfo = (SessionInfo)object;	     
 	     if (!sessionInfo.getToken().equals(token)) {
 	    	 String message = String.format("token [%s] is invalid ", token);
-	    	 new ResponseResult<>().responseFailMessage(response, message);
-	    	 return null;
+	    	 throw new LoginException(message);
 		 }
 	     //3.判断是否拥有权限
 	     //3.1判断是否需要权限校检
@@ -92,8 +93,8 @@ public class SecurityAspect {
 			 System.out.println("key:"+key);
 			 if (authMap == null || authMap.isEmpty() || (level = authMap.get(key)) == null 
 					 || level < neetLevel ) {
-				 new ResponseResult<>().responseFailMessage(response, "权限不足");
-			     return null;
+				// new ResponseResult<>().responseFailMessage(response, "权限不足");
+			     throw new AuthorityNotEnoughException();
 			 }
 		 }
      

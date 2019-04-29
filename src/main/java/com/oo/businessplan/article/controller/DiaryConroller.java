@@ -21,6 +21,7 @@ import com.oo.businessplan.article.service.DiaryService;
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.exception.AddErrorException;
+import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
@@ -36,6 +37,22 @@ public class DiaryConroller extends BaseController{
 	
 	@Autowired
 	private DiaryService diaryService;
+	
+	@GetMapping("/s/{id}/diary.re")
+	@IgnoreSecurity
+	public ResponseResult<DiaryForm>  findDiary(
+			HttpServletRequest request,
+			@PathVariable(value="id")int id) {
+		ResponseResult<DiaryForm> response = new ResponseResult<>();
+		
+		DiaryForm diary = diaryService.getCompleteDiary(id);
+		
+		if (diary.getCreator() != currentAdminId(request)) {
+			throw new AuthorityNotEnoughException();
+		}
+	
+		return response.success(diary);
+	}
 	
 	/**
 	 * 

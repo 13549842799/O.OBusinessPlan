@@ -142,7 +142,7 @@
                 date = #{date},
                 </if>
                 <if test="labels != null ">
-                labels = #{labels}
+                labels = #{labels},
                 </if>
                 <if test="status != null">
                 status = #{status}
@@ -180,6 +180,16 @@
         FROM diary di
         WHERE 
     <include refid="listBase" />
+    </select>
+    
+    <select id="getCompleteDiaryById" resultMap="DiaryWithLabelMap" >
+    SELECT
+         <include refid="base_column"/>, la.id as l_id, la.name as l_name
+    FROM diary di LEFT JOIN label la ON FIND_IN_SET(la.id, di.labels)
+    WHERE 
+        di.id = #{id}
+    AND di.delflag = #{delflag, jdbcType=TINYINT}
+    AND la.delflag = #{delflag, jdbcType=TINYINT}
     </select>
     
     <select id="getListWithLabels" resultMap="DiaryWithLabelMap" parameterType="diaryForm">

@@ -12,6 +12,7 @@ import com.oo.businessplan.article.pojo.entity.Diary;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
 import com.oo.businessplan.article.service.DiaryService;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
 
 @Service("diaryService")
 public class DiaryServiceImpl extends BaseServiceImpl<Diary> implements DiaryService {
@@ -27,5 +28,15 @@ public class DiaryServiceImpl extends BaseServiceImpl<Diary> implements DiarySer
 		PageInfo<DiaryForm> page = new PageInfo<>(diaries);
 		return page;
 	}
+
+	@Override
+	public DiaryForm getCompleteDiary(int id) {
+		
+		DiaryForm diary = diaryMapper.getCompleteDiaryById(id, DeleteFlag.VALID.getCode());
+		
+		return diary;
+	}
+	
+	
 
 }

@@ -14,12 +14,24 @@ public class ResponseResult<T> implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 4185740114021603198L;
+	/**
+	 * 请求成功
+	 */
 	public static final int RESPONSE_SUCCESS =200;
+	/**
+	 * 请求失败(业务逻辑上)
+	 */
 	public static final int RESPONSE_FAIL =100;
+	/**
+	 * 发生未知异常(报错)
+	 */
 	public static final int RESPONSE_ERROR=300;
+	/**
+	 * 登录失效，重新登录
+	 */
 	public static final int RESPONSE_RELOGIN=400;
 	
-	private int status;// 200 成功   100  失败   300异常
+	private int status;// 200 成功   100  失败   300异常  400
 	private String message;
 	private T data;
 	
