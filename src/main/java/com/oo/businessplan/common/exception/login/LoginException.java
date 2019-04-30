@@ -33,7 +33,6 @@ public class LoginException extends RuntimeException {
 
 	public LoginException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 	
 	

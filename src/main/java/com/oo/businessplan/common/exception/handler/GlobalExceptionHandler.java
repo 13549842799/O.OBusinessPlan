@@ -84,18 +84,5 @@ public class GlobalExceptionHandler extends BaseController{
 		
 		return new ResponseResult<>().fail(le.getMessage());
 	}
-	
-	/**
-	 * 登录异常处理
-	 * @param request
-	 * @param le
-	 * @return
-	 */
-	@ExceptionHandler(value=LoginException.class)
-	public ResponseResult<Object> loginExceptionHandler(HttpServletRequest request, LoginException le) {
-		le.printStackTrace();
-		System.out.println("登录失效输出");
-		return new ResponseResult<>().relogin();
-	}
 
 }
