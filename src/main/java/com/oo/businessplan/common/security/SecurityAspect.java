@@ -70,8 +70,7 @@ public class SecurityAspect {
 	     Object object = tokenManager
 	    		 .getValueFromMap(userCode,EntityConstants.REDIS_SESSION_NAME);
 	     if (object==null) {
-	    	 new ResponseResult<>().responseFailMessage(response, "不存在用户");
-	    	 throw new TokenException();
+	    	 throw new LoginException("用户不存在或未登录");
 		 }
 	     //2.判断token是否有效
 	     SessionInfo sessionInfo = (SessionInfo)object;	     

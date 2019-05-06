@@ -85,8 +85,7 @@ public class AdminController extends BaseController{
 	    * @return
 	    */
 	   @ApiOperation(value = "职员登陆")
-	   @RequestMapping(value="/"
-	   		+ "loginAsyn.do",method=RequestMethod.POST)
+	   @RequestMapping(value="/loginAsyn.do",method=RequestMethod.POST)
 	   public ResponseResult<Object> loginAsyn(HttpServletRequest request,HttpSession session,
 				@ApiParam(value = "网站编号", required = true)  @RequestParam(required=true,value="code")String code,
 				@ApiParam(value = "用户名", required = true)  @RequestParam(required=true,value="userName")String userName,

@@ -117,10 +117,10 @@
         AND la.`createTime` = #{createTime}
         </if>
         <if test="name != null ">
-        AND la.`name` = #{name}
+        AND la.`name` LIKE CONCAT(#{name}, '%')
         </if>
         <if test="adminId != null ">
-        AND (la.`adminId` = #{adminId} OR la.`type` = 0)
+        AND la.`adminId` IN  (#{adminId}, 0)
         </if>
     </trim>
     </select>
