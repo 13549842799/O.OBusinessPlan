@@ -52,5 +52,15 @@ public interface AdminMapper extends RedisCacheMapper<Admin>{
 	  */
 	 @Select("SELECT COUNT(id) FROM admin WHERE nikename=#{nikename,jdbcType=VARCHAR} AND delflag=#{delflag,jdbcType=TINYINT}")
 	 int validNikeNameExist(@Param("nikename")String nikename,@Param("delflag")byte delflag);
+	 
+	 /**
+	  * 根据角色id获取对应的只包含id和accountname的admin列表
+	  * @param roleId
+	  * @param delflag
+	  * @param state
+	  * @param roleState
+	  * @return
+	  */
+	 List<Admin> getAdminsByRole(@Param("roleId")int roleId, @Param("delflag")byte delflag, @Param("state")Byte state, @Param("roleState")Byte roleState);
 
 }

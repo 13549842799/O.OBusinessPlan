@@ -70,7 +70,6 @@ public class RedisTokenManager implements TokenManager{
 	
 	public void saveForMap(String key,String Hkey,Object value,int expired,int timeUnit){
 		//String valueStr =parseToStr(value);
-		
 		hop.put(key, Hkey, value);
         redisTemplate.expire(key, expireds[expired], timeUnits[timeUnit]);
 	}
@@ -98,6 +97,15 @@ public class RedisTokenManager implements TokenManager{
 	
 	public Object getValueFromMap(String key,String hashKey){
 		  return getValueFromMap(key, hashKey, 0, 0);
+	}
+	
+	/**
+	 * 删除以map保存在redis中的值
+	 * @param key
+	 * @param hashKeys
+	 */
+	public void deleteHashKey(String key, Object... hashKeys) {
+		hop.delete(key, hashKeys);
 	}
 	
 	/**

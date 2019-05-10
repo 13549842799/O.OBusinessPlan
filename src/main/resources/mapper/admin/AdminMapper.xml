@@ -244,5 +244,27 @@
 	AND em.name=#{relatedName,jdbcType=VARCHAR}
 	</if> 
 	</select>
+	
+	<select id="getAdminsByRole" resultMap="AdminMap">
+	SELECT 
+	  ad.id, ad.accountname
+	FROM
+	  admin ad
+	LEFT JOIN
+	  admin_role ad_ro ON ad.id = ad_ro.aid
+	LEFT JOIN
+	  role ro ON ad_ro.rid = ro.id
+	WHERE
+	  ro.id = #{roleId}
+	AND ad.delflag = #{delflag, jdbcType=TINYINT}
+	AND ro.delflag = #{delflag, jdbcType=TINYINT}
+	AND ad_ro.delflag = #{delflag}
+	<if test="state != null">
+	AND ad.state = #{state, jdbcType=TINYINT}
+	</if>
+	<if test="roleState != null">
+	AND ro.state = #{roleState, jdbcType=TINYINT}
+	</if>
+	</select>
 
 </mapper>

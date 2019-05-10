@@ -1,10 +1,8 @@
 package com.oo.businessplan.article.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
-import com.oo.businessplan.common.enumeration.StatusFlag;
-import com.oo.businessplan.common.exception.AddErrorException;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.article.service.LabelService;

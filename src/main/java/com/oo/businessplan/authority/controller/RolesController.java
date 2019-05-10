@@ -23,6 +23,7 @@ import com.oo.businessplan.admin.service.AdminService;
 import com.oo.businessplan.authority.pojo.AdminRole;
 import com.oo.businessplan.authority.pojo.Role;
 import com.oo.businessplan.authority.pojo.RolePage;
+import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.authority.service.RoleService;
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.basic.service.CodeServie;
@@ -59,6 +60,9 @@ public class RolesController extends BaseController{
 	  
 	  @Autowired
 	  private AdminService adminService;
+	  
+	  @Autowired
+	  private AuthorityService authService;
 	  
 	  @Resource(name="roleService")
 	  private CodeServie cs;
@@ -214,6 +218,10 @@ public class RolesController extends BaseController{
 			ar.setModifier(currentAdmin);
 		  }		  
 		  roleService.insertOrUpdateRelation(adminrs);
+		  /**
+		   * 清空当前用户的redis权限列表
+		   */
+		  authService.clearAuthsForAccount(getAccountName(request));
 		  //获取当前用户拥有角色
 		  List<Role> adminRoles = roleService.getRolesOfAdmin(currentAdmin, true);			 
 		  return response.success(adminRoles);
@@ -239,6 +247,7 @@ public class RolesController extends BaseController{
 				roleIds, currentAdminId(request))) {
 			return response.fail("删除失败");
 		  }			
+		  authService.clearAuthsForAccount(getAccountName(request));
 		  //获取当前用户拥有角色
 		  List<Role> adminRoles = roleService.getRolesOfAdmin(userId, true);			 
 		  return response.success(adminRoles);

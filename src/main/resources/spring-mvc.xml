@@ -88,7 +88,7 @@
     
     <aop:config>
         <aop:aspect ref="securityAspect">
-            <aop:around method="execute" pointcut="@annotation(org.springframework.web.bind.annotation.RequestMapping)"/>
+            <aop:around method="execute" pointcut="@annotation(org.springframework.web.bind.annotation.RequestMapping) || @annotation(org.springframework.web.bind.annotation.GetMapping) || @annotation(org.springframework.web.bind.annotation.PostMapping) || @annotation(org.springframework.web.bind.annotation.PatchMapping) || @annotation(org.springframework.web.bind.annotation.DeleteMapping)"/>
         </aop:aspect>
     </aop:config>
     

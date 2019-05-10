@@ -57,4 +57,17 @@ public interface AuthorityService extends BaseService<Authority>{
 	 */
 	Map<String, Byte> resetAuthsRedis(String account);
 	
+	/**
+	 * 清空对应账号名的账号在redis中的权限列表
+	 * @param account
+	 */
+	void clearAuthsForAccount(String account);
+	
+	/**
+	 * 清空拥有此角色的账号在redis中的权限列表
+	 * @param roleId
+	 */
+	void clearAuthsForRole(int roleId);
+	
+	
 }

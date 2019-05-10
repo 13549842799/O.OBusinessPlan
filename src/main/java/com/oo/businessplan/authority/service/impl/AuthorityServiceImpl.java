@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.oo.businessplan.additional.pojo.WebMessage;
+import com.oo.businessplan.admin.mapper.AdminMapper;
+import com.oo.businessplan.admin.pojo.entity.Admin;
 import com.oo.businessplan.authority.mapper.AuthorityMapper;
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.AuthorityWithKey;
@@ -29,6 +31,9 @@ public class AuthorityServiceImpl extends RedisCacheSupport<Authority>
 
 	@Autowired
 	private AuthorityMapper authorityMapper;
+	
+	@Autowired
+	private AdminMapper adminMapper;
 	 
 	@Override
 	@Transactional
@@ -142,6 +147,23 @@ public class AuthorityServiceImpl extends RedisCacheSupport<Authority>
 		}
 		
 		return childs;
+	}
+
+	@Override
+	public void clearAuthsForAccount(String account) {
+		tokenManager.deleteHashKey(account, EntityConstants.REDIS_AUTHORITY_Map_NAME);
+	}
+    
+	/**
+	 * 首先获取拥有此角色的用户列表，然后清空他们在redis中的权限缓存
+	 */
+	@Override
+	public void clearAuthsForRole(int roleId) {
+		List<Admin> admins = adminMapper.getAdminsByRole(roleId, DeleteFlag.VALID.getCode(), StatusFlag.ENABLE.getCode(), StatusFlag.ENABLE.getCode());
+		if (admins == null || admins.size() == 0) {
+			return;
+		}
+		admins.forEach(a -> clearAuthsForAccount(a.getAccountname()));
 	}
 	
 	

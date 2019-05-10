@@ -148,11 +148,17 @@ public class ResourceController extends BaseController{
 		}
 	  }
 	  
+	  /**
+	   * 超级管理员的权限无需页面操作，只在代码中同步更新
+	   * 当创建一个新的资源时，则把此资源添加到超级管理员角色中，然后刷新redis权限列表
+	   * @param accountname
+	   * @param resourceId
+	   */
 	  private void synSuperAdminAuths (String accountname, int resourceId) {
 		  Authority auth = new Authority(1, resourceId, Authority.AWARD, DeleteFlag.VALID.getCode());
 		  auth.setLevel(Authority.READWRITE);
 		  authService.add(auth);
-		  authService.resetAuthsRedis(accountname);
+		  authService.clearAuthsForRole(1);
 	  }
 	  
 	  /**
@@ -223,8 +229,6 @@ public class ResourceController extends BaseController{
 		Resource resource = new Resource
 		   (id, pid, name, request_url, parent.getPath() + "," + id, style, type
 				   , describes, key, state, DeleteFlag.VALID.getCode());
-		//在资源表中创建触发器，当插入时，会在角色表和权限表中插入超级管理员相关的记录
-		//创建更新触发器，当resource表的key修改时，权限表的key也修改，当delflag修改时角色表和权限表相应修改
 		switch (resourceService.updateFull(resource)) {
 		case 0:			
 			return response.fail("更新失败");
@@ -238,7 +242,7 @@ public class ResourceController extends BaseController{
         		resource.setChilds(resourceService.getResourceTree(queue, resource));
 			}
         	if (!Objects.equals(resource.getKey(), old.getKey())) {
-        		authService.resetAuthsRedis(getAccountName(request));
+        		authService.clearAuthsForRole(1);
         	}
 			return response.success(resource);
 		default:

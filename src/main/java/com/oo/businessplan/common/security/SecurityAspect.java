@@ -44,7 +44,7 @@ public class SecurityAspect {
 		 //从切点上获取目标方法
 		 MethodSignature  methodSignature =(MethodSignature) pg.getSignature();
 		 Method method = methodSignature.getMethod();
-		 
+		 System.out.println("权限校验:" + method.getAnnotation(IgnoreSecurity.class).val());
 		 if (!method.isAnnotationPresent(IgnoreSecurity.class)||method.getAnnotation(IgnoreSecurity.class).val()) {
 			return pg.proceed();
 		  }
@@ -78,6 +78,7 @@ public class SecurityAspect {
 	    	 String message = String.format("token [%s] is invalid ", token);
 	    	 throw new LoginException(message);
 		 }
+	     
 	     //3.判断是否拥有权限
 	     //3.1判断是否需要权限校检
 	     if (method.getAnnotation(IgnoreSecurity.class).authority()) {

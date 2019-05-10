@@ -115,10 +115,14 @@ public class AuthorityController extends BaseController{
 			}
 		 }
 		 contain.forEach(o->System.out.println(o));
-		 if (authService.insertOrUpdateForBatch(contain)) {
-			 return response.success();
-		 }		
-		 return response.error("网络异常");
+		 if (!authService.insertOrUpdateForBatch(contain)) {
+			 return response.error("网络异常");
+		 }
+		 /**
+		  * 清空对应的权限, 因为列表中的每个权限的角色都是一致的，所以直接获取第一个auth的角色id即可
+		  */
+		 authService.clearAuthsForRole(contain.get(0).getRoid());
+		 return response.success();
 	}
 	
 	@ApiOperation("为角色修改权限")
@@ -130,9 +134,10 @@ public class AuthorityController extends BaseController{
 		
 		ResponseResult<Authority> response = new ResponseResult<>();
 		
-		auth.setDelflag(DeleteFlag.VALID.getCode());
+		auth.setDelflag(DeleteFlag.VALID.getCode());		
 		switch (authService.update(auth)) {
 		case 1:
+			authService.clearAuthsForRole(auth.getRoid());
 			return response.success(auth);
 		case 0:
 			return response.fail(ResultConstant.NOT_EXIST_AUTH);
@@ -150,6 +155,7 @@ public class AuthorityController extends BaseController{
 		
 		ResponseResult<Authority> response = new ResponseResult<>();
         if (authService.delete(auth)) {
+        	authService.clearAuthsForRole(auth.getRoid());
 			return response.success();
 		}
         return response.error(SystemKey.ERROR_KEY);
