@@ -44,7 +44,6 @@ public class SecurityAspect {
 		 //从切点上获取目标方法
 		 MethodSignature  methodSignature =(MethodSignature) pg.getSignature();
 		 Method method = methodSignature.getMethod();
-		 System.out.println("权限校验:" + method.getAnnotation(IgnoreSecurity.class).val());
 		 if (!method.isAnnotationPresent(IgnoreSecurity.class)||method.getAnnotation(IgnoreSecurity.class).val()) {
 			return pg.proceed();
 		  }
