@@ -1,6 +1,7 @@
 package com.oo.businessplan.basic.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -19,7 +20,7 @@ public interface RedisCacheMapper<T> extends BaseMapper<T> {
      * @param state
      * @return
      */
-    public T getByStr(@Param("key")String key,@Param("delflag")byte delflag,@Param("state")Byte state );
+    public T getByStr(Map<String, Object> params);
     
     /**
      * 

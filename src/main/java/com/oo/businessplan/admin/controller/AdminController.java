@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,9 +23,11 @@ import com.oo.businessplan.additional.pojo.WebMessage;
 import com.oo.businessplan.additional.service.WebMessageService;
 import com.oo.businessplan.admin.pojo.entity.Admin;
 import com.oo.businessplan.admin.pojo.form.AdminForm;
+import com.oo.businessplan.admin.pojo.form.LoginForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
 import com.oo.businessplan.admin.service.AdminService;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
@@ -87,27 +90,23 @@ public class AdminController extends BaseController{
 	   @ApiOperation(value = "职员登陆")
 	   @RequestMapping(value="/loginAsyn.do",method=RequestMethod.POST)
 	   public ResponseResult<Object> loginAsyn(HttpServletRequest request,HttpSession session,
-				@ApiParam(value = "网站编号", required = true)  @RequestParam(required=true,value="code")String code,
-				@ApiParam(value = "用户名", required = true)  @RequestParam(required=true,value="userName")String userName,
-				@ApiParam(value = "密码", required = true)  @RequestParam(required=true,value="password")String password,
-				@ApiParam(value = "mac", required = false)  @RequestParam(required=false,value="mac")String mac){
-			
+			    @RequestBody LoginForm form){
 			ResponseResult<Object>  response = new ResponseResult<>();	
 		    String target = null;
-			WebMessage webMessage = wmService.selectWeb(code);	
+			WebMessage webMessage = wmService.selectWeb(form.getCode());	
 			if (webMessage==null) {
 			   return response.fail("此网站不存在");
 			}	
 			Admin admin = null;
 			try {
-				admin = adminService.getAdminByAccount(userName, webMessage);
-			    if (!adminService.checkPasswordValid(admin.getPassword(), password)) {
+				admin = adminService.getAdminByAccount(form.getUserName(), webMessage);
+			    if (!adminService.checkPasswordValid(admin.getPassword(), form.getPassword())) {
 					return response.fail("密码错误");
 				}
 			} catch (NullUserException e) {
 				e.printStackTrace();
 				try {
-					admin = adminService.generalByECode(userName, webMessage);
+					admin = adminService.generalByECode(form.getUserName(), webMessage);
 				} catch (NoSuchAlgorithmException | UnsupportedEncodingException e1) {
 					e1.printStackTrace();
 					return response.error("发生异常，请再次尝试或联系管理员");
@@ -120,22 +119,45 @@ public class AdminController extends BaseController{
 			Object lastPageObj = session.getAttribute("lastPage");
 			target = lastPageObj==null?webMessage.getHomepage():lastPageObj.toString();
 			sessionInfo.setId(admin.getId());
-			sessionInfo.setName(userName);
+			sessionInfo.setName(form.getUserName());
 			String ip = IPAdressUtil.getIpAddress(request);
 			sessionInfo.setIp(ip);
-			sessionInfo.setMac(mac);
+			sessionInfo.setAvatar(admin.getAvatar());
+			sessionInfo.setNikename(admin.getNikename());
 			sessionInfo.getResourceList().put(webMessage.getCode(), webMessage.getSignoutAddress());//signoutIp为注销的请求路径
+			sessionInfo.setBindphone(admin.getBindPhone());
 			tokenManager.createToken(sessionInfo) ;
-			
+			System.out.println("成功登录");
 			Map<String,Object> result = new HashMap<>();
 			result.put("session", sessionInfo);
 			result.put("target", target);
 			return response.success("ok",result);
 		}
 	   
+	   @ApiOperation(value = "刷新token")
+	   @RequestMapping(value="/reflush.do",method=RequestMethod.GET)
+	   public ResponseResult<Object> reflush(HttpServletRequest request,
+			   @ApiParam(value = "账号用户名", required = true)  @RequestParam(required=true,value="accountName")String accountname,
+			   @ApiParam(value = "token", required = true)  @RequestParam(required=true,value="token")String token){
+		    System.out.println("进入这里");
+		    ResponseResult<Object> response = new ResponseResult<>();
+		    Object temp = tokenManager.getValueFromMap(accountname, EntityConstants.REDIS_SESSION_NAME);
+		    if (temp == null) {
+		    	return response.fail("当前用户没有登录信息");
+		    }
+		    SessionInfo sessionInfo = (SessionInfo)temp;
+		    if (!token.equals(sessionInfo.getToken())) {
+		    	return response.fail("用户不正确");
+		    }
+		    tokenManager.createToken(sessionInfo) ;
+		    
+		    return response.success(sessionInfo);
+		   
+	   }
+	   
 	   
 	   @ApiOperation(value = "获取账号信息")
-	   @RequestMapping(value="/admin_main.do",method=RequestMethod.GET)
+	   @RequestMapping(value="/admin_main.re",method=RequestMethod.GET)
 	   @IgnoreSecurity(authority = false)
 	   public ResponseResult<Admin> searchAdminMain(HttpServletRequest request,
 			   @ApiParam(value = "账号用户名", required = true)  @RequestParam(required=true,value="accountname")String accountname){
@@ -251,24 +273,27 @@ public class AdminController extends BaseController{
 	   }
 	   
 	   @ApiOperation(value = "账号信息修改-修改昵称")
-	   @RequestMapping(value="/alterNikeName.do",method=RequestMethod.PATCH)
-	   @IgnoreSecurity(val=false)
+	   @PostMapping("/alterNikeName.do")
+	   //@IgnoreSecurity(val=false)
 	   public ResponseResult<Object> alterNikeName(
 			   HttpServletRequest request,
 			   @RequestBody Admin admin){
 		    
 		    ResponseResult<Object> response = new ResponseResult<>();
-            if (admin == null || admin.getId() == null || 
-            		StringUtil.isEmpty(admin.getNikename())) {
+            if (admin == null  || StringUtil.isEmpty(admin.getNikename())) {
 				return response.error(ResultConstant.PARAMETER_ERROR);
 			}
             if (adminService.checkNikenameExist(admin.getNikename())) {
 				return response.fail("此昵称已存在");
 			} 
+            SessionInfo info = matchSessionInfo(request);
             Admin param = new Admin();
-            param.setId(admin.getId());
+            param.setId((int)info.getId());
             param.setNikename(admin.getNikename());
+
             if (adminService.update(param) == 1) {
+            	info.setNikename(admin.getNikename());
+            	tokenManager.saveSession(info);
 				return response.success();
 			} 
 		    return response.error("未知错误");

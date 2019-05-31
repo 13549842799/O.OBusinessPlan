@@ -39,12 +39,21 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 	 * @param timeUnit
 	 * @return
 	 */
-	public final  T getObject(String key,Byte state,int expired,int timeUnit){
+	public final  T getObject(String key,Byte state,int expired,int timeUnit, Map<String, Object> otherParams){
 		String objName = this.getClass().getSimpleName();
 		@SuppressWarnings("unchecked")
 		T t =(T)tokenManager.getValueFromMap(key, hkey.get(objName), expired, timeUnit);
 		if (t==null) {
-			t = redisMapper.getByStr(key,DeleteFlag.VALID.getCode(), state);
+			Map<String, Object> params = new HashMap<>();
+			if (otherParams != null) {
+				params.putAll(otherParams);
+			}
+			params.put("key", key);
+			params.put("delflag", DeleteFlag.VALID.getCode());
+			if (state != null) {
+				params.put("state", state);
+			}
+			t = redisMapper.getByStr(params);
 			tokenManager.saveForMap(key, hkey.get(objName), t, expired, timeUnit);
 		}
 		
@@ -58,9 +67,9 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 	 * @param timeUnit
 	 * @return
 	 */
-	public final  T getObject(String key,int expired,int timeUnit){
+	public final  T getObject(String key,int expired,int timeUnit, Map<String, Object> otherParams){
 		 
-		T t =getObject(key, null, expired, timeUnit);
+		T t =getObject(key, null, expired, timeUnit, otherParams);
 		
 	    return t;
 	}

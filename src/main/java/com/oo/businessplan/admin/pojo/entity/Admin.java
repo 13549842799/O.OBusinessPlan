@@ -10,6 +10,7 @@ public class Admin extends StateAbleEntity<Integer> implements Serializable{
 	
 	private static final long serialVersionUID = 8497855686170324041L;
 	private String accountname;
+	private String bindPhone; //绑定手机
 	private String password;
 	private String nikename;
 	private String avatar;  
@@ -36,6 +37,13 @@ public class Admin extends StateAbleEntity<Integer> implements Serializable{
 	public void setAccountname(String accountname) {
 		this.accountname = accountname;
 	}
+	public String getBindPhone() {
+		return bindPhone;
+	}
+	public void setBindPhone(String bindPhone) {
+		this.bindPhone = bindPhone;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -75,7 +83,7 @@ public class Admin extends StateAbleEntity<Integer> implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Admin [id=" + getId() + ", accountname=" + accountname + ", password=" + password + ", nikename=" + nikename
+		return "Admin [id=" + getId() + ", accountname=" + accountname + ", bindphone=" + bindPhone + ", password=" + password + ", nikename=" + nikename
 				+ ", avatar=" + avatar + ", relatedid=" + relatedid + ", autologin_mac=" + autologin_mac
 				+ ", createtime=" + createtime + ", state=" + getState() + ", delflag=" + getDelflag() + "]";
 	}
@@ -84,6 +92,7 @@ public class Admin extends StateAbleEntity<Integer> implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((accountname == null) ? 0 : accountname.hashCode());
+		result = prime * result + ((bindPhone == null) ? 0 : bindPhone.hashCode());
 		result = prime * result + ((autologin_mac == null) ? 0 : autologin_mac.hashCode());
 		result = prime * result + ((avatar == null) ? 0 : avatar.hashCode());
 		result = prime * result + ((createtime == null) ? 0 : createtime.hashCode());
@@ -108,6 +117,11 @@ public class Admin extends StateAbleEntity<Integer> implements Serializable{
 			if (other.accountname != null)
 				return false;
 		} else if (!accountname.equals(other.accountname))
+			return false;
+		if (bindPhone == null) {
+			if (other.bindPhone != null)
+				return false;
+		} else if (!bindPhone.equals(other.bindPhone)) 
 			return false;
 		if (autologin_mac == null) {
 			if (other.autologin_mac != null)

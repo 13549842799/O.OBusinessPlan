@@ -1,6 +1,7 @@
 package com.oo.businessplan.basic.service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * redis相关缓存的业务方法
@@ -19,6 +20,10 @@ public interface RedisCacheService<T> {
      */
 	public static final int TIMEUNIT = 0;
 	
+	default T getObject(String key,int expired,int timeUnit) {
+		return getObject(key, expired, timeUnit, null);
+	}
+	
 	/**
 	 * 获取保存在redis中的类型为T的对象，同时更新保存的时间和时间粒度
 	 * @param key  保存在redis中的key
@@ -26,7 +31,7 @@ public interface RedisCacheService<T> {
 	 * @param timeUnit 时间粒度
 	 * @return
 	 */
-	T getObject(String key,int expired,int timeUnit) ;
+	T getObject(String key,int expired,int timeUnit, Map<String, Object> otherParams) ;
 	
 	/**
 	 * 获取保存在redis中的元素类型为T的某个list集合

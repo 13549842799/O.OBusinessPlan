@@ -71,15 +71,6 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	@Autowired
 	private MsgService msgService;
 	
-	/*@Override
-	public Admin getObject(String key,int expired, int timeUnit) {
-		return super.getObject( key,EntityConstants.REDIS_ADMIN_NAME, expired, timeUnit);
-	}
-
-	@Override
-	public List<Admin> getListObject(String key, int expired,int timeUnit) {		
-		return super.getListObject( key, EntityConstants.REDIS_ADMIN_NAME, expired, timeUnit);
-	}*/
 
 	@Override
 	public Map<String, Object> getAdminByAccountName(String accountName) {
@@ -97,9 +88,7 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 			return result;
 		}
 		admin.setPassword(null);
-		if ( StringUtil.isEmpty(admin.getAvatar()) ) {
-			admin.setAvatar("http://localhost:8081//O.OMusicRelated//nullpic.png");
-		}
+
         result.put("admin", admin);
 		
 		return result;
@@ -160,7 +149,7 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 		param_admin.setPassword(PassUtil.getEncryptedPwd(employeeCode));
 		param_admin.setNikename(employee.getName());
 		param_admin.setAvatar(employee.getAvatar());
-		param_admin.setRelatedid(employee.getEid());
+		param_admin.setRelatedid(employee.getId());
 		adminMapper.add(param_admin);
 		//赋予普通职员的角色
 		roleService.giveRole(new int[]{2},param_admin.getId(), creatorId);
@@ -230,7 +219,7 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 		admin.setPassword(PassUtil.getEncryptedPwd(userName));
 		admin.setNikename(userName);
 		admin.setAvatar(employee.getAvatar());
-		admin.setRelatedid(employee.getEid());
+		admin.setRelatedid(employee.getId());
 		adminMapper.add(admin);
 		//职员关联账号
 		employee.setAdminId(admin.getId());

@@ -1,126 +1,532 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oo.businessplan.admin.mapper.EmployeeMapper"> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.admin.mapper.EmployeeMapper">
 
-    <resultMap type="employee" id="EmployeeResult">
-	<id property="eid" column="eid" />
-	   <result property="ecode" column="ecode"/>
-	   <result property="name" column="name"/>
-	   <result property="sex" column="sex"/>
-	   <result property="birth" column="birth"/>
-	   <result property="idCard" column="idCard"/>
-	   <result property="marriageId" column="marriageId"/>
-	   <result property="nationId" column="nationId"/>
-	   <result property="nationName" column="nationName" />
-	   <result property="phone" column="phone"/>
-	   <result property="email" column="email"/>
-	   <result property="qq" column="qq"/>
-	   <result property="address" column="address"/>
-	   <result property="qualificationId" column="qualificationId"/>
-	   <result property="qualificationName" column="qualificationName"/>
-	   <result property="school" column="school"/>
-	   <result property="avatar" column="avatar"/>
-	   <result property="positionId" column="positionId"/>
-	   <result property="positionName" column="positionName" />
-	   <result property="departmentId" column="departmentId"/>
-	   <result property="departmentName" column="departmentName"/>
-	   <result property="stateId" column="stateId"/>
-	   <result property="stateName" column="stateName"/>
-	   <result property="salary" column="salary"/>
-	   <result property="salaryTypeId" column="salaryTypeId"/>
-	   <result property="salaryTypeName" column="salaryTypeName" /> 
-	   <result property="beginTime" column="beginTime"/>
-	   <result property="endTime" column="endTime"/>
-	   <result property="creator" column="creator"/>
-	   <result property="creatorName" column="creatorName"/>
-	   <result property="createTime" column="createTime"/>
-	   <result property="delflag" column="delflag"/> 
-	</resultMap>
-	
+     <resultMap id="EmployeeMap" type="employee">
+        <id property="id" column="id"/>
+        <result property="ecode" column="ecode"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="birth" column="birth"/>
+        <result property="idCard" column="idCard"/>
+        <result property="marriage" column="marriage"/>
+        <result property="nation" column="nation"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="qq" column="qq"/>
+        <result property="address" column="address"/>
+        <result property="qualification" column="qualification"/>
+        <result property="school" column="school"/>
+        <result property="avatar" column="avatar"/>
+        <result property="positionId" column="positionId"/>
+        <result property="departmentId" column="departmentId"/>
+        <result property="stateId" column="stateId"/>
+        <result property="salary" column="salary"/>
+        <result property="salaryType" column="salaryType"/>
+        <result property="adminId" column="adminId"/>
+        <result property="beginTime" column="beginTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="createTime"/>
+        <result property="delflag" column="delflag"/>
+    </resultMap>
+    
+    <resultMap type="employee" id="EmployeeExtendMap" extends="EmployeeMap">
+        <result property="positionName" column="positionName"/>
+        <result property="departmentName" column="departmentName"/>
+        <result property="stateName" column="stateName"/>
+        <result property="creatorName" column="creatorName"/>
+    </resultMap>
 
-	<sql id="base_column">
-	e.eid ,e.ecode ,e.name ,e.sex ,
-	e.birth ,e.idCard ,e.marriageId ,e.nationId ,
-	e.phone ,e.email ,e.qq ,e.address ,e.qualificationId ,
-	e.school ,e.avatar ,e.positionId ,e.departmentId ,
-	e.stateId ,e.salary ,e.salaryTypeId ,e.beginTime ,
-	e.endTime ,e.creator ,e.createTime
-	</sql>
-	
-	<sql id="base_all">
-	*
-	</sql>
-	
-	<select id="getByStr" resultType="employee" parameterType="employee">
+     <sql id="base_column">
+        em.id,em.ecode,em.name,em.sex,em.birth,em.idCard,em.marriage,
+        em.nation,em.phone,em.email,em.qq,em.address,em.qualification,
+        em.school,em.avatar,em.positionId,em.departmentId,em.stateId,em.salary,em.salaryType,em.adminId,em.beginTime,em.endTime,em.creator,em.createTime,em.delflag
+     </sql>
+     
+     <sql id="extend_column">
+         <include refid="base_column" />,em.positionName,em.departmentName,em.stateName,em.creatorName
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO employee
+        (
+            <trim suffixOverrides=",">
+                <if test="ecode != null ">
+                ecode,
+                </if>
+                <if test="name != null ">
+                name,
+                </if>
+                <if test="sex != null ">
+                sex,
+                </if>
+                <if test="birth != null ">
+                birth,
+                </if>
+                <if test="idCard != null ">
+                idCard,
+                </if>
+                <if test="marriage != null ">
+                marriage,
+                </if>
+                <if test="nation != null ">
+                nation,
+                </if>
+                <if test="phone != null ">
+                phone,
+                </if>
+                <if test="email != null ">
+                email,
+                </if>
+                <if test="qq != null ">
+                qq,
+                </if>
+                <if test="address != null ">
+                address,
+                </if>
+                <if test="qualification != null ">
+                qualification,
+                </if>
+                <if test="school != null ">
+                school,
+                </if>
+                <if test="avatar != null ">
+                avatar,
+                </if>
+                <if test="positionId != null ">
+                positionId,
+                </if>
+                <if test="positionName != null ">
+                positionName,
+                </if>
+                <if test="departmentId != null ">
+                departmentId,
+                </if>
+                <if test="departmentName != null ">
+                departmentName,
+                </if>
+                <if test="stateId != null ">
+                stateId,
+                </if>
+                <if test="stateName != null ">
+                stateName,
+                </if>
+                <if test="salary != null ">
+                salary,
+                </if>
+                <if test="salaryType != null ">
+                salaryType,
+                </if>
+                <if test="adminId != null ">
+                adminId
+                </if>
+                <if test="beginTime != null ">
+                beginTime,
+                </if>
+                <if test="endTime != null ">
+                endTime,
+                </if>
+                <if test="creator != null ">
+                creator,
+                </if>
+                <if test="creatorName != null ">
+                creatorName,
+                </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
+                <if test="delflag != null ">
+                delflag,
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim suffixOverrides=",">
+                <if test="ecode != null ">
+                #{ecode},
+                </if>
+                <if test="name != null ">
+                #{name},
+                </if>
+                <if test="sex != null ">
+                #{sex},
+                </if>
+                <if test="birth != null ">
+                #{birth},
+                </if>
+                <if test="idCard != null ">
+                #{idCard},
+                </if>
+                <if test="marriage != null ">
+                #{marriage},
+                </if>
+                <if test="nation != null ">
+                #{nation},
+                </if>
+                <if test="phone != null ">
+                #{phone},
+                </if>
+                <if test="email != null ">
+                #{email},
+                </if>
+                <if test="qq != null ">
+                #{qq},
+                </if>
+                <if test="address != null ">
+                #{address},
+                </if>
+                <if test="qualification != null ">
+                #{qualification},
+                </if>
+                <if test="school != null ">
+                #{school},
+                </if>
+                <if test="avatar != null ">
+                #{avatar},
+                </if>
+                <if test="positionId != null ">
+                #{positionId},
+                </if>
+                <if test="positionName != null ">
+                #{positionName},
+                </if>
+                <if test="departmentId != null ">
+                #{departmentId},
+                </if>
+                <if test="departmentName != null ">
+                #{departmentName},
+                </if>
+                <if test="stateId != null ">
+                #{stateId},
+                </if>
+                <if test="stateName != null ">
+                #{stateName},
+                </if>
+                <if test="salary != null ">
+                #{salary},
+                </if>
+                <if test="salaryType != null ">
+                #{salaryType},
+                </if>
+                <if test="adminId != null ">
+                #{adminId}
+                </if>
+                <if test="beginTime != null ">
+                #{beginTime},
+                </if>
+                <if test="endTime != null ">
+                #{endTime},
+                </if>
+                <if test="creator != null ">
+                #{creator},
+                </if>
+                <if test="creatorName != null ">
+                #{creatorName},
+                </if>
+                <if test="createTime != null ">
+                #{createTime},
+                </if>
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT},
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE employee set delflag = #{delflag}
+         WHERE id = #{ id }
+    </update>
+
+    <update id="update" parameterType="employee">
+        UPDATE employee SET 
+            <trim suffixOverrides=",">
+                <if test="ecode != null ">
+                ecode = #{ecode},
+                </if>
+                <if test="name != null ">
+                name = #{name},
+                </if>
+                <if test="sex != null ">
+                sex = #{sex},
+                </if>
+                <if test="birth != null ">
+                birth = #{birth},
+                </if>
+                <if test="idCard != null ">
+                idCard = #{idCard},
+                </if>
+                <if test="marriage != null ">
+                marriage = #{marriage},
+                </if>
+                <if test="nation != null ">
+                nation = #{nation},
+                </if>
+                <if test="phone != null ">
+                phone = #{phone},
+                </if>
+                <if test="email != null ">
+                email = #{email},
+                </if>
+                <if test="qq != null ">
+                qq = #{qq},
+                </if>
+                <if test="address != null ">
+                address = #{address},
+                </if>
+                <if test="qualification != null ">
+                qualification = #{qualification},
+                </if>
+                <if test="school != null ">
+                school = #{school},
+                </if>
+                <if test="avatar != null ">
+                avatar = #{avatar},
+                </if>
+                <if test="positionId != null ">
+                positionId = #{positionId},
+                </if>
+                <if test="positionName != null ">
+                positionName = #{positionName},
+                </if>
+                <if test="departmentId != null ">
+                departmentId = #{departmentId},
+                </if>
+                <if test="departmentName != null ">
+                departmentName = #{departmentName},
+                </if>
+                <if test="stateId != null ">
+                stateId = #{stateId},
+                </if>
+                <if test="stateName != null ">
+                stateName = #{stateName},
+                </if>
+                <if test="salary != null ">
+                salary = #{salary},
+                </if>
+                <if test="salaryType != null ">
+                salaryType = #{salaryType},
+                </if>
+                <if test="adminId != null ">
+                adminId = #{adminId}
+                </if>
+                <if test="beginTime != null ">
+                beginTime = #{beginTime},
+                </if>
+                <if test="endTime != null ">
+                endTime = #{endTime},
+                </if>
+                <if test="creator != null ">
+                creator = #{creator},
+                </if>
+                <if test="creatorName != null ">
+                creatorName = #{creatorName},
+                </if>
+                <if test="createTime != null ">
+                createTime = #{createTime},
+                </if>
+                <if test="delflag != null ">
+                delflag = #{delflag,jdbcType=TINYINT},
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="employee">
+        UPDATE employee SET 
+            ecode = #{ecode},
+            name = #{name},
+            sex = #{sex},
+            birth = #{birth},
+            idCard = #{idCard},
+            marriage = #{marriage},
+            nation = #{nation},
+            phone = #{phone},
+            email = #{email},
+            qq = #{qq},
+            address = #{address},
+            qualification = #{qualification},
+            school = #{school},
+            avatar = #{avatar},
+            positionId = #{positionId},
+            positionName = #{positionName},
+            departmentId = #{departmentId},
+            departmentName = #{departmentName},
+            stateId = #{stateId},
+            stateName = #{stateName},
+            salary = #{salary},
+            salaryType = #{salaryType},
+            adminId = #{adminId}
+            beginTime = #{beginTime},
+            endTime = #{endTime},
+            creator = #{creator},
+            creatorName = #{creatorName},
+            createTime = #{createTime},
+            delflag = #{delflag,jdbcType=TINYINT},
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="employee" parameterType="employee">
+        SELECT 
+        <include refid="base_column"/>
+        FROM employee em
+        WHERE em.id = #{id} AND em.delflag = #{delflag}
+    </select>
+    
+    <select id="getByStr" resultType="employee" >
+        SELECT 
+        <include refid="base_column"/>
+        FROM employee em
+        WHERE 
+            em.`adminId` = #{adminId, jdbcType=INTEGER} 
+        AND em.`delflag` = #{delflag,jdbcType=TINYINT}
+    </select>
+
+    <select id="getList" resultType="employee" parameterType="employee">
+        SELECT 
+        <include refid="base_column"/>
+        FROM employee em
+        WHERE 
+    <trim prefixOverrides="AND">
+        <if test="ecode != null ">
+        AND em.`ecode` = #{ecode}
+        </if>
+        <if test="name != null ">
+        AND em.`name` = #{name}
+        </if>
+        <if test="sex != null ">
+        AND em.`sex` = #{sex}
+        </if>
+        <if test="birth != null ">
+        AND em.`birth` = #{birth}
+        </if>
+        <if test="idCard != null ">
+        AND em.`idCard` = #{idCard}
+        </if>
+        <if test="marriage != null ">
+        AND em.`marriage` = #{marriage}
+        </if>
+        <if test="nation != null ">
+        AND em.`nation` = #{nation}
+        </if>
+        <if test="phone != null ">
+        AND em.`phone` = #{phone}
+        </if>
+        <if test="email != null ">
+        AND em.`email` = #{email}
+        </if>
+        <if test="qq != null ">
+        AND em.`qq` = #{qq}
+        </if>
+        <if test="address != null ">
+        AND em.`address` = #{address}
+        </if>
+        <if test="qualification != null ">
+        AND em.`qualification` = #{qualification}
+        </if>
+        <if test="school != null ">
+        AND em.`school` = #{school}
+        </if>
+        <if test="avatar != null ">
+        AND em.`avatar` = #{avatar}
+        </if>
+        <if test="positionId != null ">
+        AND em.`positionId` = #{positionId}
+        </if>
+        <if test="positionName != null ">
+        AND em.`positionName` = #{positionName}
+        </if>
+        <if test="departmentId != null ">
+        AND em.`departmentId` = #{departmentId}
+        </if>
+        <if test="departmentName != null ">
+        AND em.`departmentName` = #{departmentName}
+        </if>
+        <if test="stateId != null ">
+        AND em.`stateId` = #{stateId}
+        </if>
+        <if test="stateName != null ">
+        AND em.`stateName` = #{stateName}
+        </if>
+        <if test="salary != null ">
+        AND em.`salary` = #{salary}
+        </if>
+        <if test="salaryType != null ">
+        AND em.`salaryType` = #{salaryType}
+        </if>
+        <if test="adminId != null ">
+        AND em.`adminId` = #{adminId}
+        </if>
+        <if test="beginTime != null ">
+        AND em.`beginTime` = #{beginTime}
+        </if>
+        <if test="endTime != null ">
+        AND em.`endTime` = #{endTime}
+        </if>
+        <if test="creator != null ">
+        AND em.`creator` = #{creator}
+        </if>
+        <if test="creatorName != null ">
+        AND em.`creatorName` = #{creatorName}
+        </if>
+        <if test="createTime != null ">
+        AND em.`createTime` = #{createTime}
+        </if>
+        <if test="delflag != null ">
+        AND em.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+    </trim>
+    </select>
+    
+    <select id="list" resultType="employee" parameterType="employeeForm">
 	SELECT
-	<include refid="base_column"/>
+	   <include refid="base_column"/>
 	FROM
-	   employee e
-	WHERE
-	   e.`ecode` = #{key}
-	AND
-	   e.delflag = #{delflag,jdbcType=TINYINT}
-	</select>
-	
-	<select id="list" resultType="employee" parameterType="employeeForm">
-	SELECT
-	   <include refid="base_all"/>
-	FROM
-	    employee e
+	    employee em
 	LEFT JOIN
-	    authority_employee ar ON e.eid=ae.eid
+	    positions p ON p.id=em.positionId
 	LEFT JOIN
-	    authority au ON ae.aid==au.id
+	    department dep ON dep.id=em.departmentId
 	LEFT JOIN
-	    dictionary d_nation ON e.nationId=d_nation.id
-	LEFT JOIN
-	    dictionary d_qua ON  e.qualificationId = d_qua.id
-	LEFT JOIN
-	    positions p ON p.id=e.positionId
-	LEFT JOIN
-	    department dep ON dep.id=e.departmentId
-	LEFT JOIN
-	    dictionary d_state ON d_state.id=e.stateId
-	LEFT JOIN
-	    dictionart d_salary ON d_salary.id=e.salaryTypeId
+	    dictionary d_state ON d_state.id=em.stateId
 	WHERE
 	    1=1
-	<if test="eids !=nul">
-	eid IN
-	<foreach collection="eids" item="eid" open="(" close=")" separator=",">
-	#{eid,jdbcType=INTEGER}
+	AND
+	<if test="ids != null">
+	em.id IN
+	<foreach collection="ids" item="id" open="(" close=")" separator=",">
+	#{id,jdbcType=INTEGER}
 	</foreach>
 	</if>
 	<if test="ecode !=null">
 	<![CDATA[ 
-	AND LOCATE(#{ecode,jdbcType=VARCHAR},e.ecode)>0
+	AND LOCATE(#{ecode,jdbcType=VARCHAR},em.ecode)>0
 	]]>
 	</if>
 	<if test="name !=null">
 	<![CDATA[
-	AND LOCATE(#{name,jdbcType=VARCHAR},e.name)>0  
+	AND LOCATE(#{name,jdbcType=VARCHAR},em.name)>0  
 	]]> 
 	</if>
 	<if test="idCard !=null">
 	<![CDATA[
-	AND LOCATE(#{idCard,jdbcType=VARCHAR},e.idCard)>0  
+	AND LOCATE(#{idCard,jdbcType=VARCHAR},em.idCard)>0  
 	]]> 
 	</if>
 	<if test="phone !=null">
 	<![CDATA[
-	AND LOCATE(#{phone,jdbcType=VARCHAR},e.phone)>0  
+	AND LOCATE(#{phone,jdbcType=VARCHAR},em.phone)>0  
 	]]> 
 	</if>
 	<if test="email !=null">
 	<![CDATA[
-	AND LOCATE(#{email,jdbcType=VARCHAR},e.email)>0  
+	AND LOCATE(#{email,jdbcType=VARCHAR},em.email)>0  
 	]]> 
 	</if>
 	<if test="qq !=null">
 	<![CDATA[
-	AND LOCATE(#{qq,jdbcType=VARCHAR},e.qq)>0  
+	AND LOCATE(#{qq,jdbcType=VARCHAR},em.qq)>0  
 	]]> 
 	</if>
 	<if test="positionIds !=null">
@@ -136,50 +542,49 @@
 	</foreach>
 	</if>
 	<if test="sex !=null">
-	AND e.sex=#{sex,jdbcType=VARCHAR}
+	AND em.sex=#{sex,jdbcType=VARCHAR}
 	</if>
-	<if test="marriageId !=null">
-	AND e.marriageId=#{marriageId,jdbcType=INTEGER}
+	<if test="marriage !=null">
+	AND em.marriage=#{marriage,jdbcType=INTEGER}
 	</if>
-	<if test=" nationId!=null">
-	AND d_nation.id=#{nationId,jdbcType=INTEGER}
+	<if test=" nation!=null">
+	AND em.nation=#{nation,jdbcType=INTEGER}
 	</if>
 	<if test="minSalary !=null">
 	<![CDATA[
-	AND e.salary >= #{minSalary,jdbcType=DECIMAL}
+	AND em.salary >= #{minSalary,jdbcType=DECIMAL}
 	]]>
 	</if>
 	<if test="maxSalary !=null">
 	<![CDATA[
-	AND e.salary <=#{maxSalary,jdbcType=DECIMAL}
+	AND em.salary <=#{maxSalary,jdbcType=DECIMAL}
 	]]>
 	</if>
-	<if test="salaryTypeId !=null">
-	AND d_salary.id=#{salaryTypeId,jdbcType=INTEGER}
+	<if test="salaryType !=null">
+	AND em.salaryType=#{salaryType,jdbcType=INTEGER}
 	</if>
 	<if test="minBeginTime !=null">
 	<![CDATA[
-	AND e.beginTime >=#{minBeginTime,jdbcType=TIMESTAMP}
+	AND em.beginTime >=#{minBeginTime,jdbcType=TIMESTAMP}
 	]]>
 	</if>
 	<if test="maxBeginTime !=null">
 	<![CDATA[
-	AND e.beginTime <=#{maxBeginTime,jdbcType=TIMESTAMP}
+	AND em.beginTime <=#{maxBeginTime,jdbcType=TIMESTAMP}
 	]]>
 	</if>
 	<if test="minEndTime !=null">
 	<![CDATA[
-	AND e.endTime <=#{minEndTime,jdbcType=TIMESTAMP}
+	AND em.endTime <=#{minEndTime,jdbcType=TIMESTAMP}
 	]]>
 	</if>
 	<if test="maxEndTime !=null">
 	<![CDATA[
-	AND e.endTime <=#{maxEndTime,jdbcType=TIMESTAMP}
+	AND em.endTime <=#{maxEndTime,jdbcType=TIMESTAMP}
 	]]>
 	</if>
 	<if test="delflag !=null">
-	AND e.delflag=#{delflag,jdbcType=INTEGER}
-	AND au.delflag=#{delflag,jdbcType=INTEGER}
+	AND em.delflag=#{delflag,jdbcType=INTEGER}
 	</if>
     <if test="stateId !=null">
     AND d_state.id=#{stateId,jdbcType=INTEGER}
@@ -189,36 +594,26 @@
     </if>
 	</select>
 	
-	<select id="findEmployee" resultMap="EmployeeResult" parameterType="employee">
+	<select id="findEmployee" resultMap="EmployeeExtendMap" parameterType="employee">
 	SELECT
-	    <include refid="base_all"/>
+	    <include refid="extend_column" />
 	FROM
-	    employee e
+	    employee em
 	LEFT JOIN
-	    authority_employee ar ON e.eid=ae.eid
+	    positions p ON p.id=em.positionId
 	LEFT JOIN
-	    authority au ON ae.aid==au.id
+	    department dep ON dep.id=em.departmentId
 	LEFT JOIN
-	    dictionary d_nation ON e.nationId=d_nation.id
-	LEFT JOIN
-	    dictionary d_qua ON  e.qualificationId = d_qua.id
-	LEFT JOIN
-	    positions p ON p.id=e.positionId
-	LEFT JOIN
-	    department dep ON dep.id=e.departmentId
-	LEFT JOIN
-	    dictionary d_state ON d_state.id=e.stateId
-	LEFT JOIN
-	    dictionart d_salary ON d_salary.id=e.salaryTypeId
+	    dictionary d_state ON d_state.id=em.stateId
 	WHERE
-	    e.delflag = #{delflag,jdbcType=TINYINT}
+	    em.delflag = #{delflag,jdbcType=TINYINT}
 	AND
 	    au.delflag=#{delflag,jdbcType=INTEGER}
 	<if test="ecode !=null">
-	AND e.ecode = #{ecode,jdbcType=VARCHAR}
+	AND em.ecode = #{ecode,jdbcType=VARCHAR}
 	</if>
 	<if test="name !=null">
-	AND e.name=#{name,jdbcType=VARCHAR}
+	AND em.name=#{name,jdbcType=VARCHAR}
 	</if>
 	<if test="positionId !=null">
 	AND p.id = #{positionId,jdbcType=INTEGER}
@@ -227,119 +622,28 @@
 	AND dep.id= #{departmentId,jdbcType=INTEGER}
 	</if>
 	<if test="sex !=null">
-	AND e.sex=#{sex,jdbcType=VARCHAR}
+	AND em.sex=#{sex,jdbcType=VARCHAR}
 	</if>
-	<if test="marriageId !=null">
-	AND e.marriageId = #{marriageId,jdbcType=TINYINT}
+	<if test="marriage !=null">
+	AND em.marriage = #{marriage,jdbcType=TINYINT}
 	</if>
-	<if test=" nationId!=null">
-	AND d_nation.id=#{nationId,jdbcType=INTEGER}
+	<if test=" nation!=null">
+	AND em.nation=#{nation,jdbcType=INTEGER}
 	</if>
-	<if test="salaryTypeId !=null">
-	AND d_salary.id=#{salaryTypeId,jdbcType=INTEGER}
+	<if test="salaryType !=null">
+	AND em.salaryType=#{salaryType,jdbcType=INTEGER}
 	</if>
     <if test="stateId !=null">
     AND d_state.id=#{stateId,jdbcType=INTEGER}
     </if> 
 	</select>
 
-    <insert id="insert" parameterType="employee" useGeneratedKeys="true" keyProperty="eid">
-    INSERT INTO
-         employee
-    (ecode     ,name     ,sex   ,birth  ,idCard ,
-     marriageId,nationId ,phone ,email  ,qq ,
-     address   ,qualificationId ,school ,avatar,
-     positionId,departmentId    ,stateId,salary ,
-     salaryTypeId,beginTime     ,creator,createtime )
-     VALUES
-     (
-     #{ecode,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{sex,jdbcType=VARCHAR},
-     #{birth,jdbcType=TIMESTAMP},#{idCard,jdbcType=VARCHAR},#{marriageId,jdbcType=INTEGER},
-     #{nationId,jdbcType=INTEGER},#{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},
-     #{qq,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{qualificationId,jdbcType=INTEGER},
-     #{school,jdbcType=VARCHAR},#{avatar,jdbcType=VARCHAR},#{positionId,jdbcType=INTEGER},
-     #{departmentId,jdbcType=INTEGER},#{stateId,jdbcType=INTEGER},#{salary,jdbcType=DECIMAL},
-     #{salaryTypeId,jdbcType=INTEGER},#{beginTime,jdbcType=TIMESTAMP},#{creator,jdbcType=INTEGER},
-     NOW())
-    </insert>
-	
-	<update id="update" parameterType="employee" >
-	UPDATE
-	    employee
-	SET
-	<trim suffixOverrides=",">
-	<if test="name !=null">
-	name=#{name,jdbcType=VARCHAR},
-	</if>
-	<if test="sex !=null">,
-	sex=#{sex,jdbcType=VARCHAR}
-	</if>
-	<if test="birth !=null">
-	birth=#{birth,jdbcType=TIMESTAMP},
-	</if>
-	<if test="idCard !=null">
-	idCard=#{idCard,jdbcType=VARCHAR},
-	</if>
-	<if test="marriageId !=null">
-	marriageId=#{marriageId,jdbcType=INTEGER},
-	</if>
-	<if test=" nationId!=null">
-	nationId=#{nationId,jdbcType=INTEGER},
-	</if>
-	<if test="phone !=null">
-	phone=#{phone,jdbcType=VARCHAR},
-	</if>
-	<if test="email !=null">
-	email=#{email,jdbcType=VARCHAR},
-	</if>
-	<if test=" qq!=null">
-	qq=#{qq,jdbcType=VARCHAR},
-	</if>
-	<if test="address !=null">
-	address=#{address,jdbcType=VARHCAR},
-	</if>
-	<if test="qualificationId !=null">
-	qualificationId=#{qualificationId,jdbcType=INTEGER},
-	</if>
-	<if test="school !=null">
-	school=#{school,jdbcType=VARCHAR},
-	</if>
-	<if test="avatar !=null">
-	avatar=#{avatar,jdbcType=VARCHAR},
-	</if>
-	<if test=" positionId!=null">
-	positionId=#{positionId,jdbcType=INTEGER},
-	</if>
-	<if test=" departmentId!=null">
-	departmentId=#{departmentId,jdbcType=INTEGER},
-	</if>
-	<if test="salary !=null">
-	salary=#{salary,jdbcType=VARCHAR},
-	</if>
-	<if test=" salaryTypeId!=null">
-	salaryTypeId=#{salaryTypeId,jdbcType=INTEGER},
-	</if>
-	<if test="beginTime !=null">
-	beginTime=#{beginTime,jdbcType=TIMESTAMP},
-	</if>
-	<if test="endTime !=null">
-	endTime=#{endTime,jdbcType=TIMESTAMP},
-	</if>
-	<if test="adminId !=null">
-	adminId = #{adminId}
-	</if>
-	</trim>
-	WHERE
-	     delflag =#{delflag,jdbcType=INTEGER}
-	<if test="eid !=null">
-	AND eid=#{eid,jdbcType=INTEGER}
-	</if>
-	<if test="ecode !=null">
-	AND ecode = #{ecode,jdbcType=VARCHAR}
-	</if>
-	<if test="stateId !=null">
-	AND stateId !=#{stateId,jdbcType=INTEGER}
-	</if>
-	</update>
-
+    <select id="testmethod" parameterType="employee" resultType="employee">
+    SELECT * FROM employee
+    WHERE
+    ecode = #{ecode, jdbcType=VARCHAR}
+    AND
+    delflag = #{delflag, jdbcType=TINYINT}
+    </select>
+    
 </mapper>

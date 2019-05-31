@@ -10,8 +10,7 @@ public class CreateTest {
 
 	public static void main(String[] args) {
 		//System.out.println(IdEntity.class.getSuperclass() == Object.class);
-		Class<Diary> cls = Diary.class;
-		Field[] fs = cls.getDeclaredFields();
+		System.out.println(Integer.parseInt("01"));
 	}
 
 }

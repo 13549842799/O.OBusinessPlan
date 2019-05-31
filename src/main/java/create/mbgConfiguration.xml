@@ -14,9 +14,9 @@
 
         <!-- 数据库链接URL、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/oobsinessplan"
-                        userId="root"
-                        password="newpw">
+                        connectionURL="jdbc:mysql://39.97.99.250:3306/oobusinessplan"
+                        userId="cyz"
+                        password="cyz1996224">
         </jdbcConnection>
 
         <!--

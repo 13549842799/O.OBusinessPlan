@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.admin.mapper.AdminMapper;
+import com.oo.businessplan.admin.mapper.EmployeeMapper;
 import com.oo.businessplan.admin.pojo.form.AdminForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
 import com.oo.businessplan.article.mapper.ClassifyMapper;
@@ -35,6 +37,7 @@ import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.Resource;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
+import com.sun.org.apache.bcel.internal.generic.CPInstruction;
 
 import io.swagger.util.Json;
 
@@ -121,5 +124,13 @@ public class MyBatisTest {
 		System.out.println(page);
 	}
 	
+	@Test
+	public void testEmployee () {
+		EmployeeMapper mapper = context.getBean("employeeMapper", EmployeeMapper.class);
+		Map<String, Object> params = new HashMap<>();
+		params.put("ecode", "12312");
+		params.put("ab", "12312");
+		mapper.testmethod(params);
+	}
 
 }

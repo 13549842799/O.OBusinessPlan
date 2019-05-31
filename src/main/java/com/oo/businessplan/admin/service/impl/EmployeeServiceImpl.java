@@ -1,5 +1,7 @@
 package com.oo.businessplan.admin.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,19 +37,9 @@ public class EmployeeServiceImpl extends RedisCacheSupport<Employee> implements 
 	@Autowired
 	private UpLoadUtil upLoadUtil;
 	
-	/*@Override
-	public Employee getObject(String key, int expired, int timeUnit) {
-		return super.getObject( key,EntityConstants.REDIS_EMPLOYEE_NAME,expired, timeUnit);
-	}
-
-	@Override
-	public List<Employee> getListObject(String key, int expired, int timeUnit) {
-		return super.getListObject( key, EntityConstants.REDIS_EMPLOYEE_NAME, expired, timeUnit);
-	}*/
-
 	@Override
 	@Transactional
-	public void addEmployee(Employee employee) throws PatternErrorException {
+	public void addEmployee(Employee employee) throws PatternErrorException, UnsupportedEncodingException, NoSuchAlgorithmException {
 		
 		//1.校检employee中的数据是否合法		
 		//1.1校检名称		
@@ -73,7 +65,7 @@ public class EmployeeServiceImpl extends RedisCacheSupport<Employee> implements 
 			throw new PatternErrorException(ResultConstant.PATTERN_EMAIL_ERROR);
 		}
 		//2.插入职员记录
-		employeeMapper.insert(employee);//此处存在触发器，部门表人数字段自动增1
+		employeeMapper.add(employee);//此处存在触发器，部门表人数字段自动增1
 		//3.插入支援编号
 		//3.1生成支援编号  转到触发器中进行  并入部门人数增加触发器中
 		/*int eid = employee.getEid();
@@ -102,12 +94,20 @@ public class EmployeeServiceImpl extends RedisCacheSupport<Employee> implements 
 		    throw new ObjectNotExistException(ResultConstant.AVATAR_UPLOAD_ERROR);
 	    }
   	    Employee employee = new Employee();
-  	    employee.setEid(employeeId);
+  	    employee.setId(employeeId);
   	    employee.setAvatar(newPath);
   	    employee.setDelflag(DeleteFlag.VALID.getCode());
   	    employeeMapper.update(employee);
 		
 	}
+
+	@Override
+	public Employee getByAdmin(int adminId, String accountName) {
+		Map<String, Object> otherParams = new HashMap<>();
+		otherParams.put("adminId", adminId);
+		return getObject(accountName, EXPIRED, TIMEUNIT, otherParams);
+	}
+
 	
 	
 	

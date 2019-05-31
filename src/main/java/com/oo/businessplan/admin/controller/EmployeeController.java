@@ -2,12 +2,15 @@ package com.oo.businessplan.admin.controller;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +20,7 @@ import com.oo.businessplan.admin.pojo.entity.Employee;
 import com.oo.businessplan.admin.service.EmployeeService;
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.constant.SystemKey;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.exception.PatternErrorException;
 import com.oo.businessplan.common.net.SessionInfo;
@@ -65,9 +69,11 @@ public class EmployeeController extends BaseController{
 	    	  Timestamp birth_t = birth==null?null:new Timestamp(birth);
 	    	  Timestamp beginTime_t = beginTime==null?null:new Timestamp(beginTime);
 	    	  
-	    	  Employee employee = new Employee(null, null, name, sex, birth_t, idCard, marriageId, nationId, null, phone,
-	    			  email, qq, address, qualificationId, null, school, null, positionId, null, departmentId, null, stateId, 
-	    			  null, salary, salaryTypeId, null, beginTime_t, null, null, null, null, null, null, null);
+	    	  Employee employee = new Employee(null, null, name, sex, birth_t, idCard, marriageId, nationId, null, phone, email, qq, address
+	    			  , qualificationId, null, school, null, positionId, null, departmentId, null, stateId
+	    			  , null, salary, salaryTypeId, null, beginTime_t
+	    			  , null, null, null, null, DeleteFlag.VALID.getCode(), null);
+	    	  
 	    	  
 	    	  try {
 				SessionInfo info = matchSessionInfo(request);
@@ -79,6 +85,32 @@ public class EmployeeController extends BaseController{
 				return response.fail(e.getMessage());
 			  } 
 	    	   	
+	    }
+	    
+	    @GetMapping("/info.re")
+	    @ApiOperation(value = "通过账号获取关联的员工信息")
+	    // @IgnoreSecurity()
+	    public ResponseResult<Employee> employeeInfo(HttpServletRequest request){
+	    	
+	    	  ResponseResult<Employee> response = new ResponseResult<>();
+	    	  
+	    	  SessionInfo info = matchSessionInfo(request);
+	    	  Employee employee = employeeService.getByAdmin(Integer.parseInt(String.valueOf(info.getId())), info.getName());   	  	  
+	    	  return response.success(employee); 	
+	    }
+	    
+	    @GetMapping("/temp.re")
+	    @ApiOperation(value = "通过账号获取关联的员工信息")
+	    // @IgnoreSecurity()
+	    public ResponseResult<Employee> employeeEdit(HttpServletRequest request,
+	    		@RequestBody Employee employee){
+	    	
+	    	  ResponseResult<Employee> response = new ResponseResult<>();
+	    	  
+	    	  SessionInfo info = matchSessionInfo(request);
+	    	  int adminId = Integer.parseInt(String.valueOf(info.getId()));
+	    	  
+	    	  return response.success(employee); 	
 	    }
 	    
 	    @RequestMapping(value="/page/add/uploadAvatar.do",method=RequestMethod.POST)

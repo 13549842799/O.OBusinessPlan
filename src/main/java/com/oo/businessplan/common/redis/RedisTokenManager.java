@@ -125,10 +125,25 @@ public class RedisTokenManager implements TokenManager{
 
 	@Override
 	public String createToken(SessionInfo sessionInfo) {
-		
+		long availableTime = System.currentTimeMillis();
+		long l = expireds[RedisCacheService.EXPIRED] * 1000; //因为上面的是毫秒，所以这里要* 1000
+		switch (timeUnits[RedisCacheService.TIMEUNIT].name()) {
+		case "SECONDS":
+			availableTime += l;
+			break;
+		case "MINUTES":
+			availableTime += l*60;
+			break;
+		case "HOURS":
+			availableTime += l*60*60;
+			break;
+		case "DAYS":
+			availableTime += l*60*60*24;
+			break;
+		}
 		String token =UUID.randomUUID().toString();
 		sessionInfo.setToken(token);
-		
+		sessionInfo.setAvailableDate(availableTime);
 		Map<String,Object> map = new HashMap<>();
 		map.put("session", sessionInfo);
 		
@@ -136,6 +151,16 @@ public class RedisTokenManager implements TokenManager{
 				, sessionInfo,RedisCacheService.EXPIRED,RedisCacheService.TIMEUNIT);
 		
 		return token;
+	}
+	
+	public void saveSession(SessionInfo sessionInfo) {
+		saveForMap(sessionInfo.getName(),EntityConstants.REDIS_SESSION_NAME
+				, sessionInfo,RedisCacheService.EXPIRED,RedisCacheService.TIMEUNIT);
+	}
+	
+	public long availableTime (long expired, TimeUnit timeUnit) {
+		timeUnit.name();
+		return 0l;
 	}
 	
 	/**

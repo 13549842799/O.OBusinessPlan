@@ -1,6 +1,8 @@
 package com.oo.businessplan.admin.service;
 
-import java.util.Map;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,8 +17,10 @@ public interface EmployeeService extends BaseService<Employee>{
 	  * 增加职员
 	  * @param employee
 	 * @throws PatternErrorException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws UnsupportedEncodingException 
 	  */
-	 public void  addEmployee(Employee employee) throws PatternErrorException;
+	 public void  addEmployee(Employee employee) throws PatternErrorException, UnsupportedEncodingException, NoSuchAlgorithmException;
 	 
 	 /**
 	  * 上传员工的证件照片
@@ -26,5 +30,12 @@ public interface EmployeeService extends BaseService<Employee>{
 	 * @throws ObjectNotExistException 
 	  */
 	 public void upLoadAvatar(HttpServletRequest request,int employeeId,Integer modifier) throws ObjectNotExistException;
+
+	 /**
+	  * 通过账号获取关联的员工信息
+	  * @param accountName 用户名
+	  * @return
+	  */
+	 public Employee getByAdmin(int adminId, String accountName);
 
 }
