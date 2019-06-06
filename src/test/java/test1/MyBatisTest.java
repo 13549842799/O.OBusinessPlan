@@ -128,9 +128,9 @@ public class MyBatisTest {
 	public void testEmployee () {
 		EmployeeMapper mapper = context.getBean("employeeMapper", EmployeeMapper.class);
 		Map<String, Object> params = new HashMap<>();
-		params.put("ecode", "12312");
-		params.put("ab", "12312");
-		mapper.testmethod(params);
+		params.put("adminId", "1");
+		params.put("delflag", DeleteFlag.VALID.getCode());
+		mapper.getFullEmployeeByAdmin(params);
 	}
 
 }

@@ -37,6 +37,10 @@
         <result property="stateName" column="stateName"/>
         <result property="creatorName" column="creatorName"/>
     </resultMap>
+    
+    <sql id="simple_column">
+        em.id,em.ecode,em.name,em.idCard
+    </sql>
 
      <sql id="base_column">
         em.id,em.ecode,em.name,em.sex,em.birth,em.idCard,em.marriage,
@@ -45,7 +49,19 @@
      </sql>
      
      <sql id="extend_column">
-         <include refid="base_column" />,em.positionName,em.departmentName,em.stateName,em.creatorName
+         <include refid="base_column" />,po.pname as positionName,de.dname as departmentName,d_state.name as stateName,ad.accountname as creatorName
+     </sql>
+     
+     <!-- 关联部门，职位，状态表  -->
+     <sql id="full_relation">
+        LEFT JOIN
+	    	positions po ON po.poid=em.positionId
+		LEFT JOIN
+		    department de ON de.did=em.departmentId
+		LEFT JOIN
+		    dictionary d_state ON d_state.id=em.stateId
+		LEFT JOIN
+		    admin ad ON ad.id = em.creator
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
@@ -375,11 +391,22 @@
     </select>
     
     <select id="getByStr" resultType="employee" >
-        SELECT 
-        <include refid="base_column"/>
+        SELECT
+        <include refid="simple_column" />
         FROM employee em
         WHERE 
             em.`adminId` = #{adminId, jdbcType=INTEGER} 
+        AND em.`delflag` = #{delflag,jdbcType=TINYINT}
+    </select>
+    
+    <select id="getFullEmployeeByAdmin" resultMap="EmployeeExtendMap">
+    	SELECT
+    	<include refid="extend_column"/>
+    	FROM
+    	    employee em
+    	<include refid="full_relation" />
+    	WHERE
+    	    em.`adminId` = #{adminId, jdbcType=INTEGER} 
         AND em.`delflag` = #{delflag,jdbcType=TINYINT}
     </select>
 
@@ -485,11 +512,13 @@
 	FROM
 	    employee em
 	LEFT JOIN
-	    positions p ON p.id=em.positionId
+	    positions po ON po.id=em.positionId
 	LEFT JOIN
-	    department dep ON dep.id=em.departmentId
+	    department de ON de.id=em.departmentId
 	LEFT JOIN
 	    dictionary d_state ON d_state.id=em.stateId
+	LEFT JOIN
+	    admin ad ON ad.id = em.creator
 	WHERE
 	    1=1
 	AND
@@ -530,13 +559,13 @@
 	]]> 
 	</if>
 	<if test="positionIds !=null">
-	AND p.id IN 
+	AND po.id IN 
 	<foreach collection="positionIds" item="po" open="(" close=")" separator=",">
 	#{po,jdbcType=INTEGER}
 	</foreach>
 	</if>
 	<if test="departmentIds !=null">
-	AND dep.id IN
+	AND de.id IN
 	<foreach collection="departmentIds" item="de" open="(" close=")" separator=",">
 	#{de,jdbcType=INTEGER}
 	</foreach>
@@ -600,9 +629,9 @@
 	FROM
 	    employee em
 	LEFT JOIN
-	    positions p ON p.id=em.positionId
+	    positions po ON po.id=em.positionId
 	LEFT JOIN
-	    department dep ON dep.id=em.departmentId
+	    department de ON de.id=em.departmentId
 	LEFT JOIN
 	    dictionary d_state ON d_state.id=em.stateId
 	WHERE
@@ -616,10 +645,10 @@
 	AND em.name=#{name,jdbcType=VARCHAR}
 	</if>
 	<if test="positionId !=null">
-	AND p.id = #{positionId,jdbcType=INTEGER}
+	AND po.id = #{positionId,jdbcType=INTEGER}
 	</if>
 	<if test="departmentId !=null">
-	AND dep.id= #{departmentId,jdbcType=INTEGER}
+	AND de.id= #{departmentId,jdbcType=INTEGER}
 	</if>
 	<if test="sex !=null">
 	AND em.sex=#{sex,jdbcType=VARCHAR}

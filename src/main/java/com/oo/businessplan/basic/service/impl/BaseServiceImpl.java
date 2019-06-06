@@ -84,13 +84,17 @@ public abstract class BaseServiceImpl<T> {
 	}
 	
 	/**
-	 * 为对象补充值为正常的删除标志属性
+	 * 为对象补充值为正常的删除标志属性(1)
 	 * @param t
 	 */
 	private void fullDeleteSign (T t) {
 		fullDeleteSign(t, DeleteFlag.VALID.getCode()); 
 	}
 	
+	/**
+	 * 为对象补充代表删除的删除标志(0)
+	 * @param t
+	 */
 	private void fullDelSign(T t) {
 		fullDeleteSign(t, DeleteFlag.DELETE.getCode()); 
 	}

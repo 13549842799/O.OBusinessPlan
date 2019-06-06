@@ -25,6 +25,13 @@ public interface EmployeeMapper extends RedisCacheMapper<Employee>{
 	 
 	 Employee findEmployee(EmployeeForm eform);
 	 
+	 /**
+	  * 通过关联的账号获取全部的职员的信息
+	  * @param params
+	  * @return
+	  */
+	 Employee getFullEmployeeByAdmin(Map<String, Object> params);
+	 
 	 List<Employee> list(EmployeeForm form);
 
 	 Employee testmethod(Map<String, Object> params);

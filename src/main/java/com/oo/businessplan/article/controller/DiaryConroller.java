@@ -105,12 +105,12 @@ public class DiaryConroller extends BaseController{
 	}
 	
 	@DeleteMapping("/s/{id}/delete.do")
-	@IgnoreSecurity
+	@IgnoreSecurity(authority = false)
 	public ResponseResult<Diary> deleteDiary(HttpServletRequest request,
 			@PathVariable(name="id") Integer id) {
 		
 		ResponseResult<Diary> response = new ResponseResult<>();
-		Diary diary = new Diary(id);
+		Diary diary = new Diary(id, currentAdminId(request));
 		diary.setModifier(currentAdminId(request));
 		if (diaryService.delete(diary)) {
 			return response.success();

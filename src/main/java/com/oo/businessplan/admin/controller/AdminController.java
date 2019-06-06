@@ -326,8 +326,8 @@ public class AdminController extends BaseController{
 	   }
 
 	   @ApiOperation(value = "账号列表")
-	   @RequestMapping(value="/adminsys/admins.re", method=RequestMethod.GET)
-	   @IgnoreSecurity(authority = false)
+	   @RequestMapping(value="/sys/admins.re", method=RequestMethod.GET)
+	   @IgnoreSecurity()
 	   public ResponseResult<PageInfo<Padmin>> adminList(HttpServletRequest request,
 			   @ApiParam(value = "用户名", required = false)  @RequestParam(required=false,value="accountName")String accountName,
 			   @ApiParam(value = "昵称", required = false)  @RequestParam(required=false,value="nikename")String nikename,

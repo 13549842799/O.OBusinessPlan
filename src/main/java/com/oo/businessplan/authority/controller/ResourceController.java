@@ -114,7 +114,7 @@ public class ResourceController extends BaseController{
 		  
 		ResponseResult<Object> response = new ResponseResult<>();
 		
-		if (StringUtil.isEmpty(request_url)) {
+		if (pid != null && StringUtil.isEmpty(request_url)) {
 			return response.fail("请求路径不能为空");
 		}
 		Resource parent = null;

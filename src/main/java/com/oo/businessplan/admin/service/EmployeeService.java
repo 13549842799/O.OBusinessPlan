@@ -32,10 +32,21 @@ public interface EmployeeService extends BaseService<Employee>{
 	 public void upLoadAvatar(HttpServletRequest request,int employeeId,Integer modifier) throws ObjectNotExistException;
 
 	 /**
-	  * 通过账号获取关联的员工信息
+	  * 通过账号获取关联的员工的简单信息
 	  * @param accountName 用户名
 	  * @return
 	  */
-	 public Employee getByAdmin(int adminId, String accountName);
+	 default Employee getByAdmin(int adminId, String accountName) {
+		 return getByAdmin(adminId, accountName, 0);
+	 };
+	 
+	 /**
+	  * 通过账号获取关联的员工的所有信息
+	  * @param adminId
+	  * @param accountName
+	  * @param type 0-获取简易信息 1-获取所有信息
+	  * @return
+	  */
+	 Employee getByAdmin(int adminId, String accountName, int type);
 
 }

@@ -102,9 +102,13 @@ public class EmployeeServiceImpl extends RedisCacheSupport<Employee> implements 
 	}
 
 	@Override
-	public Employee getByAdmin(int adminId, String accountName) {
+	public Employee getByAdmin(int adminId, String accountName, int type) {
 		Map<String, Object> otherParams = new HashMap<>();
 		otherParams.put("adminId", adminId);
+		if (type == 1) {
+			otherParams.put("delflag", DeleteFlag.VALID.getCode());
+			return employeeMapper.getFullEmployeeByAdmin(otherParams);
+		}
 		return getObject(accountName, EXPIRED, TIMEUNIT, otherParams);
 	}
 

@@ -209,7 +209,7 @@
 	FROM
 	    admin ad
 	LEFT JOIN
-	    employee em ON ad.relatedid=em.eid
+	    employee em ON ad.relatedid=em.id
 	LEFT JOIN
 	    admin_role ar ON ad.id=ar.aid
 	LEFT JOIN

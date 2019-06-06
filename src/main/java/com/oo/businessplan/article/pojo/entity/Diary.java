@@ -35,6 +35,11 @@ public class Diary extends AbstractArticle<Integer> {
 		super(id, delflag);
 	}
 
+	public Diary(Integer id, Integer creator) {
+		this(id);
+		this.setCreator(creator);
+	}
+	
 	public Diary(Integer id) {
 		super(id);
 	}

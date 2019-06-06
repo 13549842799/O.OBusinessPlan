@@ -48,6 +48,9 @@
                 <if test="type != null ">
                 type,
                 </if>
+                <if test="level != null">
+                level,
+                </if>
                 <if test="delflag != null ">
                 delflag,
                 </if>
@@ -66,6 +69,9 @@
                 </if>
                 <if test="type != null ">
                 #{type},
+                </if>
+                <if test="level != null">
+                #{level},
                 </if>
                 <if test="delflag != null ">
                 #{delflag,jdbcType=TINYINT},

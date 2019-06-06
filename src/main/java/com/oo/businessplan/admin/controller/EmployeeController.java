@@ -90,12 +90,13 @@ public class EmployeeController extends BaseController{
 	    @GetMapping("/info.re")
 	    @ApiOperation(value = "通过账号获取关联的员工信息")
 	    // @IgnoreSecurity()
-	    public ResponseResult<Employee> employeeInfo(HttpServletRequest request){
+	    public ResponseResult<Employee> employeeInfo(HttpServletRequest request,
+	    		@RequestParam(required = false, value="type", defaultValue = "0") int type){ // type 0-简单  1-所有信息
 	    	
 	    	  ResponseResult<Employee> response = new ResponseResult<>();
 	    	  
 	    	  SessionInfo info = matchSessionInfo(request);
-	    	  Employee employee = employeeService.getByAdmin(Integer.parseInt(String.valueOf(info.getId())), info.getName());   	  	  
+	    	  Employee employee = employeeService.getByAdmin(Integer.parseInt(String.valueOf(info.getId())), info.getName(), type);   	  	  
 	    	  return response.success(employee); 	
 	    }
 	    
