@@ -45,6 +45,22 @@ public class ClassifyServiceImpl extends BaseServiceImpl<Classify> implements Cl
 
 	}
 
+
+
+	@Override
+	public Classify getUnique(Classify cls) {
+		
+		return classifyMapper.getUnique(cls);
+	}
+
+
+
+	@Override
+	public boolean checkExists(String name, int creator, byte childType) {
+		
+		return classifyMapper.count(name, Classify.SYSTEMCLASSIFY, childType, creator, DeleteFlag.VALID.getCode()) > 0;
+	}
+
 	
 	
 }

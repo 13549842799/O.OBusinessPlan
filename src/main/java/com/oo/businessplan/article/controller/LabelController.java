@@ -43,6 +43,7 @@ public class LabelController extends BaseController{
     		HttpServletRequest request) {
         ResponseResult<List<Label>> response = new ResponseResult<>();
         Label label = new Label(null, DeleteFlag.VALID.getCode());
+        label.setAdminId(currentAdminId(request));
         List<Label> labels = labelService.getList(label);
         return response.success(labels);
     }

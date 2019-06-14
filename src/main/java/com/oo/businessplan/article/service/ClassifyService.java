@@ -7,6 +7,22 @@ import com.oo.businessplan.basic.service.BaseService;
 public interface ClassifyService extends BaseService<Classify> {
 	
 	/**
+	 * 根据条件获取唯一的分类
+	 * @param cls
+	 * @return
+	 */
+	Classify getUnique(Classify cls);
+	
+	/**
+	 * 判断用户在目标文章类型下是否存在同名的分类, 
+	 * 这个判断也包括系统的分类，如果存在系统分类的名称是 <name> 的话，则与creator无关。
+	 * @param name
+	 * @param childType
+	 * @return
+	 */
+	boolean checkExists(String name, int creator, byte childType);
+	
+	/**
 	 * 检查目标分类下是否存在文章
 	 * @param cls
 	 * @return

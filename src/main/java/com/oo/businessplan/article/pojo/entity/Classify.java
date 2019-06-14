@@ -32,8 +32,14 @@ public class Classify extends CreatorEntity<Integer> implements Serializable{
 	 */
 	public static final byte CUSTOMCLASSIFY = 2;
 	
+	/**
+	 * 日记
+	 */
 	public static final byte DIARY = 1;
 	
+	/**
+	 * 总结
+	 */
 	public static final byte FinalReport = 2;
 	
 	public static final Map<Byte, String> mapperTable = new HashMap<>();

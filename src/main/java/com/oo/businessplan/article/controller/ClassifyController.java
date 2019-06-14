@@ -136,7 +136,11 @@ public class ClassifyController extends BaseController {
 		ResponseResult<Classify> response = new ResponseResult<>();
 		if (cls.getChildType() == null || StringUtil.isEmpty(cls.getName())) {
 			return response.fail(ResultConstant.PARAMETER_REQUIRE_NULL);
-		}		
+		}
+		cls.setName(cls.getName().trim());
+		if (clsService.checkExists(cls.getName(), cls.getCreator(), cls.getChildType())) {
+			return response.fail("存在同名的分类");
+		}
 		cls.setCreateTime(new Timestamp(new Date().getTime()));
 		clsService.add(cls, Integer.class);
 

@@ -84,7 +84,7 @@ public class MyBatisTest {
 	@Test
 	public void testClassify() {
 		ClassifyMapper cm   = context.getBean("classifyMapper", ClassifyMapper.class);
-		Classify classify  = new Classify();
+		/*Classify classify  = new Classify();
 		classify.setChildType((byte)1);
 		classify.setCreator(1);
 		classify.setDelflag(DeleteFlag.VALID.getCode());
@@ -96,8 +96,9 @@ public class MyBatisTest {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	   
+		}*/
+	   int count  = cm.count("光辉岁月", Classify.SYSTEMCLASSIFY, (byte)1, 1, DeleteFlag.VALID.getCode());
+	   System.out.println(count);
 	}
 	
 	@Test

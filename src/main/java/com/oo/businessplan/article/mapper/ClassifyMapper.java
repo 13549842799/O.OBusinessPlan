@@ -35,4 +35,14 @@ public interface ClassifyMapper extends BaseMapper<Classify> {
 	@Update("UPDATE ${table} SET classify = #{newId} WHERE classify=#{oldClassifyId} AND creator = #{creator}")
 	void moveArticle(@Param("table")String table,@Param("creator") int creator,@Param("oldClassifyId") int oldClassifyId, @Param("newId") int newClassifyId);
 
+	/**
+	 * 通过条件获取分类
+	 * @param cls
+	 * @return
+	 */
+	@Select("SELECT * FROM classify WHERE name = #{name} AND delflag = #{delflag} AND childType = #{childType}")
+	Classify getUnique(Classify cls);
+
+	@Select("SELECT COUNT(0) FROM classify WHERE name = #{name} AND delflag = #{delflag,jdbcType=TINYINT} AND (type = #{type,jdbcType=TINYINT} OR (childType = #{childType, jdbcType=TINYINT} AND creator = #{creator}))")
+	int count(@Param("name")String name, @Param("type")byte type, @Param("childType")byte childType, @Param("creator")Integer creator,@Param("delflag")byte delflag);
 }

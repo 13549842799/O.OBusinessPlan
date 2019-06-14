@@ -74,6 +74,8 @@ public class SecurityAspect {
 	     //2.判断token是否有效
 	     SessionInfo sessionInfo = (SessionInfo)object;	     
 	     if (!sessionInfo.getToken().equals(token)) {
+	    	 System.out.println("newToken:" + token);
+	    	 System.out.println("oldToken:" + sessionInfo.getToken());
 	    	 String message = String.format("token [%s] is invalid ", token);
 	    	 throw new LoginException(message);
 		 }
