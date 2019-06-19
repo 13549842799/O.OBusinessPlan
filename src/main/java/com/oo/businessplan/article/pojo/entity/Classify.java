@@ -101,11 +101,11 @@ public class Classify extends CreatorEntity<Integer> implements Serializable{
 		this.name = name;
 	}
 
+	@JsonProperty(defaultValue="1")
 	public Byte getType() {
 		return type;
 	}
 
-	@JsonProperty(defaultValue="1")
 	public void setType(Byte type) {
 		this.type = type;
 	}

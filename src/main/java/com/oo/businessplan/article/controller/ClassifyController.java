@@ -186,14 +186,20 @@ public class ClassifyController extends BaseController {
 	 */
 	private ResponseResult<Classify> updarteCommon(
 			HttpServletRequest request,
-			@RequestBody Classify cls,
+			Classify cls,
 			int user) {
 		ResponseResult<Classify> response = new ResponseResult<>();
+		System.out.println(cls.getType() == Classify.SYSTEMCLASSIFY);
+		System.out.println(cls.getChildType() == null);
+		System.out.println(StringUtil.isEmpty(cls.getName()));
 		if ((user == 1 && cls.getType() == Classify.SYSTEMCLASSIFY) || cls.getChildType() == null || StringUtil.isEmpty(cls.getName())) {
 			return response.fail(ResultConstant.PARAMETER_REQUIRE_NULL);
 		}
 		if (cls.getId() == null) {
 			return response.error(ResultConstant.SELECT_OBJECT);
+		}
+		if (clsService.checkExists(cls.getName(), cls.getCreator(), cls.getChildType())) {
+			return response.fail("存在同名的分类");
 		}
 		int result = clsService.update(cls);
 		return response.updateResult(result);

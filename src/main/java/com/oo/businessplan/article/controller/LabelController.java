@@ -20,6 +20,7 @@ import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
+import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.article.service.LabelService;
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Label;
@@ -40,9 +41,13 @@ public class LabelController extends BaseController{
     @IgnoreSecurity
     @GetMapping(value = "/list.re")
     public ResponseResult<List<Label>> list(
-    		HttpServletRequest request) {
+    		HttpServletRequest request,
+    		@RequestParam(value="name", required=false) String name) {
         ResponseResult<List<Label>> response = new ResponseResult<>();
         Label label = new Label(null, DeleteFlag.VALID.getCode());
+        if (!StringUtil.isEmpty(name)) {
+        	label.setName(name);
+        }
         label.setAdminId(currentAdminId(request));
         List<Label> labels = labelService.getList(label);
         return response.success(labels);
@@ -86,6 +91,23 @@ public class LabelController extends BaseController{
     @IgnoreSecurity
     @PatchMapping(value = "/update.do")
     public ResponseResult<Object> updateLabel(
+    		@RequestBody Label label,
+    		HttpServletRequest request) {
+        ResponseResult<Object> response = new ResponseResult<>();
+        label.setAdminId(currentAdminId(request));
+        
+		try {
+			int count = labelService.update(label);
+			 return response.updateResult(count);
+		} catch (DuplicateKeyException e) {
+			e.printStackTrace();
+			return response.fail("已经存在相同的名字");
+		}
+    }
+    
+    @IgnoreSecurity
+    @PostMapping(value = "/update_app.do")
+    public ResponseResult<Object> updateLabelFromApp(
     		@RequestBody Label label,
     		HttpServletRequest request) {
         ResponseResult<Object> response = new ResponseResult<>();
