@@ -117,7 +117,7 @@
         AND la.`createTime` = #{createTime}
         </if>
         <if test="name != null ">
-        AND la.`name` LIKE CONCAT(#{name}, '%')
+        AND LOCATE(#{name}, la.`name`) > 0 
         </if>
         <if test="adminId != null ">
         AND la.`adminId` IN  (#{adminId}, 0)

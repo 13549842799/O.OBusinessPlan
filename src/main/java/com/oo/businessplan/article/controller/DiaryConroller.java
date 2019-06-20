@@ -44,9 +44,10 @@ public class DiaryConroller extends BaseController{
 			HttpServletRequest request,
 			@PathVariable(value="id")int id) {
 		ResponseResult<DiaryForm> response = new ResponseResult<>();
-		
 		DiaryForm diary = diaryService.getCompleteDiary(id);
-		
+		if (diary == null) {
+			return response.fail("找不到目标日记");
+		}
 		if (diary.getCreator() != currentAdminId(request)) {
 			throw new AuthorityNotEnoughException();
 		}

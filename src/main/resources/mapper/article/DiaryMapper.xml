@@ -187,12 +187,13 @@
          <include refid="base_column"/>, la.id as l_id, la.name as l_name
     FROM diary di
     LEFT JOIN classify cl ON di.classify = cl.id
-    LEFT JOIN label la ON FIND_IN_SET(la.id, di.labels)
+    LEFT JOIN (
+        SELECT id, name FROM label WHERE delflag = #{delflag, jdbcType=TINYINT}
+    ) la ON FIND_IN_SET(la.id, di.labels)
     WHERE 
         di.id = #{id}
     AND di.delflag = #{delflag, jdbcType=TINYINT}
-    AND la.delflag = #{delflag, jdbcType=TINYINT}
-    AND cl.delflag = #{delflag, jdbcType=TINYINT}
+    AND (cl.delflag = #{delflag, jdbcType=TINYINT} OR cl.delflag IS NULL)
     </select>
     
     <select id="getListWithLabels" resultMap="DiaryWithLabelMap" parameterType="diaryForm">

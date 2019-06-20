@@ -56,6 +56,8 @@ public class SecurityAspect {
 	     String token = request.getHeader(tokenName);
 	     String userCode = request.getHeader(this.userCode);
 	     
+	     String ua = request.getHeader("User-Agent");
+	     
 	     if ( token == null ) {    	
 	    	new ResponseResult<>().responseFailMessage(response, "token为空");
 			throw new TokenException("token为空");
