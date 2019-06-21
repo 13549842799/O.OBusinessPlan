@@ -2,6 +2,7 @@ package com.oo.businessplan.basic.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * redis相关缓存的业务方法
@@ -13,14 +14,14 @@ public interface RedisCacheService<T> {
 	/**
 	 * tokenManager中时间长度数组的下标
 	 */
-    public static final int EXPIRED = 0;
+    public static final long EXPIRED = 0l;
 	
     /**
      * tokenManager中时间粒度粒度数组的下标
      */
-	public static final int TIMEUNIT = 0;
+	public static final TimeUnit TIMEUNIT = TimeUnit.DAYS;
 	
-	default T getObject(String key,int expired,int timeUnit) {
+	default T getObject(String key,long expired,TimeUnit timeUnit) {
 		return getObject(key, expired, timeUnit, null);
 	}
 	
@@ -31,7 +32,7 @@ public interface RedisCacheService<T> {
 	 * @param timeUnit 时间粒度
 	 * @return
 	 */
-	T getObject(String key,int expired,int timeUnit, Map<String, Object> otherParams) ;
+	T getObject(String key,long expired,TimeUnit timeUnit, Map<String, Object> otherParams) ;
 	
 	/**
 	 * 获取保存在redis中的元素类型为T的某个list集合
@@ -40,7 +41,15 @@ public interface RedisCacheService<T> {
 	 * @param timeUnit
 	 * @return
 	 */
-	 List<T> getListObject(String key,int expired,int timeUnit);
+	 List<T> getListObject(String key,long expired,TimeUnit timeUnit);
+	 
+	 /**
+	  * 保存实体
+	  * @param key
+	  * @param expired
+	  * @param timeUnit
+	  */
+	 void saveObject(String key, T entity,long expired,TimeUnit timeUnit);
 	 
 	 /**
 	  * 重设超时时间

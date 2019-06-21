@@ -21,6 +21,7 @@ import com.oo.businessplan.common.exception.login.TokenException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.redis.RedisTokenManager;
+import com.oo.businessplan.common.util.HttpUtil;
 import com.oo.businessplan.common.util.StringUtil;
 
 public class SecurityAspect {
@@ -30,6 +31,9 @@ public class SecurityAspect {
      private static final String DEFAULT_USER_NAME = "User-Name"; 
      
      private RedisTokenManager tokenManager;
+     
+     @Autowired
+     private SessionManager sessionManager;
 	
 	 private String tokenName;
 	 
@@ -56,8 +60,6 @@ public class SecurityAspect {
 	     String token = request.getHeader(tokenName);
 	     String userCode = request.getHeader(this.userCode);
 	     
-	     String ua = request.getHeader("User-Agent");
-	     
 	     if ( token == null ) {    	
 	    	new ResponseResult<>().responseFailMessage(response, "token为空");
 			throw new TokenException("token为空");
@@ -66,15 +68,21 @@ public class SecurityAspect {
 	    	 new ResponseResult<>().responseFailMessage(response, "userCode为空");
 	    	 throw new TokenException("userCode为空");
 		 }
+	     //判断来源 
+	     int origin = HttpUtil.getInstance().checkHttpOrigin(request);
 	     
 	     //1.判断是否存在这个用户
-	     Object object = tokenManager
-	    		 .getValueFromMap(userCode,EntityConstants.REDIS_SESSION_NAME);
+	    /* Object object = tokenManager
+	    		 .getValueFromMap(userCode, origin == 0 ? EntityConstants.REDIS_PHONE_SESSION_NAME : EntityConstants.REDIS_SESSION_NAME);
 	     if (object==null) {
 	    	 throw new LoginException("用户不存在或未登录");
-		 }
+		 }*/
+	     SessionInfo sessionInfo = sessionManager.getSessionInfo(userCode + (origin == 0 ? EntityConstants.REDIS_PHONE_SESSION_NAME : EntityConstants.REDIS_SESSION_NAME));
+	     if (sessionInfo == null) {
+	    	 throw new LoginException("用户不存在或未登录");
+	     }
 	     //2.判断token是否有效
-	     SessionInfo sessionInfo = (SessionInfo)object;	     
+	     //SessionInfo sessionInfo = (SessionInfo)object;	     
 	     if (!sessionInfo.getToken().equals(token)) {
 	    	 System.out.println("newToken:" + token);
 	    	 System.out.println("oldToken:" + sessionInfo.getToken());
@@ -126,6 +134,15 @@ public class SecurityAspect {
 			userCode = DEFAULT_USER_NAME;
         }
 		this.userCode = userCode;
+	}
+	
+
+	public SessionManager getSessionManager() {
+		return sessionManager;
+	}
+
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
 	}
 
 	public RedisTokenManager getTokenManager() {

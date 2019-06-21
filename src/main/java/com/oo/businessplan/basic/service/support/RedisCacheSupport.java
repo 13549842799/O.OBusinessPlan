@@ -3,12 +3,14 @@ package com.oo.businessplan.basic.service.support;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.oo.businessplan.basic.mapper.RedisCacheMapper;
 import com.oo.businessplan.basic.service.RedisCacheService;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
+import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.redis.RedisTokenManager;
 
@@ -39,7 +41,7 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 	 * @param timeUnit
 	 * @return
 	 */
-	public final  T getObject(String key,Byte state,int expired,int timeUnit, Map<String, Object> otherParams){
+	public final  T getObject(String key,Byte state,long expired,TimeUnit timeUnit, Map<String, Object> otherParams){
 		String objName = this.getClass().getSimpleName();
 		@SuppressWarnings("unchecked")
 		T t =(T)tokenManager.getValueFromMap(key, hkey.get(objName), expired, timeUnit);
@@ -67,7 +69,7 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 	 * @param timeUnit
 	 * @return
 	 */
-	public final  T getObject(String key,int expired,int timeUnit, Map<String, Object> otherParams){
+	public final  T getObject(String key,long expired,TimeUnit timeUnit, Map<String, Object> otherParams){
 		 
 		T t =getObject(key, null, expired, timeUnit, otherParams);
 		
@@ -82,7 +84,7 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 	 * @param timeUnit
 	 * @return
 	 */
-	private final  List<T> getListObject(String key,Byte state,int expired,int timeUnit){
+	private final  List<T> getListObject(String key,Byte state,long expired,TimeUnit timeUnit){
 		String objName = this.getClass().getSimpleName();
 		@SuppressWarnings("unchecked")
 		List<T> t =(List<T>)tokenManager.getValueFromMap(key, hkey.get(objName), expired, timeUnit);
@@ -101,11 +103,23 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 	 * @param timeUnit
 	 * @return
 	 */
-	public final List<T> getListObject(String key,int expired,int timeUnit){
+	public final List<T> getListObject(String key,long expired,TimeUnit timeUnit){
 		 
 	    return getListObject(key, null, expired, timeUnit);
 	}
 	
+	
+	
+	@Override
+	public void saveObject(String key, T entity, long expired, TimeUnit timeUnit) {
+		if (entity == null) {
+			System.out.println("entity 为 null");
+			return;
+		}
+		String objName = this.getClass().getSimpleName();
+		tokenManager.saveForMap(key, hkey.get(objName), entity, expired, timeUnit);
+	}
+
 	/**
 	 *  移除保存在redis中键为key的对象
 	 * @param key
@@ -133,10 +147,10 @@ public abstract class RedisCacheSupport<T> extends BaseServiceImpl<T> implements
 		private Map<String, String> keyMap = new HashMap<>();
 		
 		public HKeyMap () {
-			keyMap.put("AdminServiceImpl", "admin");
-			keyMap.put("EmployeeServiceImpl", "employee");
-			keyMap.put("AuthorityServiceImpl", "authority");
-			keyMap.put("ResourceServiceImpl", "resource");
+			keyMap.put("AdminServiceImpl", EntityConstants.REDIS_ADMIN);
+			keyMap.put("EmployeeServiceImpl", EntityConstants.REDIS_EMPLOYEE);
+			keyMap.put("AuthorityServiceImpl", EntityConstants.REDIS_AUTHORITY);
+			keyMap.put("ResourceServiceImpl", EntityConstants.REDIS_RESOURCE);
 		}
 		
 		public String get(String key) {

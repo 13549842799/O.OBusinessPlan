@@ -1,6 +1,5 @@
 package com.oo.businessplan.common.redis;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -8,37 +7,23 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.Null;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.TimeoutUtils;
-import org.springframework.data.redis.core.ValueOperations;
 
 import com.alibaba.fastjson.JSONObject;
-import com.oo.businessplan.basic.service.BaseService;
 import com.oo.businessplan.basic.service.RedisCacheService;
-import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
 import com.oo.businessplan.common.constant.EntityConstants;
-import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.net.SessionInfo;
-import com.oo.businessplan.common.security.TokenManager;
+import com.oo.businessplan.common.security.SessionManager;
 
 
-
-public class RedisTokenManager implements TokenManager{
+public class RedisTokenManager extends RedisManager implements SessionManager{
 	
 	private Logger logger = LoggerFactory.getLogger(RedisTokenManager.class);
-	
-	//超时时间	
-	private long[] expireds;
-			
-	//时间粒度
-	private TimeUnit[] timeUnits;
 		
 	private StringRedisTemplate stringRedisTemplate;
 	
@@ -53,7 +38,7 @@ public class RedisTokenManager implements TokenManager{
 	 * @param value
 	 */
 	public void saveForString(String key,Object value){		
-		saveForString(key, value, 0, 0);
+		saveForString(key, value, expired, timeUnit);
 	}
 	
 	/**
@@ -63,15 +48,14 @@ public class RedisTokenManager implements TokenManager{
 	 * @param expired 超时时间数组的下标
 	 * @param timeUnit 时间粒度数组的下标
 	 */
-	public void saveForString(String key,Object value,int expired,int timeUnit){
+	public void saveForString(String key,Object value,long expired,TimeUnit timeUnit){
 		String strValue =parseToStr(value);
-		redisTemplate.opsForValue().set(key, strValue,this.expireds[expired],this.timeUnits[timeUnit]);
+		redisTemplate.opsForValue().set(key, strValue, expired, timeUnit);
 	}
 	
-	public void saveForMap(String key,String Hkey,Object value,int expired,int timeUnit){
-		//String valueStr =parseToStr(value);
+	public void saveForMap(String key,String Hkey,Object value,long expired,TimeUnit timeUnit){
 		hop.put(key, Hkey, value);
-        redisTemplate.expire(key, expireds[expired], timeUnits[timeUnit]);
+        redisTemplate.expire(key, expired, timeUnit);
 	}
 	
 	private String parseToStr(Object value){
@@ -87,16 +71,16 @@ public class RedisTokenManager implements TokenManager{
 	 * @return 
 	 * @return
 	 */
-	public Object getValueFromMap(String key,String hashKey,int expired,int timeUnit){		
+	public Object getValueFromMap(String key,String hashKey,long expired,TimeUnit timeUnit){		
 		Object value =  hop.get(key, hashKey);
 		if(value!=null){
-	       redisTemplate.expire(key, expireds[expired], timeUnits[timeUnit]);
+	       redisTemplate.expire(key, expired, timeUnit);
 		}	    
 	    return value;
 	}
 	
 	public Object getValueFromMap(String key,String hashKey){
-		  return getValueFromMap(key, hashKey, 0, 0);
+		  return getValueFromMap(key, hashKey, expired, timeUnit);
 	}
 	
 	/**
@@ -112,51 +96,17 @@ public class RedisTokenManager implements TokenManager{
 	 * 更新key为key的默认过期时间
 	 */
 	public void expire(String key){
-		expire(key, 0, 0);
+		expire(key, expired, timeUnit);
 	}
 	
-	public void expire(String key,int expired,int timeUnit){
-		redisTemplate.expire(key,this.expireds[expired],this.timeUnits[timeUnit]);
+	public void expire(String key,long expired,TimeUnit timeUnit){
+		redisTemplate.expire(key, expired, timeUnit);
 	}
 	
 	public void cancel(String key){
 		 redisTemplate.delete(key);
 	}
-
-	@Override
-	public String createToken(SessionInfo sessionInfo) {
-		long availableTime = System.currentTimeMillis();
-		long l = expireds[RedisCacheService.EXPIRED] * 1000; //因为上面的是毫秒，所以这里要* 1000
-		switch (timeUnits[RedisCacheService.TIMEUNIT].name()) {
-		case "SECONDS":
-			availableTime += l;
-			break;
-		case "MINUTES":
-			availableTime += l*60;
-			break;
-		case "HOURS":
-			availableTime += l*60*60;
-			break;
-		case "DAYS":
-			availableTime += l*60*60*24;
-			break;
-		}
-		String token =UUID.randomUUID().toString();
-		sessionInfo.setToken(token);
-		sessionInfo.setAvailableDate(availableTime);
-		Map<String,Object> map = new HashMap<>();
-		map.put("session", sessionInfo);
-		
-		saveForMap(sessionInfo.getName(),EntityConstants.REDIS_SESSION_NAME
-				, sessionInfo,RedisCacheService.EXPIRED,RedisCacheService.TIMEUNIT);
-		
-		return token;
-	}
 	
-	public void saveSession(SessionInfo sessionInfo) {
-		saveForMap(sessionInfo.getName(),EntityConstants.REDIS_SESSION_NAME
-				, sessionInfo,RedisCacheService.EXPIRED,RedisCacheService.TIMEUNIT);
-	}
 	
 	public long availableTime (long expired, TimeUnit timeUnit) {
 		timeUnit.name();
@@ -183,7 +133,6 @@ public class RedisTokenManager implements TokenManager{
 	
 	
 	
-	@Override
 	public boolean checkToken(String token, String code)  {
 				
 		Long alive = redisTemplate.getExpire(code);//剩余存活时间
@@ -200,34 +149,65 @@ public class RedisTokenManager implements TokenManager{
 		return true;
 	}
 	
-	
-	
-
-	@Override
 	public void cancelToken(String key) {
 		 cancel(key);
 	}
+	
+	
+	//===========  session 
+	@Override
+	public void saveSeesion(SessionInfo info, String key, long expired, TimeUnit timeUnit) {
+		long availableTime = System.currentTimeMillis();
+		long l = RedisCacheService.EXPIRED * 1000l; //因为上面的是毫秒，所以这里要* 1000
+		switch (RedisCacheService.TIMEUNIT.name()) {
+		case "SECONDS":
+			availableTime += l;
+			break;
+		case "MINUTES":
+			availableTime += l*60;
+			break;
+		case "HOURS":
+			availableTime += l*60*60;
+			break;
+		case "DAYS":
+			availableTime += l*60*60*24;
+			break;
+		}
+		String token =UUID.randomUUID().toString();
+		info.setToken(token);
+		info.setAvailableDate(availableTime);
+
+		saveForString(key, info, expired, timeUnit);
+	}
+
+	@Override
+	public SessionInfo getSessionInfo(String key) {
+		Object obj = redisTemplate.opsForValue().get(key);
+		if (obj == null) {
+			return null;
+		}
+		System.out.println(obj.getClass().getTypeName());
+		return JSONObject.parseObject(obj.toString(), SessionInfo.class);
+	}
+
+	@Override
+	public boolean checkSeesionExists(String key) {
+		
+		return false;
+	}
+
+	@Override
+	public void removeSession(String key) {
+		
+	}
+	
+	
+	
 
 
 
 	public void setLogger(Logger logger) {
 		this.logger = logger;
-	}
-
-	public long[] getExpireds() {
-		return expireds;
-	}
-
-	public void setExpireds(long[] expireds) {
-		this.expireds = expireds;
-	}
-
-	public TimeUnit[] getTimeUnits() {
-		return timeUnits;
-	}
-
-	public void setTimeUnits(TimeUnit[] timeUnits) {
-		this.timeUnits = timeUnits;
 	}
 
 	public StringRedisTemplate getStringRedisTemplate() {

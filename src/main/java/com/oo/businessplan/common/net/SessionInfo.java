@@ -10,10 +10,7 @@ public class SessionInfo implements Serializable{
 	private static final long serialVersionUID = -7184519583829833740L;
 	private long id;
 	private String name;
-	private String nikename;
-	private String bindphone;
 	private String ip;
-	private String avatar;
 	private String token;
 	private Long availableDate;
 	private String mac;
@@ -50,35 +47,17 @@ public class SessionInfo implements Serializable{
 	public void setResourceList(Map<String, String> resourceList) {
 		this.resourceList = resourceList;
 	}
-	public String getAvatar() {
-		return avatar;
-	}
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
 	public Long getAvailableDate() {
 		return availableDate;
 	}
 	public void setAvailableDate(Long availableDate) {
 		this.availableDate = availableDate;
 	}
-	public String getNikename() {
-		return nikename;
-	}
-	public void setNikename(String nikename) {
-		this.nikename = nikename;
-	}
 	public String getMac() {
 		return mac;
 	}
 	public void setMac(String mac) {
 		this.mac = mac;
-	}
-	public String getBindphone() {
-		return bindphone;
-	}
-	public void setBindphone(String bindphone) {
-		this.bindphone = bindphone;
 	}
 	
 	

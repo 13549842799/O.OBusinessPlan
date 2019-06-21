@@ -10,6 +10,8 @@ import com.oo.businessplan.common.exception.login.LoginException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.redis.RedisTokenManager;
 import com.oo.businessplan.common.security.SecurityAspect;
+import com.oo.businessplan.common.security.SessionManager;
+import com.oo.businessplan.common.util.HttpUtil;
 
 public abstract class BaseController {
 	
@@ -26,11 +28,11 @@ public abstract class BaseController {
 		
 		  String userCode = request
 				  .getHeader(securityAspect.getUserCode());   //用户编号
-		  
-		  RedisTokenManager tokenManager =
-				  securityAspect.getTokenManager();
-		  SessionInfo info = (SessionInfo)tokenManager//获取此用户维护redis的存储对象
-				  .getValueFromMap(userCode,EntityConstants.REDIS_SESSION_NAME);		  
+		  SessionManager manager = securityAspect.getSessionManager();
+		  SessionInfo info = 
+				  manager.getSessionInfo(HttpUtil.getInstance().isPhoneLogin(request) ?
+						  userCode + EntityConstants.REDIS_PHONE_SESSION_NAME : userCode + EntityConstants.REDIS_SESSION_NAME);//获取此用户维护redis的存储对象
+	  
 		  if (info==null) {
 			      throw new LoginException();
 		  }

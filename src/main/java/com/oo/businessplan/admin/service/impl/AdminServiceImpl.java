@@ -43,7 +43,7 @@ import com.oo.businessplan.common.exception.ObjectExistException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.exception.login.PasswordValidException;
 import com.oo.businessplan.common.redis.RedisTokenManager;
-import com.oo.businessplan.common.security.TokenManager;
+import com.oo.businessplan.common.security.SessionManager;
 import com.oo.businessplan.common.util.PassUtil;
 import com.oo.businessplan.common.util.StringUtil;
 
@@ -52,9 +52,6 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	
 	@Autowired
 	private AdminMapper adminMapper;
-	
-	@Autowired
-	private EmployeeService employeeService;
 	
 	@Autowired
 	private RedisCacheService<Employee> redisEmp ;
@@ -71,6 +68,16 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	@Autowired
 	private MsgService msgService;
 	
+	
+
+	@Override
+	public int update(Admin t) {
+		int result = super.update(t);
+		if (result == 1) {
+			this.saveObject(t.getAccountname(), t, EXPIRED, TIMEUNIT);
+		}
+		return result;
+	}
 
 	@Override
 	public Map<String, Object> getAdminByAccountName(String accountName) {
@@ -175,8 +182,9 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 		if (admin==null) {
 			throw new NullUserException();
 		}
+		
 		//1.判断登陆权限
-        if (!authorityService.checkLoginToWebAble(account, web)) {
+        if (web != null && !authorityService.checkLoginToWebAble(account, web)) {
 			throw new AuthorityNotEnoughException();
 		}
 		return admin;

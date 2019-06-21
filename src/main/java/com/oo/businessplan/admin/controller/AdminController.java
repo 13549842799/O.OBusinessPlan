@@ -5,7 +5,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -27,6 +29,8 @@ import com.oo.businessplan.admin.pojo.form.LoginForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
 import com.oo.businessplan.admin.service.AdminService;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.basic.service.RedisCacheService;
+import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.constant.SystemKey;
@@ -40,6 +44,8 @@ import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.redis.RedisTokenManager;
 import com.oo.businessplan.common.security.IgnoreSecurity;
+import com.oo.businessplan.common.security.SessionManager;
+import com.oo.businessplan.common.util.HttpUtil;
 import com.oo.businessplan.common.util.IPAdressUtil;
 import com.oo.businessplan.common.util.StringUtil;
 
@@ -64,11 +70,18 @@ public class AdminController extends BaseController{
 	   @Autowired
 	   private AdminService adminService;
 	   
-	   @Autowired
-	   private RedisTokenManager tokenManager;
+	  /* @Resource(name="adminService")
+	   private RedisCacheService<Admin> redis ;*/
 	   
 	   @Autowired
-	   private WebMessageService wmService;	   
+	   private SessionManager sessionManager;
+	   
+	   @Autowired
+	   private WebMessageService wmService;	  
+	   
+	   public static final long expired = 20;
+	   
+	   public static final TimeUnit timeUnit = TimeUnit.DAYS;
 	   
 	   /**
 	    * 职员登陆的接口
@@ -122,15 +135,53 @@ public class AdminController extends BaseController{
 			sessionInfo.setName(form.getUserName());
 			String ip = IPAdressUtil.getIpAddress(request);
 			sessionInfo.setIp(ip);
-			sessionInfo.setAvatar(admin.getAvatar());
-			sessionInfo.setNikename(admin.getNikename());
 			sessionInfo.getResourceList().put(webMessage.getCode(), webMessage.getSignoutAddress());//signoutIp为注销的请求路径
-			sessionInfo.setBindphone(admin.getBindPhone());
-			tokenManager.createToken(sessionInfo) ;
+			//tokenManager.createToken(sessionInfo) ;
+			sessionManager.saveSeesion(sessionInfo, admin.getAccountname() + EntityConstants.REDIS_SESSION_NAME, RedisCacheSupport.EXPIRED, RedisCacheSupport.TIMEUNIT);
 			System.out.println("成功登录");
 			Map<String,Object> result = new HashMap<>();
 			result.put("session", sessionInfo);
 			result.put("target", target);
+			return response.success("ok",result);
+		}
+	   
+	   
+	   @ApiOperation(value = "职员通过手机登陆")
+	   @RequestMapping(value="/loginAsynFromPhone.do",method=RequestMethod.POST)
+	   public ResponseResult<Object> loginAsynFromPhone(HttpServletRequest request,HttpSession session,
+			    @RequestBody LoginForm form){
+			ResponseResult<Object>  response = new ResponseResult<>();	
+			if (HttpUtil.getInstance().checkHttpOrigin(request) != 0) {
+		    	return response.fail("错误");
+		    }
+			System.out.println("进入手机登录接口");
+			Admin admin = null;
+			try {
+				admin = adminService.getAdminByAccount(form.getUserName(), null);
+				System.out.println("admin:" + admin.getPassword());
+			    if (!adminService.checkPasswordValid(admin.getPassword(), form.getPassword())) {
+					return response.fail("密码错误");
+				}
+			    System.out.println("admin结束");
+			} catch (NullUserException e) {
+				e.printStackTrace();
+				return response.fail("没有这个用户");
+			} catch (AuthorityNotEnoughException e) {
+				e.printStackTrace();
+				return response.fail(e.getMessage());
+			}			
+			SessionInfo sessionInfo = new SessionInfo();
+			sessionInfo.setId(admin.getId());
+			sessionInfo.setName(form.getUserName());
+			String ip = IPAdressUtil.getIpAddress(request);
+			sessionInfo.setIp(ip);
+			sessionManager.saveSeesion(sessionInfo, admin.getAccountname() + EntityConstants.REDIS_PHONE_SESSION_NAME, expired, timeUnit);
+			Map<String,Object> result = new HashMap<>();
+			result.put("session", sessionInfo);
+			//清空敏感信息
+			admin.setPassword(null);
+			result.put("admin", admin);
+			System.out.println("登录结束");
 			return response.success("ok",result);
 		}
 	   
@@ -140,16 +191,17 @@ public class AdminController extends BaseController{
 			   @ApiParam(value = "账号用户名", required = true)  @RequestParam(required=true,value="accountName")String accountname,
 			   @ApiParam(value = "token", required = true)  @RequestParam(required=true,value="token")String token){
 		    System.out.println("进入这里");
-		    ResponseResult<Object> response = new ResponseResult<>();
-		    Object temp = tokenManager.getValueFromMap(accountname, EntityConstants.REDIS_SESSION_NAME);
-		    if (temp == null) {
+		    ResponseResult<Object> response = new ResponseResult<>(); 
+		    String key = accountname + EntityConstants.REDIS_PHONE_SESSION_NAME;
+		    SessionInfo sessionInfo = sessionManager.getSessionInfo(key);
+		    if (sessionInfo == null) {
 		    	return response.fail("当前用户没有登录信息");
 		    }
-		    SessionInfo sessionInfo = (SessionInfo)temp;
+		   
 		    if (!token.equals(sessionInfo.getToken())) {
 		    	return response.fail("用户不正确");
 		    }
-		    tokenManager.createToken(sessionInfo) ;
+		    sessionManager.saveSeesion(sessionInfo, key,  expired, timeUnit);
 		    
 		    return response.success(sessionInfo);
 		   
@@ -274,7 +326,7 @@ public class AdminController extends BaseController{
 	   
 	   @ApiOperation(value = "账号信息修改-修改昵称")
 	   @PostMapping("/alterNikeName.do")
-	   //@IgnoreSecurity(val=false)
+	   @IgnoreSecurity(val=false)
 	   public ResponseResult<Object> alterNikeName(
 			   HttpServletRequest request,
 			   @RequestBody Admin admin){
@@ -283,17 +335,13 @@ public class AdminController extends BaseController{
             if (admin == null  || StringUtil.isEmpty(admin.getNikename())) {
 				return response.error(ResultConstant.PARAMETER_ERROR);
 			}
+            String accountName = getAccountName(request);
             if (adminService.checkNikenameExist(admin.getNikename())) {
 				return response.fail("此昵称已存在");
 			} 
-            SessionInfo info = matchSessionInfo(request);
-            Admin param = new Admin();
-            param.setId((int)info.getId());
-            param.setNikename(admin.getNikename());
-
-            if (adminService.update(param) == 1) {
-            	info.setNikename(admin.getNikename());
-            	tokenManager.saveSession(info);
+            Admin redisAdmin = (Admin)adminService.getAdminByAccountName(accountName).get("admin");
+            redisAdmin.setNikename(admin.getNikename());
+            if (adminService.update(redisAdmin) == 1) {              
 				return response.success();
 			} 
 		    return response.error("未知错误");
