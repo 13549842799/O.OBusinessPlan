@@ -14,7 +14,7 @@ public interface RedisCacheService<T> {
 	/**
 	 * tokenManager中时间长度数组的下标
 	 */
-    public static final long EXPIRED = 0l;
+    public static final long EXPIRED = 10l;
 	
     /**
      * tokenManager中时间粒度粒度数组的下标

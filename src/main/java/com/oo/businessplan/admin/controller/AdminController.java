@@ -157,7 +157,7 @@ public class AdminController extends BaseController{
 			System.out.println("进入手机登录接口");
 			Admin admin = null;
 			try {
-				admin = adminService.getAdminByAccount(form.getUserName(), null);
+				admin = null;
 				System.out.println("admin:" + admin.getPassword());
 			    if (!adminService.checkPasswordValid(admin.getPassword(), form.getPassword())) {
 					return response.fail("密码错误");
@@ -190,7 +190,7 @@ public class AdminController extends BaseController{
 	   public ResponseResult<Object> reflush(HttpServletRequest request,
 			   @ApiParam(value = "账号用户名", required = true)  @RequestParam(required=true,value="accountName")String accountname,
 			   @ApiParam(value = "token", required = true)  @RequestParam(required=true,value="token")String token){
-		    System.out.println("进入这里");
+		    System.out.println("刷新token");
 		    ResponseResult<Object> response = new ResponseResult<>(); 
 		    String key = accountname + EntityConstants.REDIS_PHONE_SESSION_NAME;
 		    SessionInfo sessionInfo = sessionManager.getSessionInfo(key);

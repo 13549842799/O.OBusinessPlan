@@ -20,6 +20,13 @@ import com.oo.businessplan.common.exception.login.PasswordValidException;
 public interface AdminService extends BaseService<Admin>{
 	
 	/**
+	 * 从数据库中查询对应用户名的admin记录
+	 * @param accountName
+	 * @return
+	 */
+	Admin getAdminByName(String accountName);
+	
+	/**
 	 * 获取admin
 	 * @param accountName 账号用户名
 	 * @return

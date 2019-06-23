@@ -71,6 +71,12 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	
 
 	@Override
+	public Admin getAdminByName(String accountName) {
+		
+		return null;
+	}
+
+	@Override
 	public int update(Admin t) {
 		int result = super.update(t);
 		if (result == 1) {

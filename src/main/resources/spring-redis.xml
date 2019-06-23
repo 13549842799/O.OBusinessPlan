@@ -55,18 +55,8 @@
     <!--redis token 管理器-->
    <bean id="tokenManager" class="com.oo.businessplan.common.redis.RedisTokenManager">
          <!-- 适应不同超时时间的需求 -->
-         <property name="expireds">
-            <list>
-               <value>1</value>   
-               <value>5</value>
-            </list>
-         </property>
-         <property name="timeUnits">
-            <list>
-               <value>DAYS</value>
-               <value>SECONDS</value>
-            </list>
-         </property>
+         <property name="expired" value="1" />
+         <property name="timeUnit" value="DAYS" />
          <property name="stringRedisTemplate" ref="stringRedisTemplate" />
          <property name="redisTemplate" ref="redisTemplate" />
     </bean>

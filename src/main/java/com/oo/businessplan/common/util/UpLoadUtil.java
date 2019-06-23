@@ -22,6 +22,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
  *
  */
 public class UpLoadUtil {
+	
+	   public static final String localPrefix = "";
 	   
 	   private Map<String,String> suffixMap;
 	
@@ -164,6 +166,6 @@ public class UpLoadUtil {
 		this.suffixMap = suffixMap;
 	}
 	   
-	   
+	
  
 }

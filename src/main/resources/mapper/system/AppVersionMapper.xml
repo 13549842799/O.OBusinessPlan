@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.system.mapper.AppVersionMapper">
+
+     <resultMap id="AppVersionMap" type="appVersion">
+        <id property="id" column="id"/>
+        <result property="delflag" column="delflag"/>
+        <result property="versionNo" column="versionNo"/>
+        <result property="path" column="path"/>
+        <result property="describes" column="describes"/>
+        <result property="createTime" column="createTime"/>
+    </resultMap>
+
+     <sql id="base_column">
+        ap.id,ap.delflag,ap.versionNo,ap.path,ap.describes,ap.createTime
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO app_version
+        (
+            <trim suffixOverrides=",">
+                <if test="delflag != null ">
+                delflag,
+                </if>
+                <if test="versionNo != null ">
+                versionNo,
+                </if>
+                <if test="path != null ">
+                path,
+                </if>
+                <if test="describes != null ">
+                describes,
+                </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim suffixOverrides=",">
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="versionNo != null ">
+                #{versionNo},
+                </if>
+                <if test="path != null ">
+                #{path},
+                </if>
+                <if test="describes != null ">
+                #{describes},
+                </if>
+                <if test="createTime != null ">
+                #{createTime},
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE app_version set delflag = #{delflag}
+         WHERE id = #{ id }
+    </update>
+
+    <select id="getById" resultType="appVersion" parameterType="appVersion">
+        SELECT 
+        <include refid="base_column"/>
+        FROM app_version ap
+        WHERE ap.id = #{id} AND ap.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="appVersion" parameterType="appVersion">
+        SELECT 
+        <include refid="base_column"/>
+        FROM app_version ap
+        WHERE 
+    <trim prefixOverrides="AND">
+        <if test="delflag != null ">
+        AND ap.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test="versionNo != null ">
+        AND ap.`versionNo` = #{versionNo}
+        </if>
+        <if test="path != null ">
+        AND ap.`path` = #{path}
+        </if>
+        <if test="describes != null ">
+        AND ap.`describes` = #{describes}
+        </if>
+        <if test="createTime != null ">
+        AND ap.`createTime` = #{createTime}
+        </if>
+        <if test="delflag != null ">
+        AND ap.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+    </trim>
+        ORDER BY ap.createTiime DESC
+    </select>
+
+</mapper>

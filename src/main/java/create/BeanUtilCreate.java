@@ -13,6 +13,7 @@ import com.oo.businessplan.article.pojo.entity.Portion;
 import com.oo.businessplan.article.pojo.entity.Section;
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.Resource;
+import com.oo.businessplan.system.pojo.AppVersion;
 
 public class BeanUtilCreate {
 
@@ -22,9 +23,9 @@ public class BeanUtilCreate {
 
 
 		beanUtils.setAuthorName("cyz");//作者
-		beanUtils.setTableName("employee");//表名
-		beanUtils.setTableDes("员工");//表信息
-		beanUtilCreate.beanTool(beanUtils,Employee.class,"id",Integer.class);// 运行生产后，需要刷新工程
+		beanUtils.setTableName("app_version");//表名
+		beanUtils.setTableDes("app版本表");//表信息
+		beanUtilCreate.beanTool(beanUtils,AppVersion.class,"id",Integer.class);// 运行生产后，需要刷新工程
 		
 		
 	}
@@ -36,13 +37,13 @@ public class BeanUtilCreate {
 	 * @param c
 	 * @throws Exception
 	 */
-	public void beanTool(BeanUtils beanUtils, Class<Employee> c, String idName, Class type) throws Exception {
+	public void beanTool(BeanUtils beanUtils, Class<AppVersion> c, String idName, Class type) throws Exception {
 
-		/*beanUtils.createBeanControl(c);
+		beanUtils.createBeanControl(c);
 		beanUtils.createBeanService(c);
 		beanUtils.createBeanServiceImpl(c);
-		beanUtils.createBeanMapper(c);*/
-		beanUtils.createBeanXml(c, idName, type);
+		beanUtils.createBeanMapper(c);
+		//beanUtils.createBeanXml(c, idName, type);
 
 	}
 }
