@@ -354,10 +354,10 @@ public class AdminController extends BaseController{
 	   @ApiOperation(value = "账号信息修改-修改头像")
 	   @PostMapping(value="/alterAvatar.do")
 	   @IgnoreSecurity(val=false)
-	   public ResponseResult<Object> alterAvatar(
+	   public ResponseResult<String> alterAvatar(
 			   HttpServletRequest request){
 		    
-		    ResponseResult<Object> response = new ResponseResult<>();
+		    ResponseResult<String> response = new ResponseResult<>();
 		    
 		    String accountName = getAccountName(request);
 		    
@@ -367,13 +367,15 @@ public class AdminController extends BaseController{
 		    sonConfig.put("targetPath", UpLoadUtil.LOCALPREFIX + File.separator + "avatar");
 		    sonConfig.put("check", "true");
 		    sonConfig.put("newName", accountName + String.valueOf(new Date().getTime()));
-		    
+		    params.put("img", sonConfig);
 		    Map<String, String> result = upLoadUtil.uploadFile(request, params);
+		    System.out.println(result);
 		    String newPath =  null;
 		    if ((newPath = result.get("img")) != null) {
 		    	Admin redisAdmin = (Admin)adminService.getAdminByAccountName(accountName).get("admin");
 		    	redisAdmin.setAvatar(newPath);
 		    	adminService.update(redisAdmin);
+		    	return response.success(newPath);
 		    }
             
 		    return response.error("未知错误");

@@ -23,7 +23,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
  */
 public class UpLoadUtil {
 	
-	   public static final String LOCALPREFIX = File.separator + "usr" + File.separator + "local" + File.separator + "tomcat" + File.separator + "OOBusinessPlanFile";
+	   //public static final String LOCALPREFIX = File.separator + "usr" + File.separator + "local" + File.separator + "tomcat" + File.separator + "OOBusinessPlanFile";
+	   
+	   public static final String LOCALPREFIX = "E:" + File.separator + "O.OMusicRelated";
 	   
 	   /**
 	    * 配置设定的可用的文件格式,value中的文件格式以 , 隔开
@@ -53,22 +55,27 @@ public class UpLoadUtil {
 			   Iterator<String> iter=mRequest.getFileNames();
 			   while (iter.hasNext()) {
 				 //一次遍历所有文件
-				   MultipartFile file =mRequest.getFile(iter.next());
-				   String tagName = file.getName();
-				   if (file!=null) {		
+				   MultipartFile file =mRequest.getFile(iter.next());		
+				   System.out.println(file == null);
+				   if (file != null) {		
 					 //获得上传文件在jsp页面中的标签的name属性值
-	                    
+	                    String tagName = file.getName();
 	                    Map<String,String> fileconfig = params.get(tagName);
+	                    System.out.println(tagName);
+	                    System.out.println(fileconfig);
 	                    if (fileconfig==null) {
 							continue;
 						}
-	                   
+	                   System.out.println("target:" + tagName);
 	                  //如果有type则判断文件数据格式是否符合要求
 	                    String oldFileName = file.getOriginalFilename();
 	                    String type = fileconfig.get("type");
 	                    String suffix = checkFormatLegal(oldFileName);
 	                  //判断是否符合要求的数据格式
 	                    boolean mat = match(suffix, type,Boolean.valueOf(fileconfig.get("check")));
+	                    System.out.println("oldFileName:" + oldFileName);
+	                    System.out.println("suffix:" + suffix);
+	                    System.out.println("mat:" + mat);
 	                    if (!mat) {
 						   continue;
 						}
@@ -88,6 +95,7 @@ public class UpLoadUtil {
 						}
 					  //上传文件
 					    try {
+					    	System.out.println(path);
 							file.transferTo(new File(path));
 							result.put(tagName, path);
 						} catch (IllegalStateException e) {
@@ -144,20 +152,21 @@ public class UpLoadUtil {
 			  return !flag;
 		   }
 		   
-		   String entry = null;
+		   String key = null;
 		   if (type==null || StringUtil.isEmpty(type)) {
 			  Set<String> set = suffixMap.keySet();
-			  for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
-				   entry = iterator.next()+",";
-				   if (entry.indexOf(target)>-1) {
+			  for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {				   
+				   key = iterator.next();
+				   System.out.println(key);
+				   System.out.println(target);
+				   if (suffixMap.get(key).indexOf(target)>-1) {
 					   return true;
 				   }			
 			  }
 			  return false;
 		   }
-		   entry = suffixMap.get(type)+",";
 		   
-		   return entry.indexOf(target)>-1;
+		   return suffixMap.get(type).indexOf(target)>-1;
 	   }
 
 
