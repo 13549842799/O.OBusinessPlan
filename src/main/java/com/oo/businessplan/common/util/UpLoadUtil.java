@@ -44,69 +44,62 @@ public class UpLoadUtil {
 		   
 		   Map<String,String> result = new HashMap<>();
 		   
-		 //将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
+		   //将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
 		   CommonsMultipartResolver resolver = 
 				                  new CommonsMultipartResolver(request.getSession().getServletContext());
-		 //检查form中是否有enctype="multipart/form-data"
-		   if (resolver.isMultipart(request)) {
-			 //将request变成多部分request
-			   MultipartHttpServletRequest mRequest =(MultipartHttpServletRequest)request;
-			 //获取multiRequest 中所有的文件名
-			   Iterator<String> iter=mRequest.getFileNames();
-			   while (iter.hasNext()) {
-				 //一次遍历所有文件
-				   MultipartFile file =mRequest.getFile(iter.next());		
-				   System.out.println(file == null);
-				   if (file != null) {		
-					 //获得上传文件在jsp页面中的标签的name属性值
-	                    String tagName = file.getName();
-	                    Map<String,String> fileconfig = params.get(tagName);
-	                    System.out.println(tagName);
-	                    System.out.println(fileconfig);
-	                    if (fileconfig==null) {
-							continue;
-						}
-	                   System.out.println("target:" + tagName);
-	                  //如果有type则判断文件数据格式是否符合要求
-	                    String oldFileName = file.getOriginalFilename();
-	                    String type = fileconfig.get("type");
-	                    String suffix = checkFormatLegal(oldFileName);
-	                  //判断是否符合要求的数据格式
-	                    boolean mat = match(suffix, type,Boolean.valueOf(fileconfig.get("check")));
-	                    System.out.println("oldFileName:" + oldFileName);
-	                    System.out.println("suffix:" + suffix);
-	                    System.out.println("mat:" + mat);
-	                    if (!mat) {
-						   continue;
-						}
-	                  //根据名字获得对应的路径
-					    String path = fileconfig.get("targetPath");					  
-	                  //拼接路径 /home/soft01/OOMusicPic/path/ad,om_id.end
-					    String newName = fileconfig.get("newName");
-					    if (newName!=null) {
-					    	//拼接字符串
-					    	path = path+File.separator+newName+"."+suffix;
-						}else {
-							synchronized (sdf) {
-								Date date = new Date();
-								String dateStr = sdf.format(date);
-								path = path+File.separator+dateStr+"."+suffix;
-							}
-						}
-					  //上传文件
-					    try {
-					    	System.out.println(path);
-							file.transferTo(new File(path));
-							result.put(tagName, path);
-						} catch (IllegalStateException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-		               
-				   }
-				}
+		   //检查form中是否有enctype="multipart/form-data"
+		   if (!resolver.isMultipart(request)) {
+			   return result;
 		   }
+		   //将request变成多部分request
+		   MultipartHttpServletRequest mRequest =(MultipartHttpServletRequest)request;
+		   //获取multiRequest 中所有的文件名
+		   Iterator<String> iter=mRequest.getFileNames();
+		   while (iter.hasNext()) {
+			   //一次遍历所有文件
+			   MultipartFile file =mRequest.getFile(iter.next());		
+			   if (file == null) {
+				   continue;
+			   } 
+			   //获得上传文件在jsp页面中的标签的name属性值
+               String tagName = file.getName();
+               Map<String,String> fileconfig = params.get(tagName);
+               if (fileconfig==null) {
+			       continue;
+			   }
+               //如果有type则判断文件数据格式是否符合要求
+               String oldFileName = file.getOriginalFilename();
+               String type = fileconfig.get("type");
+               String suffix = checkFormatLegal(oldFileName);
+               //判断是否符合要求的数据格式
+               boolean mat = match(suffix, type,Boolean.valueOf(fileconfig.get("check")));
+               if (!mat) {
+				   continue;
+			   }
+               //根据名字获得对应的路径
+			   String path = fileconfig.get("targetPath");					  
+               //拼接路径 /home/soft01/OOMusicPic/path/ad,om_id.end
+			   String newName = fileconfig.get("newName");
+			   if (newName!=null) {
+			    	//拼接字符串
+			    	path = path+File.separator+newName+"."+suffix;
+			   }else {
+					synchronized (sdf) {
+						Date date = new Date();
+						String dateStr = sdf.format(date);
+						path = path+File.separator+dateStr+"."+suffix;
+					}
+				}
+			    //上传文件
+			    try {
+					file.transferTo(new File(path));
+					result.put(tagName, path);
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		   
 	    	return result;
 	   }
