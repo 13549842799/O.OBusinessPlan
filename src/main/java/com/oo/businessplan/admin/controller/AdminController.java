@@ -1,13 +1,15 @@
 package com.oo.businessplan.admin.controller;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -29,7 +31,7 @@ import com.oo.businessplan.admin.pojo.form.LoginForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
 import com.oo.businessplan.admin.service.AdminService;
 import com.oo.businessplan.basic.controller.BaseController;
-import com.oo.businessplan.basic.service.RedisCacheService;
+
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.constant.ResultConstant;
@@ -42,12 +44,13 @@ import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.ResponseResult;
-import com.oo.businessplan.common.redis.RedisTokenManager;
+
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.security.SessionManager;
 import com.oo.businessplan.common.util.HttpUtil;
 import com.oo.businessplan.common.util.IPAdressUtil;
 import com.oo.businessplan.common.util.StringUtil;
+import com.oo.businessplan.common.util.UpLoadUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -70,14 +73,14 @@ public class AdminController extends BaseController{
 	   @Autowired
 	   private AdminService adminService;
 	   
-	  /* @Resource(name="adminService")
-	   private RedisCacheService<Admin> redis ;*/
-	   
 	   @Autowired
 	   private SessionManager sessionManager;
 	   
 	   @Autowired
 	   private WebMessageService wmService;	  
+	   
+	   @Autowired
+	   private UpLoadUtil upLoadUtil;
 	   
 	   public static final long expired = 20;
 	   
@@ -157,7 +160,7 @@ public class AdminController extends BaseController{
 			System.out.println("进入手机登录接口");
 			Admin admin = null;
 			try {
-				admin = null;
+				admin = adminService.getAdminByName(form.getUserName());
 				System.out.println("admin:" + admin.getPassword());
 			    if (!adminService.checkPasswordValid(admin.getPassword(), form.getPassword())) {
 					return response.fail("密码错误");
@@ -251,7 +254,7 @@ public class AdminController extends BaseController{
 		    //1.获取保存在sessionInfo中的当前保存的注销路径集合
 		    //2.遍历集合，发送注销请求
 		    //3.注销总服务器的登陆
-		    if ( adminService.removeAdmin(accountName) ) {
+		    if ( adminService.removeAdmin(accountName, HttpUtil.getInstance().isPhoneLogin(request)) ) {
 				return response.success("已注销成功");
 			}
 		    return response.fail("注销失败，请再次尝试");	   
@@ -349,26 +352,30 @@ public class AdminController extends BaseController{
 	   }
 	   
 	   @ApiOperation(value = "账号信息修改-修改头像")
-	   @RequestMapping(value="/alterAvatar.do",method=RequestMethod.PATCH)
+	   @PostMapping(value="/alterAvatar.do")
 	   @IgnoreSecurity(val=false)
 	   public ResponseResult<Object> alterAvatar(
-			   HttpServletRequest request,
-			   @RequestBody Admin admin){
+			   HttpServletRequest request){
 		    
 		    ResponseResult<Object> response = new ResponseResult<>();
-            if (admin == null || admin.getId() == null || 
-            		StringUtil.isEmpty(admin.getNikename())) {
-				return response.error(ResultConstant.PARAMETER_ERROR);
-			}
-            if (adminService.checkNikenameExist(admin.getNikename())) {
-				return response.fail("此昵称已存在");
-			} 
-            Admin param = new Admin();
-            param.setId(admin.getId());
-            param.setNikename(admin.getNikename());
-            if (adminService.update(param) == 1) {
-				return response.success();
-			} 
+		    
+		    String accountName = getAccountName(request);
+		    
+		    Map<String, Map<String, String>> params = new HashMap<>();
+		    
+		    Map<String, String> sonConfig = new HashMap<>();
+		    sonConfig.put("targetPath", UpLoadUtil.LOCALPREFIX + File.separator + "avatar");
+		    sonConfig.put("check", "true");
+		    sonConfig.put("newName", accountName + String.valueOf(new Date().getTime()));
+		    
+		    Map<String, String> result = upLoadUtil.uploadFile(request, params);
+		    String newPath =  null;
+		    if ((newPath = result.get("img")) != null) {
+		    	Admin redisAdmin = (Admin)adminService.getAdminByAccountName(accountName).get("admin");
+		    	redisAdmin.setAvatar(newPath);
+		    	adminService.update(redisAdmin);
+		    }
+            
 		    return response.error("未知错误");
 		   
 	   }

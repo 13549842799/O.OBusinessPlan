@@ -11,7 +11,7 @@ public class HttpUtil {
 	private HttpUtil () {}
 	
 	/**
-	 * 判断请求是否属于手机端
+	 * 判断请求来源
 	 * @param request
 	 * @return  0-手机 1-其它
 	 */
@@ -34,6 +34,11 @@ public class HttpUtil {
 		return 1;
 	}
 	
+	/**
+	 * 判断是否属于手机端
+	 * @param request
+	 * @return
+	 */
 	public boolean isPhoneLogin(HttpServletRequest request) {
 		return this.checkHttpOrigin(request) == 0;
 	}

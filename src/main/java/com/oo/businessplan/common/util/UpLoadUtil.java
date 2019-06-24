@@ -23,14 +23,17 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
  */
 public class UpLoadUtil {
 	
-	   public static final String localPrefix = "";
+	   public static final String LOCALPREFIX = File.separator + "usr" + File.separator + "local" + File.separator + "tomcat" + File.separator + "OOBusinessPlanFile";
 	   
+	   /**
+	    * 配置设定的可用的文件格式,value中的文件格式以 , 隔开
+	    */
 	   private Map<String,String> suffixMap;
 	
 	   private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 	   /**
 	    * 上传文件，params是一个key是字符串，value是一个key和value都是字符串的map的map类型，其中key是唯一标识，map中可存放
-	    * 以下的entry，分别是 :targetPath：上传的目标路径，type:文件类型,newName:新的名字
+	    * 以下的entry，分别是 :targetPath：上传的目标路径，type:文件类型,newName:新的名字, check: 是否开启校验
 	    * @param request
 	    * @param params  
 	    * @return
@@ -65,7 +68,7 @@ public class UpLoadUtil {
 	                    String type = fileconfig.get("type");
 	                    String suffix = checkFormatLegal(oldFileName);
 	                  //判断是否符合要求的数据格式
-	                    boolean mat = match(suffix,suffixMap, type,Boolean.valueOf(fileconfig.get("check")));
+	                    boolean mat = match(suffix, type,Boolean.valueOf(fileconfig.get("check")));
 	                    if (!mat) {
 						   continue;
 						}
@@ -108,7 +111,7 @@ public class UpLoadUtil {
 	    */
 	   public String checkFormatLegal(String fileName){
 		   int index = fileName.lastIndexOf(".");
-		   return index==-1?null:fileName.substring(index+1);
+		   return index==-1 && index < fileName.length()?null:fileName.substring(index+1);
 	   }
 	   
 	   /**
@@ -135,23 +138,24 @@ public class UpLoadUtil {
 	    * @param flag 是否开启数据格式校检
 	    * @return
 	    */
-	   public boolean match(String target,Map<String,String> src,String type,boolean flag){
+	   public boolean match(String target,String type,boolean flag){
 		   
 		   if (!flag) {
 			  return !flag;
 		   }
 		   
-		   if (type==null||!type.trim().isEmpty()) {
-			  Set<String> set = src.keySet();
+		   String entry = null;
+		   if (type==null || StringUtil.isEmpty(type)) {
+			  Set<String> set = suffixMap.keySet();
 			  for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
-				   String entry = iterator.next()+",";
+				   entry = iterator.next()+",";
 				   if (entry.indexOf(target)>-1) {
 					   return true;
 				   }			
 			  }
 			  return false;
 		   }
-		   String entry = src.get(type)+",";
+		   entry = suffixMap.get(type)+",";
 		   
 		   return entry.indexOf(target)>-1;
 	   }

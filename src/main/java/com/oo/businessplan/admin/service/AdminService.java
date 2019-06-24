@@ -21,19 +21,25 @@ public interface AdminService extends BaseService<Admin>{
 	
 	/**
 	 * 从数据库中查询对应用户名的admin记录
-	 * @param accountName
+	 * @param accountName 用户名
 	 * @return
 	 */
 	Admin getAdminByName(String accountName);
 	
 	/**
-	 * 获取admin
+	 * 获取缓存的admin，如果没有缓存，则从数据库中获取
 	 * @param accountName 账号用户名
 	 * @return
 	 */
 	Map<String,Object> getAdminByAccountName(String accountName);
 
-	boolean removeAdmin(String accountName);
+	/**
+	 * 从缓存中移除对应的session
+	 * @param accountName 用户名
+	 * @param isPhone  是否移除手机的session
+	 * @return
+	 */
+	boolean removeAdmin(String accountName, boolean isPhone);
 	/**
 	 * 判断此的昵称是否存在
 	 * @param nikename

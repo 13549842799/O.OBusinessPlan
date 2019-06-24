@@ -72,10 +72,15 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 
 	@Override
 	public Admin getAdminByName(String accountName) {
-		
-		return null;
+		Map<String, Object> params = new HashMap<>();
+		params.put("key", accountName);
+		params.put("delflag", DeleteFlag.VALID.getCode());
+		return adminMapper.getByStr(params);
 	}
-
+    
+	/**
+	 * 重写父类的update方法，在更新数据库的同时，把整个更新的admin保存进redis缓存中
+	 */
 	@Override
 	public int update(Admin t) {
 		int result = super.update(t);
@@ -251,9 +256,9 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	}
 
 	@Override
-	public boolean removeAdmin(String accountName) {
+	public boolean removeAdmin(String accountName, boolean isPhone) {
 		
-		return remove(accountName);
+		return remove(accountName + (isPhone ? EntityConstants.REDIS_PHONE_SESSION_NAME : EntityConstants.REDIS_SESSION_NAME));
 	}
 	
 	
