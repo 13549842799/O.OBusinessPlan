@@ -354,26 +354,34 @@ public class AdminController extends BaseController{
 	   @ApiOperation(value = "账号信息修改-修改头像")
 	   @PostMapping(value="/alterAvatar.do")
 	   @IgnoreSecurity(val=false)
-	   public ResponseResult<Object> alterAvatar(
+	   public ResponseResult<String> alterAvatar(
 			   HttpServletRequest request){
 		    
-		    ResponseResult<Object> response = new ResponseResult<>();
+		    ResponseResult<String> response = new ResponseResult<>();
 		    
 		    String accountName = getAccountName(request);
 		    
 		    Map<String, Map<String, String>> params = new HashMap<>();
 		    
 		    Map<String, String> sonConfig = new HashMap<>();
-		    sonConfig.put("targetPath", UpLoadUtil.LOCALPREFIX + File.separator + "avatar");
+		    sonConfig.put("targetPath", File.separator + "avatar");
 		    sonConfig.put("check", "true");
+		    sonConfig.put("size", "120");
 		    sonConfig.put("newName", accountName + String.valueOf(new Date().getTime()));
-		    
+		    params.put("img", sonConfig);
 		    Map<String, String> result = upLoadUtil.uploadFile(request, params);
+		    System.out.println(result);
 		    String newPath =  null;
+		    if (result.get(SystemKey.ERROR_KEY) != null) {
+		    	return response.fail(result.get(SystemKey.ERROR_KEY));
+		    }
 		    if ((newPath = result.get("img")) != null) {
 		    	Admin redisAdmin = (Admin)adminService.getAdminByAccountName(accountName).get("admin");
+		    	//删除久头像图片
+		    	String oldAvatar = redisAdmin.getAvatar();
 		    	redisAdmin.setAvatar(newPath);
 		    	adminService.update(redisAdmin);
+		    	return response.success(newPath);
 		    }
             
 		    return response.error("未知错误");
