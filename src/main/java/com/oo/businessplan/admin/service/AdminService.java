@@ -47,7 +47,13 @@ public interface AdminService extends BaseService<Admin>{
 	 */
 	boolean checkNikenameExist(String nikename);
 
-	Map<String, String> alterPassword(String oldPass, String newPass, String verificationCode, String phoneNo);
+	/**
+	 * 修改密码
+	 * @param oldPass 旧密码
+	 * @param newPass 新密码
+	 * @return  1:正确 -1:两次密码不相同 0-密码不正确
+	 */
+	int alterPassword(String oldPass, String newPass);
 
 	PageInfo<Padmin> getAdminList(AdminForm adminForm);
 

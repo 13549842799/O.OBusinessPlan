@@ -119,21 +119,14 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	}
 
 	@Override
-	public Map<String,String> alterPassword(String oldPass, String newPass, String verificationCode, String phoneNo) {
+	public int alterPassword(String oldPass, String newPass) {
 		
-		Map<String,String> result = new HashMap<>();
-		
-		//1.检验验证码是否匹配
-		Map<String,String> isValid = msgService.validMsg(phoneNo, verificationCode,MsgTypeCode.ALTER.getCode());
-		if (isValid.get(SystemKey.ERROR_KEY)!=null) {
-			return isValid;
-		}
-		//2.判断密码是否相同
+		//1.判断密码是否相同
 		if (!oldPass.equals(newPass)) {
-			result.put(SystemKey.ERROR_KEY,"两次密码不相同");
-			return result;
+			
+			return -1;
 		}
-		return result;
+		return 1;
 	}
 
 	@Override

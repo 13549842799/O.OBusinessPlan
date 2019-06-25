@@ -17,9 +17,9 @@ public class MsgServiceImpl implements MsgService{
 	}
 
 	@Override
-	public Map<String, String> validMsg(String phoneNo, String verificationCode, byte type) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean validMsg(String phoneNo, String verificationCode, byte type) {
+		
+		return false;
 	}
 
 }

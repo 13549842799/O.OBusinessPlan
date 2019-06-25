@@ -171,6 +171,18 @@ public class UpLoadUtil {
 		   return suffixMap.get(type).indexOf(target)>-1;
 	   }
 
+	/**
+	 * 删除文件
+	 * @param path
+	 * @return
+	 */
+	public boolean deleteFile(String path) {
+		File file = new File(path);
+		if (!file.exists()) {
+			return false;
+		}
+		return file.delete();
+	}
 
 	public Map<String, String> getSuffixMap() {
 		return suffixMap;

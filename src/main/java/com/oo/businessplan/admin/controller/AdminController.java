@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
+import com.oo.businessplan.additional.pojo.Msg;
 import com.oo.businessplan.additional.pojo.WebMessage;
 import com.oo.businessplan.additional.service.WebMessageService;
 import com.oo.businessplan.admin.pojo.entity.Admin;
@@ -31,7 +32,7 @@ import com.oo.businessplan.admin.pojo.form.LoginForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
 import com.oo.businessplan.admin.service.AdminService;
 import com.oo.businessplan.basic.controller.BaseController;
-
+import com.oo.businessplan.basic.service.MsgService;
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.constant.ResultConstant;
@@ -81,6 +82,9 @@ public class AdminController extends BaseController{
 	   
 	   @Autowired
 	   private UpLoadUtil upLoadUtil;
+	   
+	   @Autowired
+	   private MsgService msgService;
 	   
 	   public static final long expired = 20;
 	   
@@ -321,10 +325,18 @@ public class AdminController extends BaseController{
 		    if (StringUtil.isEmpty(newPass)) {
 				return response.fail("请输入新密码");
 			}
-		    Map<String,String> result = adminService.alterPassword(oldPass,newPass,verificationCode,phoneNo);
-		   	    
-		    return response.success(null);
-		   
+		    //验证码检验
+		    if(!msgService.validMsg(phoneNo, verificationCode, Msg.PASSWORD)) {
+		    	return response.fail("验证码错误");
+		    }
+		    switch (adminService.alterPassword(oldPass,newPass)) {
+				case 1:
+					return response.success("密码修改成功");
+				case 0:
+					return response.fail("密码错误");
+				default:
+					return response.fail("两次密码不相同");
+			}		    		   
 	   }
 	   
 	   @ApiOperation(value = "账号信息修改-修改昵称")
@@ -378,7 +390,7 @@ public class AdminController extends BaseController{
 		    if ((newPath = result.get("img")) != null) {
 		    	Admin redisAdmin = (Admin)adminService.getAdminByAccountName(accountName).get("admin");
 		    	//删除久头像图片
-		    	String oldAvatar = redisAdmin.getAvatar();
+		    	upLoadUtil.deleteFile(UpLoadUtil.LOCALPREFIX + redisAdmin.getAvatar());
 		    	redisAdmin.setAvatar(newPath);
 		    	adminService.update(redisAdmin);
 		    	return response.success(newPath);
