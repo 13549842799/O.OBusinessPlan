@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.oo.businessplan.common.constant.SystemKey;
+import com.oo.businessplan.common.pageModel.MethodResult;
 
 
 /**
@@ -44,16 +45,16 @@ public class UpLoadUtil {
 	    * @param params  
 	    * @return
 	    */
-	   public Map<String,String>  uploadFile(HttpServletRequest request,Map<String,Map<String,String>> params){
+	   public MethodResult<String>  uploadFile(HttpServletRequest request,Map<String,Map<String,String>> params){
 		   
-		   Map<String,String> result = new HashMap<>();
+		   MethodResult<String> result = new MethodResult<String>;
 		   
 		   //将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
 		   CommonsMultipartResolver resolver = 
 				                  new CommonsMultipartResolver(request.getSession().getServletContext());
 		   //检查form中是否有enctype="multipart/form-data"
 		   if (!resolver.isMultipart(request)) {
-			   return result;
+			   return result.;
 		   }
 		   //将request变成多部分request
 		   MultipartHttpServletRequest mRequest =(MultipartHttpServletRequest)request;

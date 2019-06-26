@@ -36,7 +36,7 @@ import com.oo.businessplan.basic.service.MsgService;
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.constant.ResultConstant;
-import com.oo.businessplan.common.constant.SystemKey;
+
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
 import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
@@ -44,6 +44,7 @@ import com.oo.businessplan.common.exception.CheckObjectExistException;
 import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.net.SessionInfo;
+import com.oo.businessplan.common.pageModel.MethodResult;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 
 import com.oo.businessplan.common.security.IgnoreSecurity;
@@ -223,12 +224,7 @@ public class AdminController extends BaseController{
 		    
 		    ResponseResult<Admin> response = new ResponseResult<>();
 		    
-		    Map<String,Object> result = adminService.getAdminByAccountName( accountname);
-		    if (result.get(SystemKey.ERROR_KEY)!=null) {
-				response.fail(result.get(SystemKey.ERROR_KEY).toString());
-			}
-		    
-		    return response.success((Admin)result.get("admin"));
+		    return response.success(adminService.getAdminByAccountName( accountname));
 		   
 	   }
 	   
@@ -354,7 +350,7 @@ public class AdminController extends BaseController{
             if (adminService.checkNikenameExist(admin.getNikename())) {
 				return response.fail("此昵称已存在");
 			} 
-            Admin redisAdmin = (Admin)adminService.getAdminByAccountName(accountName).get("admin");
+            Admin redisAdmin = adminService.getAdminByAccountName(accountName);
             redisAdmin.setNikename(admin.getNikename());
             if (adminService.update(redisAdmin) == 1) {              
 				return response.success();

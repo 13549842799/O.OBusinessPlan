@@ -38,7 +38,7 @@ public class GlobalExceptionHandler extends BaseController{
 	@ExceptionHandler(value=LoginException.class)
 	public ResponseResult<Object> reloginHandler(HttpServletRequest request, LoginException le) {
 		le.printStackTrace();
-		return new ResponseResult<>().relogin();
+		return new ResponseResult<>().relogin(le.getMessage());
 	}
 	
 	/**

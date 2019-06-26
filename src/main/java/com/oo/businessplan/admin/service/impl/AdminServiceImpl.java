@@ -20,30 +20,27 @@ import com.oo.businessplan.admin.pojo.entity.Employee;
 import com.oo.businessplan.admin.pojo.form.AdminForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
 import com.oo.businessplan.admin.service.AdminService;
-import com.oo.businessplan.admin.service.EmployeeService;
-import com.oo.businessplan.authority.pojo.Authority;
-import com.oo.businessplan.authority.pojo.Role;
+
+
 import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.authority.service.RoleService;
-import com.oo.businessplan.basic.mapper.BaseMapper;
+
 import com.oo.businessplan.basic.service.MsgService;
 import com.oo.businessplan.basic.service.RedisCacheService;
-import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
+
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.constant.ResultConstant;
-import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.enumeration.AuthorityCode;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
-import com.oo.businessplan.common.enumeration.MsgTypeCode;
-import com.oo.businessplan.common.enumeration.StatusFlag;
+
 import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectExistException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
-import com.oo.businessplan.common.exception.login.PasswordValidException;
-import com.oo.businessplan.common.redis.RedisTokenManager;
-import com.oo.businessplan.common.security.SessionManager;
+import com.oo.businessplan.common.exception.login.LoginException;
+import com.oo.businessplan.common.pageModel.MethodResult;
+
 import com.oo.businessplan.common.util.PassUtil;
 import com.oo.businessplan.common.util.StringUtil;
 
@@ -64,10 +61,6 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	
 	@Autowired
 	private AuthorityService authorityService;
-	
-	@Autowired
-	private MsgService msgService;
-	
 	
 
 	@Override
@@ -91,25 +84,21 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	}
 
 	@Override
-	public Map<String, Object> getAdminByAccountName(String accountName) {
+	public Admin getAdminByAccountName(String accountName) {
 		
-		Map<String,Object> result = new HashMap<>();
+		MethodResult<Admin> result = new MethodResult<>();
 		
 		if (StringUtil.isEmpty(accountName)) {
-			 result.put(SystemKey.ERROR_KEY,"请输入id或者账号用户名");
-			 return result;
+			  throw new LoginException("请输入id或者账号用户名");
 		}	
 		//判断状态
 		Admin admin = getObject(accountName,EXPIRED,TIMEUNIT);
 		if (admin==null) {
-			result.put(SystemKey.ERROR_KEY,"该账号不存在或已被禁用");
-			return result;
+			throw new LoginException("该账号不存在或已被禁用");
 		}
 		admin.setPassword(null);
-
-        result.put("admin", admin);
 		
-		return result;
+		return admin;
 	}
 
 	@Override

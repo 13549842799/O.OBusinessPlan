@@ -7,6 +7,7 @@ import java.io.Serializable;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
+import com.oo.businessplan.common.util.StringUtil;
 
 public class ResponseResult<T> implements Serializable{
 	
@@ -128,6 +129,10 @@ public class ResponseResult<T> implements Serializable{
 	 */
 	public ResponseResult<T> relogin() {
 		return setValue(RESPONSE_RELOGIN, "登录已过期, 请重新登录", null);
+	}
+	
+	public ResponseResult<T> relogin(String message) {
+		return setValue(RESPONSE_RELOGIN,StringUtil.isEmpty(message) ? "登录已过期, 请重新登录" : message, null);
 	}
 	
 	/**

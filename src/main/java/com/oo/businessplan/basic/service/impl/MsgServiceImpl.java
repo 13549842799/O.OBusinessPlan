@@ -1,18 +1,17 @@
 package com.oo.businessplan.basic.service.impl;
 
-import java.util.Map;
-
 import org.springframework.stereotype.Service;
 
 import com.oo.businessplan.additional.pojo.Msg;
 import com.oo.businessplan.basic.service.MsgService;
+import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 
 @Service("msgService")
-public class MsgServiceImpl implements MsgService{
+public class MsgServiceImpl extends RedisCacheSupport<Msg> implements MsgService{
 
 	@Override
 	public Msg generateMsg(String phoneNo, byte type) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -20,6 +19,12 @@ public class MsgServiceImpl implements MsgService{
 	public boolean validMsg(String phoneNo, String verificationCode, byte type) {
 		
 		return false;
+	}
+
+	@Override
+	public String generateMsg(String phone) {
+		
+		return null;
 	}
 
 }

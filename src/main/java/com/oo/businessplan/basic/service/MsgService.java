@@ -17,4 +17,6 @@ public interface MsgService {
 	    */
 	   boolean validMsg(String phoneNo,String verificationCode,byte type);
 	   
+	   String generateMsg(String phone);
+	   
 }

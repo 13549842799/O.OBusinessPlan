@@ -16,6 +16,7 @@ import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectExistException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.exception.login.PasswordValidException;
+import com.oo.businessplan.common.pageModel.MethodResult;
 
 public interface AdminService extends BaseService<Admin>{
 	
@@ -29,9 +30,9 @@ public interface AdminService extends BaseService<Admin>{
 	/**
 	 * 获取缓存的admin，如果没有缓存，则从数据库中获取
 	 * @param accountName 账号用户名
-	 * @return
+	 * @return Map<String,Object>  成功： <'admin', Admin> 失败 :<SystemKey.error, Message>
 	 */
-	Map<String,Object> getAdminByAccountName(String accountName);
+	Admin getAdminByAccountName(String accountName);
 
 	/**
 	 * 从缓存中移除对应的session
