@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.pageModel.MethodResult;
 
 
@@ -45,16 +44,18 @@ public class UpLoadUtil {
 	    * @param params  
 	    * @return
 	    */
-	   public MethodResult<String>  uploadFile(HttpServletRequest request,Map<String,Map<String,String>> params){
+	   public MethodResult<Map<String, String>>  uploadFile(HttpServletRequest request,Map<String,Map<String,String>> params){
 		   
-		   MethodResult<String> result = new MethodResult<String>;
+		   MethodResult<Map<String, String>> result = new MethodResult<>();
+		   
+		   Map<String, String> pathMap = new HashMap<>(5);
 		   
 		   //将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
 		   CommonsMultipartResolver resolver = 
 				                  new CommonsMultipartResolver(request.getSession().getServletContext());
 		   //检查form中是否有enctype="multipart/form-data"
 		   if (!resolver.isMultipart(request)) {
-			   return result.;
+			   return result.fail("没有可上传的文件");
 		   }
 		   //将request变成多部分request
 		   MultipartHttpServletRequest mRequest =(MultipartHttpServletRequest)request;
@@ -73,8 +74,7 @@ public class UpLoadUtil {
 			       continue;
 			   }
                if (!StringUtil.isEmpty(fileconfig.get("size")) && (file.getSize()/1024l) > Long.parseLong(fileconfig.get("size"))) {
-            	  result.put(SystemKey.ERROR_KEY, "文件过大");
-            	  return result;
+            	  return result.fail("文件过大");
                }
                //如果有type则判断文件数据格式是否符合要求
                String oldFileName = file.getOriginalFilename();
@@ -103,7 +103,7 @@ public class UpLoadUtil {
 			    //上传文件
 			    try {
 					file.transferTo(new File(newPath));
-					result.put(tagName, path);
+					pathMap.put(tagName, path);
 				} catch (IllegalStateException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -111,7 +111,7 @@ public class UpLoadUtil {
 				}
 			}
 		   
-	    	return result;
+	    	return result.success(pathMap);
 	   }
 	   
 	   

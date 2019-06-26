@@ -3,7 +3,6 @@ package com.oo.businessplan.admin.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,16 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.oo.businessplan.admin.mapper.EmployeeMapper;
 import com.oo.businessplan.admin.pojo.entity.Employee;
 import com.oo.businessplan.admin.service.EmployeeService;
-import com.oo.businessplan.basic.mapper.BaseMapper;
-import com.oo.businessplan.basic.service.RedisCacheService;
-import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
-import com.oo.businessplan.common.constant.EntityConstants;
 import com.oo.businessplan.common.constant.ResultConstant;
-import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.exception.PatternErrorException;
+import com.oo.businessplan.common.pageModel.MethodResult;
 import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.util.UpLoadUtil;
 
@@ -80,16 +75,17 @@ public class EmployeeServiceImpl extends RedisCacheSupport<Employee> implements 
 	@Override
 	public void upLoadAvatar(HttpServletRequest request,int employeeId, Integer modifier) throws ObjectNotExistException {
 		
-		Map<String,String> result = new HashMap<>();
-		
 		Map<String,Map<String,String>> params = new HashMap<>();
   	    Map<String,String> config = new HashMap<>();
   	    config.put("type","img");
   	    config.put("newName", null);
   	    config.put("targetPath","");
   	    params.put("avatar", config);	    	  
-  	    Map<String,String> paths = upLoadUtil.uploadFile(request, params);
-  	    String newPath = paths.get("avatar");
+  	    MethodResult<Map<String, String>> result = upLoadUtil.uploadFile(request, params);
+  	    if (result.fail()) {
+			return;
+		}
+  	    String newPath = result.getData().get("avatar");
   	    if (newPath==null) {
 		    throw new ObjectNotExistException(ResultConstant.AVATAR_UPLOAD_ERROR);
 	    }

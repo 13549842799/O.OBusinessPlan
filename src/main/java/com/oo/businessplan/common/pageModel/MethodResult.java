@@ -24,12 +24,16 @@ public class MethodResult<T>{
 	
 	private String message;
 	
-	public boolean success () {
+	public boolean isSuccess () {
 		return this.status == SUCCESS;
 	}
 	
 	public boolean fail () {
 		return this.status == FAIL;
+	}
+	
+	public MethodResult<T> success() {
+		return this.success();
 	}
 
 	public MethodResult<T> success(T data) {

@@ -8,6 +8,7 @@ import com.oo.businessplan.authority.pojo.AdminRole;
 import com.oo.businessplan.authority.pojo.Role;
 import com.oo.businessplan.authority.pojo.RolePage;
 import com.oo.businessplan.basic.service.BaseService;
+import com.oo.businessplan.common.pageModel.MethodResult;
 
 public interface RoleService extends BaseService<Role>{
 	
@@ -17,7 +18,7 @@ public interface RoleService extends BaseService<Role>{
 	 * @param adminId 被赋予角色的账号
 	 * @param creator 创建人id（admin）
 	 */
-	Map<String,String> giveRole(int[] roleIds,int adminId,Integer creator);
+	MethodResult<String> giveRole(int[] roleIds,int adminId,Integer creator);
 	
 	/**
 	 * 为用户添加角色或者为用户删除角色

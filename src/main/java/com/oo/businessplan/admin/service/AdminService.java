@@ -29,6 +29,7 @@ public interface AdminService extends BaseService<Admin>{
 	
 	/**
 	 * 获取缓存的admin，如果没有缓存，则从数据库中获取
+	 * 如果数据库不存在用户，则会抛出登陆异常
 	 * @param accountName 账号用户名
 	 * @return Map<String,Object>  成功： <'admin', Admin> 失败 :<SystemKey.error, Message>
 	 */

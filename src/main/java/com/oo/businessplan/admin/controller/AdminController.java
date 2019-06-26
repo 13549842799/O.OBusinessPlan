@@ -377,14 +377,14 @@ public class AdminController extends BaseController{
 		    sonConfig.put("size", "120");
 		    sonConfig.put("newName", accountName + String.valueOf(new Date().getTime()));
 		    params.put("img", sonConfig);
-		    Map<String, String> result = upLoadUtil.uploadFile(request, params);
+		    MethodResult<Map<String, String>> result = upLoadUtil.uploadFile(request, params);
 		    System.out.println(result);
 		    String newPath =  null;
-		    if (result.get(SystemKey.ERROR_KEY) != null) {
-		    	return response.fail(result.get(SystemKey.ERROR_KEY));
+		    if (result.fail()) {
+		    	return response.fail(result.getErrorMessage());
 		    }
-		    if ((newPath = result.get("img")) != null) {
-		    	Admin redisAdmin = (Admin)adminService.getAdminByAccountName(accountName).get("admin");
+		    if ((newPath = result.getData().get("img")) != null) {
+		    	Admin redisAdmin = adminService.getAdminByAccountName(accountName);
 		    	//删除久头像图片
 		    	upLoadUtil.deleteFile(UpLoadUtil.LOCALPREFIX + redisAdmin.getAvatar());
 		    	redisAdmin.setAvatar(newPath);

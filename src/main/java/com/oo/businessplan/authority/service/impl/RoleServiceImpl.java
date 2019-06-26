@@ -17,11 +17,11 @@ import com.oo.businessplan.authority.pojo.RolePage;
 import com.oo.businessplan.authority.service.RoleService;
 import com.oo.businessplan.basic.service.CodeServie;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
-import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
 import com.oo.businessplan.common.exception.UpdateErrorException;
 import com.oo.businessplan.common.exception.UpdateErrorException.ErrorType;
+import com.oo.businessplan.common.pageModel.MethodResult;
 import com.oo.businessplan.common.redis.RedisTokenManager;
 
 @Service("roleService")
@@ -36,16 +36,15 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 
 	@Override
 	@Transactional
-	public Map<String,String> giveRole(int[] roleIds, int adminId, Integer creator) {	
-		 Map<String,String> result = new HashMap<>();
+	public MethodResult<String> giveRole(int[] roleIds, int adminId, Integer creator) {	
+		MethodResult<String> result = new MethodResult<>();
 		  try {
 		    roleMapper.giveRolesBatch(roleIds, adminId, creator);
-		    return result;
+		    return result.success();
 		  } catch (SQLException e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			result.put(SystemKey.ERROR_KEY,"角色赋予重复");
-			return result;
+			return result.fail("角色赋予重复");
 		  }
 	}
 

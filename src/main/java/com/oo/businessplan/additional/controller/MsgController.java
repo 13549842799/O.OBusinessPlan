@@ -16,6 +16,7 @@ import com.oo.businessplan.basic.service.MsgService;
 import com.oo.businessplan.common.pageModel.MethodResult;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
+import com.oo.businessplan.common.util.StringUtil;
 
 /**
  * 短信controller
@@ -59,8 +60,10 @@ public class MsgController {
 		
 		ResponseResult<String> response = new ResponseResult<>();
 		
-		MethodResult<Admin> r1 = adminService.getAdminByAccountName(accountName);
-		
+		Admin admin = adminService.getAdminByAccountName(accountName);
+		if (StringUtil.isEmpty(admin.getBindPhone())) {
+			return response.fail("没有绑定手机");
+		}
 		
 		
 		

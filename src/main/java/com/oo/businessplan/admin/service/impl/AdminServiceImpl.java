@@ -86,8 +86,6 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	@Override
 	public Admin getAdminByAccountName(String accountName) {
 		
-		MethodResult<Admin> result = new MethodResult<>();
-		
 		if (StringUtil.isEmpty(accountName)) {
 			  throw new LoginException("请输入id或者账号用户名");
 		}	

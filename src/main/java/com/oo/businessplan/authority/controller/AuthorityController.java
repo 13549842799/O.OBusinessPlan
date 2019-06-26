@@ -28,7 +28,6 @@ import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.authority.service.ResourceService;
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.constant.ResultConstant;
-import com.oo.businessplan.common.constant.SystemKey;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
@@ -142,7 +141,7 @@ public class AuthorityController extends BaseController{
 		case 0:
 			return response.fail(ResultConstant.NOT_EXIST_AUTH);
 		default :
-			return response.error(SystemKey.ERROR_KEY);
+			return response.error("error");
 		}
 	}
 	
@@ -158,7 +157,7 @@ public class AuthorityController extends BaseController{
         	authService.clearAuthsForRole(auth.getRoid());
 			return response.success();
 		}
-        return response.error(SystemKey.ERROR_KEY);
+        return response.error("error");
 	}
 	
 }
