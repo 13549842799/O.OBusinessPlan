@@ -3,19 +3,20 @@ package com.oo.businessplan.additional.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oo.businessplan.additional.pojo.Msg;
 import com.oo.businessplan.admin.pojo.entity.Admin;
 import com.oo.businessplan.admin.service.AdminService;
 import com.oo.businessplan.basic.service.MsgService;
-import com.oo.businessplan.common.pageModel.MethodResult;
+
 import com.oo.businessplan.common.pageModel.ResponseResult;
-import com.oo.businessplan.common.security.IgnoreSecurity;
+
 import com.oo.businessplan.common.util.StringUtil;
 
 /**
@@ -61,30 +62,17 @@ public class MsgController {
 		ResponseResult<String> response = new ResponseResult<>();
 		
 		Admin admin = adminService.getAdminByAccountName(accountName);
-		if (StringUtil.isEmpty(admin.getBindPhone())) {
+		String phone = admin.getBindPhone();
+		if (StringUtil.isEmpty(phone)) {
 			return response.fail("没有绑定手机");
 		}
+		Msg message = msgService.generateMsg(phone, type);
 		
+		if (!msgService.sendMeg(message)) {
+			return response.fail("短信发送失败");
+		}
 		
-		
-		return response;
+		return response.success();
 	}
 	
-	/**
-	 * 校验 验证码
-	 * @param request
-	 * @param accountName
-	 * @param type
-	 * @param code
-	 * @return
-	 */
-	@GetMapping("/valid/{type}/{accountName}")
-	@IgnoreSecurity(authority = false)
-	public ResponseResult<String> validMsg(
-			HttpServletRequest request, @PathVariable(value="accountName") String accountName, 
-			@PathVariable(value="type") byte type, @RequestParam("code") String code) {
-		ResponseResult<String> response = new ResponseResult<>();
-		
-		return response;
-	}
 }

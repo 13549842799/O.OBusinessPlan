@@ -335,6 +335,25 @@ public class AdminController extends BaseController{
 			}		    		   
 	   }
 	   
+	   @PostMapping("/bindPhone.do")
+	   @IgnoreSecurity
+	   public ResponseResult<String> bindPhone(HttpServletRequest request,
+			   @RequestParam(required=false,value="password")String password,
+			   @RequestParam(required=false,value="newPhone")String newPhone,
+			   @RequestParam(required=false,value="verificationCode")String verificationCode
+			   ) {
+		   ResponseResult<String> response = new ResponseResult<>();
+		   
+		   Admin admin = adminService.getAdminByAccountName(getAccountName(request));
+		   if (StringUtil.isEmpty(admin.getBindPhone())) {
+			   
+		   }
+		   admin.setBindPhone(newPhone);
+		   adminService.update(admin);
+		   
+		   return response.success();
+	   }
+	   
 	   @ApiOperation(value = "账号信息修改-修改昵称")
 	   @PostMapping("/alterNikeName.do")
 	   @IgnoreSecurity(val=false)

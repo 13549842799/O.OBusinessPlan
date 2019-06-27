@@ -1,7 +1,5 @@
 package com.oo.businessplan.common.redis;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -24,10 +22,6 @@ import com.oo.businessplan.common.security.SessionManager;
 public class RedisTokenManager extends RedisManager implements SessionManager{
 	
 	private Logger logger = LoggerFactory.getLogger(RedisTokenManager.class);
-		
-	private StringRedisTemplate stringRedisTemplate;
-	
-	private RedisTemplate<String,Object> redisTemplate;
 	
 	@Resource(name="redisTemplate")
 	private HashOperations<String,String,Object> hop;

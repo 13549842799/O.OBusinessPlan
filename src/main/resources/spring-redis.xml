@@ -61,5 +61,12 @@
          <property name="redisTemplate" ref="redisTemplate" />
     </bean>
     
+    <bean id="redisMsgManager" class="com.oo.businessplan.common.redis.RedisMsgManager">
+         <!-- 适应不同超时时间的需求 -->
+         <property name="expired" value="10" />
+         <property name="timeUnit" value="MINUTES" />
+         <property name="stringRedisTemplate" ref="stringRedisTemplate" />
+    </bean>
+    
     
 </beans>
