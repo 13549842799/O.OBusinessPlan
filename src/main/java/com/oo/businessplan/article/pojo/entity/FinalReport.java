@@ -9,6 +9,11 @@ import com.oo.businessplan.article.pojo.AbstractArticle;
  */
 public class FinalReport extends AbstractArticle<Integer> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 70940974183316306L;
+
 	private String result;
 	
 	private String testimonials ;// 感言

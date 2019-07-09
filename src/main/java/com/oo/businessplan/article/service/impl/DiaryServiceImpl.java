@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.oo.businessplan.article.mapper.ArticleMapper;
 import com.oo.businessplan.article.mapper.DiaryMapper;
 import com.oo.businessplan.article.pojo.entity.Diary;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
@@ -19,6 +20,13 @@ public class DiaryServiceImpl extends BaseServiceImpl<Diary> implements DiarySer
 	
 	@Autowired
 	private DiaryMapper diaryMapper;
+	
+	
+
+	@Override
+	public ArticleMapper<Diary> getMapper() {
+		return this.diaryMapper;
+	}
 
 	@Override
 	public PageInfo<DiaryForm> getPage(DiaryForm form) {

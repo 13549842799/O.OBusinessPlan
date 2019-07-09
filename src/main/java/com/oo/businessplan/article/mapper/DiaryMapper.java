@@ -6,14 +6,13 @@ import org.apache.ibatis.annotations.Param;
 
 import com.oo.businessplan.article.pojo.entity.Diary;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
-import com.oo.businessplan.basic.mapper.BaseMapper;
 
 /**
  * 
  * @author cyz
  *
  */
-public interface DiaryMapper extends BaseMapper<Diary>{
+public interface DiaryMapper extends ArticleMapper<Diary>{
 	
 	/**
 	 * 获取带有标签的日记列表

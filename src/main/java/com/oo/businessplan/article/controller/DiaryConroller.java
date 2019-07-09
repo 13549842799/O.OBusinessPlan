@@ -1,6 +1,8 @@
 package com.oo.businessplan.article.controller;
 
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,6 +119,17 @@ public class DiaryConroller extends BaseController{
 			return response.success();
 		}
 		return response.fail("删除异常");
+		
+	}
+	
+	@GetMapping("/searchTitle.re")
+	@IgnoreSecurity(authority = false)
+	public ResponseResult<List<Diary>> searchDiaryTitle(HttpServletRequest request,
+			@RequestParam(name="title") String title) {
+		
+		ResponseResult<List<Diary>> response = new ResponseResult<>();
+		
+		return response.success(diaryService.searchTitle(title));
 		
 	}
 	

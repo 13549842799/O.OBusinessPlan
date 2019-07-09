@@ -4,14 +4,13 @@ package com.oo.businessplan.article.service;
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Diary;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
-import com.oo.businessplan.basic.service.BaseService;
 
 /**
  * 
  * @author cyz
  *
  */
-public interface DiaryService extends BaseService<Diary>{
+public interface DiaryService extends ArticleService<Diary>{
 	
 	int pageSize = 10;
 	

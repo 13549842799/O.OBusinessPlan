@@ -209,6 +209,9 @@
     
     <sql id="listBase">
     <trim prefixOverrides="AND">
+        <if test="id != null">
+        AND di.`id` = #{id}
+        </if>
         <if test="delflag != null ">
         AND di.`delflag` = #{delflag,jdbcType=TINYINT}
         </if>
@@ -225,7 +228,7 @@
         AND di.`modifierTime` = #{modifierTime}
         </if>
         <if test="title != null ">
-        AND di.`title` = #{title}
+        AND LOCATE(#{title}, di.`title`) > 0
         </if>
         <if test="content != null ">
         AND di.`content` = #{content}
