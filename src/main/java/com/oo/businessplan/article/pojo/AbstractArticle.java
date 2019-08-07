@@ -22,6 +22,8 @@ public abstract class AbstractArticle<T> extends ModifierEntity<T> {
 	
 	private Integer classify; // 分类
 	
+	private Byte source;// 来源 1-电脑 2-app
+	
 	public AbstractArticle() {
 		super();
 	}
@@ -58,5 +60,15 @@ public abstract class AbstractArticle<T> extends ModifierEntity<T> {
 	public void setClassify(Integer classify) {
 		this.classify = classify;
 	}
+
+	public Byte getSource() {
+		return source;
+	}
+
+	public void setSource(Byte source) {
+		this.source = source;
+	}
+	
+	
 	
 }
