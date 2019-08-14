@@ -165,6 +165,9 @@
         <include refid="base_column"/>
         FROM novel no
         WHERE no.id = #{id} AND no.delflag = #{delflag}
+        <if test="creator != null">
+        AND no.creator = IFNULL(#{creator}, no.creator)
+        </if>
     </select>
 
     <select id="getList" resultType="novel" parameterType="novel">

@@ -1,6 +1,7 @@
 package com.oo.businessplan.article.pojo.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.oo.businessplan.article.pojo.AbstractArticle;
 
@@ -22,6 +23,7 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 	
 	private Integer wordsNum;// 整本书字数
 	
+	private List<Portion> portions; //分卷集合
 	
 
 	public Novel() {
@@ -32,6 +34,11 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 	public Novel(Integer id, Byte delflag) {
 		super(id, delflag);
 		// TODO Auto-generated constructor stub
+	}
+	
+	public Novel(Integer id, Integer creator) {
+		super(id);
+		this.setCreator(creator);
 	}
 
 	public Novel(Integer id) {
@@ -62,6 +69,16 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 	public void setWordsNum(Integer wordsNum) {
 		this.wordsNum = wordsNum;
 	}
+
+	public List<Portion> getPortions() {
+		return portions;
+	}
+
+	public void setPortions(List<Portion> portions) {
+		this.portions = portions;
+	}
+
+	
 	
 	
 

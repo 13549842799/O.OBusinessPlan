@@ -31,6 +31,9 @@ public class UpLoadUtil {
 	
 	   //public static final String LOCALPREFIX = "D:" + File.separator + "gitRes" + File.separator + "O.OBusinessPlanFile";
 	   
+	   public final String[] models = {"admin", "employee", "novel"};
+	   public final String[] types = {"img", "img", "img"};
+	    
 	   /**
 	    * 配置设定的可用的文件格式,value中的文件格式以 , 隔开
 	    */
@@ -81,15 +84,14 @@ public class UpLoadUtil {
                String type = fileconfig.get("type");
                String suffix = checkFormatLegal(oldFileName);
                //判断是否符合要求的数据格式
-               boolean mat = match(suffix, type,Boolean.valueOf(fileconfig.get("check")));
-               if (!mat) {
-				   continue;
-			   }
+               if (Boolean.valueOf(fileconfig.get("check")) && !match(suffix, type)) {
+            	   continue;
+               }
                //根据名字获得对应的路径
-			   String path = fileconfig.get("targetPath");
-			   String newPath = path;
+			   String path = fileconfig.get("targetPath")
+			   , newPath = path
                //拼接路径 /home/soft01/OOMusicPic/path/ad,om_id.end
-			   String newName = fileconfig.get("newName");
+			   , newName = fileconfig.get("newName");
 			   if (newName!=null) {
 			    	//拼接字符串
 				   newPath = UpLoadUtil.LOCALPREFIX + (path = path +File.separator+newName+"."+suffix);
@@ -112,6 +114,138 @@ public class UpLoadUtil {
 			}
 		   
 	    	return result.success(pathMap);
+	   }
+	   
+	   public MethodResult<String> uploadFile(HttpServletRequest request, String key, String targetPath, String newName, Long maxSize, Byte fileType) {
+		   
+		   MethodResult<String> result = new MethodResult<>();
+
+		   Map<String, MultipartFile> fileMap = getFile(key, request);
+		   if (fileMap == null) {
+			   return result.fail("没有可上传的文件");
+		   }
+		   MultipartFile file = fileMap.get(key);
+		   
+		   if (file == null) {
+			   return result.fail("不存在目标文件");
+		   }
+           
+           
+           //如果有type则判断文件数据格式是否符合要求
+           String oldFileName = file.getOriginalFilename();
+           String suffix = checkFormatLegal(oldFileName);    
+           //根据名字获得对应的路径
+		   String path = targetPath
+		   , newPath = path;
+		   if (newName!=null) {
+		    	//拼接字符串
+			   newPath = UpLoadUtil.LOCALPREFIX + (path = path +File.separator+newName+"."+suffix);
+		   }else {
+				synchronized (sdf) {
+					Date date = new Date();
+					String dateStr = sdf.format(date);
+					newPath =UpLoadUtil.LOCALPREFIX + (path = path +File.separator+dateStr+"."+suffix);
+				}
+			}
+		    //上传文件
+		    try {
+				file.transferTo(new File(newPath));
+				return result.success("");
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		   
+		   return result.fail("系统错误");
+	   }
+	   
+	   public  String getRandomName (String sign) {
+
+			return (sign == null ? "" : sign) + sdf.format(new Date());
+	   }
+	   
+	   /**
+	    * 持久化文件
+	    * @param file
+	    * @param targetPath
+	    * @param fileName
+	    * @return
+	    */
+	   public String filePersistence(MultipartFile file, String targetPath, String fileName) {
+		      
+		    //判断目录是否存在
+		   File dir = new File(targetPath);
+		   if (!dir.exists() || !dir.isDirectory()) {
+			   dir.mkdir();
+		   }
+		   String oldFileName = file.getOriginalFilename();
+           String suffix = checkFormatLegal(oldFileName);
+           
+           String newPath = UpLoadUtil.LOCALPREFIX + (targetPath = targetPath +File.separator+fileName+"."+suffix);
+           //上传文件
+	       try {
+		     file.transferTo(new File(newPath));
+			 return targetPath;
+		   } catch (IllegalStateException e) {
+			 e.printStackTrace();
+		   } catch (IOException e) {
+			 e.printStackTrace();
+		   }
+		   return null;
+		   
+	   }
+	   
+	   /**
+	    * 验证文件
+	    * @param file
+	    * @param maxSize
+	    * @param type
+	    * @return
+	    */
+	   public MethodResult<String> validFile(MultipartFile file, Long maxSize, String type) {
+		   
+		   MethodResult<String> result = new MethodResult<String>();
+		   
+		   if (maxSize != null && (file.getSize()/1024l) > maxSize) {
+			   return result.fail("文件过大");
+	       }
+		   //如果有type则判断文件数据格式是否符合要求
+           String oldFileName = file.getOriginalFilename();
+           String suffix = checkFormatLegal(oldFileName);
+           //判断是否符合要求的数据格式
+           if (type != null && !match(suffix, type)) {
+        	   return result.fail("文件不符合类型");
+           }
+		   return result.success();
+	   }
+	   
+	   /**
+	    * 获取上传的文件对象， 如果key为null，则获取所有的文件的map，如果传入key，则获取对应的文件
+	    * @param key
+	    * @param request
+	    * @return
+	    */
+	   public Map<String, MultipartFile> getFile(String key, HttpServletRequest request) {
+		   
+		 //将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
+		   CommonsMultipartResolver resolver = 
+				                  new CommonsMultipartResolver(request.getSession().getServletContext());
+		   //检查form中是否有enctype="multipart/form-data"
+		   if (!resolver.isMultipart(request)) {
+			   return null;
+		   }
+		   //将request变成多部分request
+		   MultipartHttpServletRequest mRequest =(MultipartHttpServletRequest)request;
+		   
+		   if (key == null) {
+			   return mRequest.getFileMap();
+		   }
+		   
+		   Map<String, MultipartFile> result = new HashMap<>();
+		   result.put(key, mRequest.getFile(key));
+		   
+		   return result;
 	   }
 	   
 	   
@@ -149,11 +283,7 @@ public class UpLoadUtil {
 	    * @param flag 是否开启数据格式校检
 	    * @return
 	    */
-	   public boolean match(String target,String type,boolean flag){
-		   
-		   if (!flag) {
-			  return !flag;
-		   }
+	   public boolean match(String target,String type){		
 		   
 		   String key = null;
 		   if (type==null || StringUtil.isEmpty(type)) {

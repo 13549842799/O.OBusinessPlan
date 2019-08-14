@@ -2,6 +2,7 @@ package com.oo.businessplan.article.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.io.File;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,9 +16,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.common.pageModel.MethodResult;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
+import com.oo.businessplan.common.util.StringUtil;
+import com.oo.businessplan.common.util.UpLoadUtil;
 import com.oo.businessplan.article.service.NovelService;
 import com.oo.businessplan.article.pojo.entity.Novel;
 
@@ -33,6 +39,61 @@ public class NovelController extends BaseController{
 
     @Autowired
     NovelService novelService;
+    
+    @Autowired
+	private UpLoadUtil upLoadUtil;
+    
+    @IgnoreSecurity
+    @PostMapping(value = "/add.re")
+    public ResponseResult<Novel> createNovel(HttpServletRequest request,
+    		Novel novel) {
+        ResponseResult<Novel> response = new ResponseResult<>();
+        
+        if (StringUtil.isEmpty(novel.getTitle())) {
+        	return response.fail("请输入标题");
+        }
+        
+        if (StringUtil.isNotEmpty(novel.getContent()) && novel.getContent().length() > 600) {
+        	return response.fail("简介过长");
+        }
+        
+        novelService.add(novel, Novel.class);
+        
+        return response.success(novel);
+    }
+    
+    @IgnoreSecurity
+    @PostMapping(value = "/s/{id}/cover.do")
+    public ResponseResult<String> updateCover(HttpServletRequest request,
+    		@PathVariable(name="id")int id,
+    		@RequestParam(name = "key", required = true) String key) {
+        ResponseResult<String> response = new ResponseResult<>();
+        
+        Map<String, MultipartFile> fileMap = upLoadUtil.getFile(key, request);
+        MultipartFile file = null;
+        if (fileMap == null || (file = fileMap.get(key)) == null) {
+        	return response.fail("请提交文件");
+        }
+	    
+        MethodResult<String> validResult = upLoadUtil.validFile(file, 120l, upLoadUtil.types[2]);
+        
+        if (validResult.fail()) {
+        	return response.fail(validResult.getErrorMessage());
+        }
+        
+        String path = upLoadUtil.filePersistence(file, File.separator + upLoadUtil.models[2], upLoadUtil.getRandomName(getAccountName(request)));
+        
+        Novel old = novelService.getById(new Novel(id, currentAdminId(request))), novel = new Novel();
+
+        novel.setId(id);
+        novel.setCover(path);
+        if(novelService.update(novel) == 1 && old != null) {
+        	upLoadUtil.deleteFile(UpLoadUtil.LOCALPREFIX + path);
+        	return response.success(path);
+        };
+        return response.fail("发生未知错误");
+    }
+    
     
     @IgnoreSecurity
     @GetMapping(value = "/list.re")

@@ -64,10 +64,10 @@
                 labels,
                 </if>
                 <if test="status != null">
-                status
+                status,
                 </if>
                 <if test="source != null">
-                source
+                source,
                 </if>
             </trim>
         )
@@ -104,10 +104,10 @@
                 #{labels},
                 </if>
                 <if test="status != null">
-                #{status}
+                #{status},
                 </if>
                 <if test="source != null">
-                #{source}
+                #{source},
                 </if>
             </trim>
         )
