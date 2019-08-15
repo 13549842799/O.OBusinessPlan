@@ -19,13 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.pageModel.MethodResult;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.util.UpLoadUtil;
 import com.oo.businessplan.article.service.NovelService;
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Novel;
+import com.oo.businessplan.article.pojo.form.NovelForm;
 
 
 /**
@@ -97,9 +100,32 @@ public class NovelController extends BaseController{
     
     @IgnoreSecurity
     @GetMapping(value = "/list.re")
-    public ResponseResult<List<Novel>> list(HttpServletRequest request) {
-        ResponseResult<List<Novel>> response = new ResponseResult<>();
-        
-        return response.success();
+    public ResponseResult<PageInfo<NovelForm>> list(HttpServletRequest request,
+    		NovelForm form) {
+        ResponseResult<PageInfo<NovelForm>> response = new ResponseResult<>();
+        form.setDelflag(DeleteFlag.VALID.getCode());
+        form.setCreator(currentAdminId(request));
+        PageInfo<NovelForm> page = novelService.getPage(form);    
+        return response.success(page);
     }
+    
+    @DeleteMapping("/s/{id}/delete.do")
+    @IgnoreSecurity
+    public ResponseResult<String> deleteNovel(HttpServletRequest request,
+    		@PathVariable(name="id") Integer id) {
+    	ResponseResult<String> response = new ResponseResult<>();
+    	
+    	Integer adminId = currentAdminId(request);
+    	Novel novel = new Novel(id, adminId);
+    	novel.setModifier(adminId);
+    	if (novelService.delete(novel)) {
+    		return response.success();
+    	}
+    	return response.fail("删除异常");
+    }
+    
+    
+    
+    
+    
 }
