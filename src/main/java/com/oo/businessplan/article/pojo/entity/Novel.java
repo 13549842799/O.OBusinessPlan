@@ -25,6 +25,8 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 	
 	private List<Portion> portions; //分卷集合
 	
+	private Byte novelState;// 状态
+	
 
 	public Novel() {
 		super();
@@ -77,6 +79,16 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 	public void setPortions(List<Portion> portions) {
 		this.portions = portions;
 	}
+
+	public Byte getNovelState() {
+		return novelState;
+	}
+
+	public void setNovelState(Byte novelState) {
+		this.novelState = novelState;
+	}
+
+	
 
 	
 	

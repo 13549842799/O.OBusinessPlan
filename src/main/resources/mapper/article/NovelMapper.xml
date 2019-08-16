@@ -15,10 +15,11 @@
         <result property="cover" column="cover"/>
         <result property="Labels" column="Labels"/>
         <result property="wordsNum" column="wordsNum"/>
+        <result property="novelState" column="novelState"/>
     </resultMap>
 
      <sql id="base_column">
-        no.id,no.delflag,no.creator,no.createTime,no.modifier,no.modifierTime,no.title,no.content,no.classify,no.cover,no.Labels,no.wordsNum
+        no.id,no.delflag,no.creator,no.createTime,no.modifier,no.modifierTime,no.title,no.content,no.classify,no.cover,no.Labels,no.wordsNum, no.novelState
      </sql>
      
      <sql id="expand_column">
@@ -142,7 +143,10 @@
                 Labels = #{Labels},
                 </if>
                 <if test="wordsNum != null ">
-                wordsNum = #{wordsNum}
+                wordsNum = #{wordsNum},
+                </if>
+                <if test="novelState != null ">
+                novelState = #{novelState}
                 </if>
             </trim>
          WHERE id = #{id}
@@ -160,7 +164,8 @@
             classify = #{classify},
             cover = #{cover},
             Labels = #{Labels},
-            wordsNum = #{wordsNum}
+            wordsNum = #{wordsNum},
+            novelState = #{novelState}
          WHERE id = #{id}
     </update>
 
@@ -192,6 +197,9 @@
         <if test="classify != null ">
         AND no.`classify` = #{classify}
         </if>
+        <if test="novelState != null ">
+        AND no.`novelState` = #{novelState}
+        </if>
     </trim>
     </select>
     
@@ -220,6 +228,9 @@
         </if>
         <if test="delflag != null ">
         AND no.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test="novelState != null ">
+        AND no.`novelState` = #{novelState}
         </if>
     </trim>
     </select>
