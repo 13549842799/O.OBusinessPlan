@@ -3,6 +3,8 @@ package com.oo.businessplan.article.controller;
 import java.util.List;
 import java.util.Map;
 import java.io.File;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,6 +28,8 @@ import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.util.UpLoadUtil;
 import com.oo.businessplan.article.service.NovelService;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Novel;
 import com.oo.businessplan.article.pojo.form.NovelForm;
@@ -47,11 +51,11 @@ public class NovelController extends BaseController{
 	private UpLoadUtil upLoadUtil;
     
     @IgnoreSecurity
-    @PostMapping(value = "/add.re")
+    @PostMapping(value = "/save.do")
     public ResponseResult<Novel> createNovel(HttpServletRequest request,
-    		Novel novel) {
+    		Novel novel, String fileName) {
         ResponseResult<Novel> response = new ResponseResult<>();
-        
+        System.out.println("进入save接口");
         if (StringUtil.isEmpty(novel.getTitle())) {
         	return response.fail("请输入标题");
         }
@@ -59,11 +63,30 @@ public class NovelController extends BaseController{
         if (StringUtil.isNotEmpty(novel.getContent()) && novel.getContent().length() > 600) {
         	return response.fail("简介过长");
         }
-        
-        novelService.add(novel, Novel.class);
-        
+        MethodResult<String> saveCover = null;
+        if (StringUtil.isNotEmpty(fileName) && (saveCover = saveCover(request, fileName)).fail()) {
+        	return response.fail(saveCover.getErrorMessage());
+        }
+        novel.setCover(saveCover == null ? null : saveCover.getData());
+        Integer creator = currentAdminId(request);
+        if (novel.getId() == null) {
+        	novel.setCreator(creator);      
+        	novel.setCreateTime(new Timestamp(new Date().getTime()));
+        	novelService.add(novel, Integer.class);
+        } else {
+        	novel.setModifier(creator);
+        	if (novelService.update(novel) != 1) {
+        		return response.fail("更新失败");
+        	}
+        	Novel oldNovel = novelService.getById(novel);
+        	if (oldNovel != null && StringUtil.isNotEmpty(oldNovel.getCover())) {
+        		upLoadUtil.deleteFile(UpLoadUtil.LOCALPREFIX + saveCover.getData());
+        	}
+        }
+    
         return response.success(novel);
     }
+    
     
     @IgnoreSecurity
     @PostMapping(value = "/s/{id}/cover.do")
@@ -72,30 +95,44 @@ public class NovelController extends BaseController{
     		@RequestParam(name = "key", required = true) String key) {
         ResponseResult<String> response = new ResponseResult<>();
         
-        Map<String, MultipartFile> fileMap = upLoadUtil.getFile(key, request);
+        MethodResult<String> saveCover = saveCover(request, key);
+        
+        if (saveCover.fail()) {
+        	return response.fail(saveCover.getErrorMessage());
+        }
+        
+        Novel old = novelService.getById(new Novel(id, currentAdminId(request))), novel = new Novel();
+        
+        novel.setId(id);
+        novel.setCover(saveCover.getData());
+        if(novelService.update(novel) == 1 && old != null) {
+        	upLoadUtil.deleteFile(UpLoadUtil.LOCALPREFIX + saveCover.getData());
+        	return response.success(saveCover.getData());
+        };
+        return response.fail("发生未知错误");
+    }
+
+
+	private MethodResult<String> saveCover(HttpServletRequest request, String key) {
+		
+		MethodResult<String> result = new MethodResult<>();
+		
+		Map<String, MultipartFile> fileMap = upLoadUtil.getFile(key, request);
         MultipartFile file = null;
         if (fileMap == null || (file = fileMap.get(key)) == null) {
-        	return response.fail("请提交文件");
+        	return result.fail("请提交文件");
         }
 	    
         MethodResult<String> validResult = upLoadUtil.validFile(file, 120l, upLoadUtil.types[2]);
         
         if (validResult.fail()) {
-        	return response.fail(validResult.getErrorMessage());
+        	return result.fail(validResult.getErrorMessage());
         }
         
         String path = upLoadUtil.filePersistence(file, File.separator + upLoadUtil.models[2], upLoadUtil.getRandomName(getAccountName(request)));
-        
-        Novel old = novelService.getById(new Novel(id, currentAdminId(request))), novel = new Novel();
-
-        novel.setId(id);
-        novel.setCover(path);
-        if(novelService.update(novel) == 1 && old != null) {
-        	upLoadUtil.deleteFile(UpLoadUtil.LOCALPREFIX + path);
-        	return response.success(path);
-        };
-        return response.fail("发生未知错误");
-    }
+		System.out.println("path:" + path);
+        return result.success(path);
+	}
     
     
     @IgnoreSecurity

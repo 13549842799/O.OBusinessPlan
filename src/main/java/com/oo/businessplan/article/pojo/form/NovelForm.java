@@ -27,7 +27,7 @@ public class NovelForm extends Novel {
 	@JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
 	@Override
 	public Timestamp getModifierTime() {
-		return super.getModifierTime();
+		return super.getModifierTime() == null ? this.getCreateTime() : super.getModifierTime();
 	}
 
 	@JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")

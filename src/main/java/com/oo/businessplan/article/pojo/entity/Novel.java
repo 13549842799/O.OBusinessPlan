@@ -19,7 +19,7 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 
 	private String cover; //封面
 	
-	private String Labels; //标签
+	private String labels; //标签
 	
 	private Integer wordsNum;// 整本书字数
 	
@@ -57,11 +57,11 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 	}
 
 	public String getLabels() {
-		return Labels;
+		return labels;
 	}
 
 	public void setLabels(String labels) {
-		Labels = labels;
+		this.labels = labels;
 	}
 
 	public Integer getWordsNum() {

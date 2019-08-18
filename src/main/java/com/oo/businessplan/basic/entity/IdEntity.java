@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import aj.org.objectweb.asm.Type;
+
 public abstract class IdEntity <T> implements Serializable{
 	
 	/**

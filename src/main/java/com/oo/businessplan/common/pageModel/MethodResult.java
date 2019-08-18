@@ -33,7 +33,7 @@ public class MethodResult<T>{
 	}
 	
 	public MethodResult<T> success() {
-		return this.success();
+		return this.success(null);
 	}
 
 	public MethodResult<T> success(T data) {

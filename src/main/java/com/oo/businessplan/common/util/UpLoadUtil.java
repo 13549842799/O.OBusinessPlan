@@ -175,10 +175,11 @@ public class UpLoadUtil {
 	   public String filePersistence(MultipartFile file, String targetPath, String fileName) {
 		      
 		    //判断目录是否存在
-		   File dir = new File(targetPath);
+		   File dir = new File(LOCALPREFIX + File.separator + targetPath);
 		   if (!dir.exists() || !dir.isDirectory()) {
 			   dir.mkdir();
 		   }
+		   System.out.println(targetPath);
 		   String oldFileName = file.getOriginalFilename();
            String suffix = checkFormatLegal(oldFileName);
            
@@ -207,8 +208,9 @@ public class UpLoadUtil {
 		   
 		   MethodResult<String> result = new MethodResult<String>();
 		   
-		   if (maxSize != null && (file.getSize()/1024l) > maxSize) {
-			   return result.fail("文件过大");
+		   long size = file.getSize()/1024l;
+		   if (maxSize != null && size > maxSize) {
+			   return result.fail("文件过大:" + size + "kb");
 	       }
 		   //如果有type则判断文件数据格式是否符合要求
            String oldFileName = file.getOriginalFilename();

@@ -13,23 +13,30 @@
         <result property="content" column="content"/>
         <result property="classify" column="classify"/>
         <result property="cover" column="cover"/>
-        <result property="Labels" column="Labels"/>
+        <result property="labels" column="labels"/>
         <result property="wordsNum" column="wordsNum"/>
         <result property="novelState" column="novelState"/>
     </resultMap>
+    
+    <resultMap id="ExpandMap" type="novelForm" extends="NovelMap">
+        <collection property="labelList" ofType="label">
+            <id property="id" column="la_id"/>
+            <result property="name" column="la_name"/>
+        </collection>
+    </resultMap>
 
      <sql id="base_column">
-        no.id,no.delflag,no.creator,no.createTime,no.modifier,no.modifierTime,no.title,no.content,no.classify,no.cover,no.Labels,no.wordsNum, no.novelState
+        no.id,no.delflag,no.creator,no.createTime,no.modifier,no.modifierTime,no.title,no.content,no.classify,no.cover,no.labels,no.wordsNum, no.novelState
      </sql>
      
      <sql id="expand_column">
-        <include refid="base_column" />, ad.nikename, la.name
+        <include refid="base_column" />, ad.nikename, la.id as la_id, la.name as la_name
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO novel
         (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 delflag,
                 </if>
@@ -57,16 +64,13 @@
                 <if test="cover != null ">
                 cover,
                 </if>
-                <if test="Labels != null ">
-                Labels,
-                </if>
-                <if test="wordsNum != null ">
-                wordsNum
+                <if test="labels != null ">
+                labels,
                 </if>
             </trim>
         )
         VALUES (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 #{delflag,jdbcType=TINYINT},
                 </if>
@@ -94,11 +98,8 @@
                 <if test="cover != null ">
                 #{cover},
                 </if>
-                <if test="Labels != null ">
-                #{Labels},
-                </if>
-                <if test="wordsNum != null ">
-                #{wordsNum}
+                <if test="labels != null ">
+                #{labels},
                 </if>
             </trim>
         )
@@ -111,7 +112,7 @@
 
     <update id="update" parameterType="novel">
         UPDATE novel SET 
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 delflag = #{delflag,jdbcType=TINYINT},
                 </if>
@@ -203,7 +204,7 @@
     </trim>
     </select>
     
-    <select id="getExpandList" resultType="novelForm" parameterType="novelForm">
+    <select id="getExpandList" resultMap="ExpandMap" parameterType="novelForm">
         SELECT 
         <include refid="expand_column"/>
         FROM novel no
