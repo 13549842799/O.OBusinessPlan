@@ -15,4 +15,6 @@ import com.oo.businessplan.article.pojo.form.NovelForm;
 public interface NovelService extends BaseService<Novel> {
 	
 	PageInfo<NovelForm> getPage(NovelForm form);
+	
+	NovelForm getComplete(Novel novel);
 }

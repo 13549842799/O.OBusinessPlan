@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.mapper.NovelMapper;
@@ -33,5 +34,17 @@ public class NovelServiceImpl extends BaseServiceImpl<Novel> implements NovelSer
 		return page;
 	}
 
+	@Override
+	public NovelForm getComplete(Novel novel) {
+		
+		if (novel == null) {
+			return null;
+		}
+		novel.setDelflag(DeleteFlag.VALID.getCode());
+	
+		return novelMapper.getComplete(novel);
+	}
+
+	
     
 }

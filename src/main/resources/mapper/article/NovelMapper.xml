@@ -16,9 +16,13 @@
         <result property="labels" column="labels"/>
         <result property="wordsNum" column="wordsNum"/>
         <result property="novelState" column="novelState"/>
+        <result property="portionsNum" column="portionsNum"/>
+        <result property="sectionsNum" column="sectionsNum"/>
     </resultMap>
     
     <resultMap id="ExpandMap" type="novelForm" extends="NovelMap">
+        <result property="createNikeName" column="nike_name" />
+        <result property="classifyName" column="cl_name" />
         <collection property="labelList" ofType="label">
             <id property="id" column="la_id"/>
             <result property="name" column="la_name"/>
@@ -26,11 +30,15 @@
     </resultMap>
 
      <sql id="base_column">
-        no.id,no.delflag,no.creator,no.createTime,no.modifier,no.modifierTime,no.title,no.content,no.classify,no.cover,no.labels,no.wordsNum, no.novelState
+        no.id,no.delflag,no.creator,no.createTime,no.modifier,no.modifierTime,no.title,no.content,no.classify,no.cover,no.labels,no.wordsNum, no.novelState, no.portionsNum,no.sectionsNum
      </sql>
      
      <sql id="expand_column">
-        <include refid="base_column" />, ad.nikename, la.id as la_id, la.name as la_name
+        <include refid="base_column" />, la.id as la_id, la.name as la_name
+     </sql>
+     
+     <sql id="expand_list_column">
+        <include refid="base_column" />, ad.nikename as nike_name, cl.id as cl_id, cl.name as cl_name
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
@@ -106,7 +114,7 @@
     </insert>
 
     <update id="delete" parameterType="novel">
-        UPDATE novel set delflag = #{delflag} , modifier = #{modifier},modifierTime = {modifierTime}
+        UPDATE novel set delflag = #{delflag} , modifier = #{modifier},modifierTime = NOW()
          WHERE id = #{ id } AND creator = #{creator}
     </update>
 
@@ -147,7 +155,13 @@
                 wordsNum = #{wordsNum},
                 </if>
                 <if test="novelState != null ">
-                novelState = #{novelState}
+                novelState = #{novelState},
+                </if>
+                <if test="portionsNum != null ">
+                portionsNum = #{portionsNum},
+                </if>
+                <if test="sectionsNum != null ">
+                sectionsNum = #{sectionsNum},
                 </if>
             </trim>
          WHERE id = #{id}
@@ -166,7 +180,9 @@
             cover = #{cover},
             Labels = #{Labels},
             wordsNum = #{wordsNum},
-            novelState = #{novelState}
+            novelState = #{novelState},
+            portionsNum = #{portionsNum},
+            sectionsNum = #{sectionsNum}
          WHERE id = #{id}
     </update>
 
@@ -174,6 +190,17 @@
         SELECT 
         <include refid="base_column"/>
         FROM novel no
+        WHERE no.id = #{id} AND no.delflag = #{delflag}
+        <if test="creator != null">
+        AND no.creator = IFNULL(#{creator}, no.creator)
+        </if>
+    </select>
+    
+    <select id="getComplete" resultMap="ExpandMap" parameterType="novel">
+        SELECT 
+        <include refid="expand_column"/>
+        FROM novel no
+        LEFT JOIN label la ON FIND_IN_SET(la.id, no.labels)
         WHERE no.id = #{id} AND no.delflag = #{delflag}
         <if test="creator != null">
         AND no.creator = IFNULL(#{creator}, no.creator)
@@ -206,9 +233,9 @@
     
     <select id="getExpandList" resultMap="ExpandMap" parameterType="novelForm">
         SELECT 
-        <include refid="expand_column"/>
+        <include refid="expand_list_column"/>
         FROM novel no
-        LEFT JOIN label la ON FIND_IN_SET(la.id, no.labels)
+        LEFT JOIN classify cl ON no.classify = cl.id
         LEFT JOIN admin ad ON no.creator = ad.id
         WHERE 
     <trim prefixOverrides="AND">
@@ -220,6 +247,9 @@
         </if>
         <if test="classify != null ">
         AND no.`classify` = #{classify}
+        </if>
+        <if test="label != null">
+        AND LOCATE(#{label}, no.`labels`) > 0
         </if>
         <if test="startTime != null">
         AND <![CDATA[ UNIX_TIMESTAMP(no.createTime) >= #{startTime}  ]]>
@@ -234,6 +264,7 @@
         AND no.`novelState` = #{novelState}
         </if>
     </trim>
+        ORDER BY no.createTime desc
     </select>
 
 </mapper>

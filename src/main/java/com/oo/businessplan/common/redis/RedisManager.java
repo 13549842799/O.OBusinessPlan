@@ -2,7 +2,9 @@ package com.oo.businessplan.common.redis;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
 
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
@@ -18,6 +20,7 @@ public class RedisManager {
 	protected RedisTemplate<String, Object> redisTemplate;
 	
 	protected StringRedisTemplate stringRedisTemplate;
+	
 
 	public long getExpired() {
 		return expired;

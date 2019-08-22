@@ -107,7 +107,8 @@ public abstract class BaseServiceImpl<T> {
 				method.invoke(t, delflag);
 			}				
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+			/*e.printStackTrace();*/
+			System.out.println("没有对应的方法");
 		}
 	}
 

@@ -45,6 +45,14 @@ public class Label extends CreatorEntity<Integer> {
 	public void setAdminId(Integer adminId) {
 		this.adminId = adminId;
 	}
+	
+	/**
+	 * 为前端提供check属性初始值
+	 * @return
+	 */
+	public boolean getCheck() {
+		return false;
+	}
 
 
 }

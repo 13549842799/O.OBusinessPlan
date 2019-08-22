@@ -146,6 +146,20 @@ public class NovelController extends BaseController{
         return response.success(page);
     }
     
+    @IgnoreSecurity
+    @GetMapping(value = "/s/{id}/novel.re")
+    public ResponseResult<NovelForm> novel(
+    		HttpServletRequest request,
+    		@PathVariable(name="id")Integer id) {
+        ResponseResult<NovelForm> response = new ResponseResult<>();
+        Novel param = new Novel();
+        param.setCreator(currentAdminId(request));
+        param.setId(id);
+        NovelForm novel = novelService.getComplete(param);
+        
+        return response.success(novel);
+    }
+    
     @DeleteMapping("/s/{id}/delete.do")
     @IgnoreSecurity
     public ResponseResult<String> deleteNovel(HttpServletRequest request,

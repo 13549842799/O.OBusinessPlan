@@ -1,18 +1,26 @@
 package com.oo.businessplan.article.pojo.entity;
 
-import com.oo.businessplan.article.pojo.AbstractArticle;
+import java.sql.Timestamp;
+import java.util.List;
+
+import com.oo.businessplan.basic.entity.IdEntity;
+import com.oo.businessplan.upload.pojo.UploadFile;
 
 /**
  * 章节类
  * @author cyz
  *
  */
-public class Section extends AbstractArticle<Long> {
+public class Section extends IdEntity<Long> {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7158468863712830956L;
+	
+	private String title;
+	
+	private String content;
 
 	private Integer portionId;//分卷id
 	
@@ -20,7 +28,17 @@ public class Section extends AbstractArticle<Long> {
 	
 	private Integer wordsNum;
 	
-	private String[] pictruePath; //图片路径数组
+	private Double number; //章节数
+	
+	private List<UploadFile> files;
+	
+	private Integer creator;
+	
+	private Timestamp createTime;
+	
+	private Integer modifier;
+	
+	private Timestamp modifierTime;
 
 	public Integer getPortionId() {
 		return portionId;
@@ -46,13 +64,71 @@ public class Section extends AbstractArticle<Long> {
 		this.wordsNum = wordsNum;
 	}
 
-	public String[] getPictruePath() {
-		return pictruePath;
+	public List<UploadFile> getFiles() {
+		return files;
 	}
 
-	public void setPictruePath(String[] pictruePath) {
-		this.pictruePath = pictruePath;
+	public void setFiles(List<UploadFile> files) {
+		this.files = files;
 	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Double getNumber() {
+		return number;
+	}
+
+	public void setNumber(Double number) {
+		this.number = number;
+	}
+
+	public Integer getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Integer creator) {
+		this.creator = creator;
+	}
+
+	public Timestamp getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
+	}
+
+	public Integer getModifier() {
+		return modifier;
+	}
+
+	public void setModifier(Integer modifier) {
+		this.modifier = modifier;
+	}
+
+	public Timestamp getModifierTime() {
+		return modifierTime;
+	}
+
+	public void setModifierTime(Timestamp modifierTime) {
+		this.modifierTime = modifierTime;
+	}
+
+	
 	
 	
 

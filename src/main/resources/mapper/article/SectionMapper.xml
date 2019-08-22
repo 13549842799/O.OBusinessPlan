@@ -4,30 +4,49 @@
 
      <resultMap id="SectionMap" type="section">
         <id property="id" column="id"/>
-        <result property="delflag" column="delflag"/>
         <result property="creator" column="creator"/>
         <result property="createTime" column="createTime"/>
         <result property="modifier" column="modifier"/>
         <result property="modifierTime" column="modifierTime"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
-        <result property="classify" column="classify"/>
         <result property="portionId" column="portionId"/>
         <result property="remark" column="remark"/>
         <result property="wordsNum" column="wordsNum"/>
+        <result property="number" column="number"/>      
+        <collection property="files" ofType="uploadfile">
+            <id property="id" column="id"/>
+            <result property="creator" column="creator"/>
+            <result property="createTime" column="createTime"/>
+            <result property="name" column="name"/>
+            <result property="path" column="path"/>
+            <result property="fileType" column="fileType"/>
+            <result property="relevance" column="relevance"/>
+            <result property="objId" column="objId"/>
+            <result property="fileSize" column="fileSize"/>
+        </collection>
+    </resultMap>
+    
+    <resultMap type="sectionForm" id="SectionForm" extends="SectionMap">
+        <result property="novelName" column="no_title"/>
+        <result property="portionName" column="po_title"/>
     </resultMap>
 
-     <sql id="base_column">
-        se.id,se.delflag,se.creator,se.createTime,se.modifier,se.modifierTime,se.title,se.content,se.classify,se.portionId,se.remark,se.wordsNum
-     </sql>
+    <sql id="base_column">
+        se.id,se.creator,se.createTime,se.modifier,se.modifierTime,se.title,se.content,se.portionId,se.remark,se.wordsNum,se.number
+    </sql>
+    
+    <sql id="expand_column">
+        <include refid="base_column" />, up.id as up_id, up.delflag as up_delflag, up.name as up_name, up.path as up_path
+    </sql>
+    
+    <sql id="form_column">
+        <include refid="expand_column" />, no.title as no_title, po.title as po_title
+    </sql>
 
-    <insert id="add" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO section
-        (
-            <trim>
-                <if test="delflag != null ">
-                delflag,
-                </if>
+    <sql id="add_sql">
+    (
+            <trim suffixOverrides=",">
                 <if test="creator != null ">
                 creator,
                 </if>
@@ -46,9 +65,6 @@
                 <if test="content != null ">
                 content,
                 </if>
-                <if test="classify != null ">
-                classify,
-                </if>
                 <if test="portionId != null ">
                 portionId,
                 </if>
@@ -56,15 +72,15 @@
                 remark,
                 </if>
                 <if test="wordsNum != null ">
-                wordsNum
+                wordsNum,
+                </if>
+                <if test="number != null ">
+                number,
                 </if>
             </trim>
         )
         VALUES (
-            <trim>
-                <if test="delflag != null ">
-                #{delflag,jdbcType=TINYINT},
-                </if>
+            <trim suffixOverrides=",">
                 <if test="creator != null ">
                 #{creator},
                 </if>
@@ -83,9 +99,6 @@
                 <if test="content != null ">
                 #{content},
                 </if>
-                <if test="classify != null ">
-                #{classify},
-                </if>
                 <if test="portionId != null ">
                 #{portionId},
                 </if>
@@ -93,23 +106,32 @@
                 #{remark},
                 </if>
                 <if test="wordsNum != null ">
-                #{wordsNum}
+                #{wordsNum},
+                </if>
+                <if test="number != null ">
+                #{number},
                 </if>
             </trim>
         )
+    </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO section
+        <include refid="add_sql" />
+    </insert>
+    
+    <insert id="addToDel">
+        INSERT INTO section_del
+        <include refid="add_sql" />
     </insert>
 
-    <update id="delete" >
-        UPDATE section set delflag = #{delflag} , modifier = #{modifier},modifierTime = {modifierTime}
-         WHERE id = #{ id }
+    <update id="delete" parameterType="section">
+        DELETE FROM section where id = #{id}
     </update>
 
     <update id="update" parameterType="section">
         UPDATE section SET 
-            <trim>
-                <if test="delflag != null ">
-                delflag = #{delflag,jdbcType=TINYINT},
-                </if>
+            <trim suffixOverrides=",">
                 <if test="creator != null ">
                 creator = #{creator},
                 </if>
@@ -128,9 +150,6 @@
                 <if test="content != null ">
                 content = #{content},
                 </if>
-                <if test="classify != null ">
-                classify = #{classify},
-                </if>
                 <if test="portionId != null ">
                 portionId = #{portionId},
                 </if>
@@ -138,7 +157,10 @@
                 remark = #{remark},
                 </if>
                 <if test="wordsNum != null ">
-                wordsNum = #{wordsNum}
+                wordsNum = #{wordsNum},
+                </if>
+                <if test="number != null ">
+                number = #{number}
                 </if>
             </trim>
          WHERE id = #{id}
@@ -146,17 +168,16 @@
 
     <update id="updateFull" parameterType="section">
         UPDATE section SET 
-            delflag = #{delflag,jdbcType=TINYINT},
             creator = #{creator},
             createTime = #{createTime},
             modifier = #{modifier},
             modifierTime = #{modifierTime},
             title = #{title},
             content = #{content},
-            classify = #{classify},
             portionId = #{portionId},
             remark = #{remark},
-            wordsNum = #{wordsNum}
+            wordsNum = #{wordsNum},
+            number = #{number}
          WHERE id = #{id}
     </update>
 
@@ -164,7 +185,17 @@
         SELECT 
         <include refid="base_column"/>
         FROM section se
-        WHERE se.id = #{id} AND se.delflag = #{delflag}
+        WHERE se.id = #{id} AND se.creator = #{creator}
+    </select>
+    
+    <select id="getExpandSection" resultMap="SectionForm" parameterType="section">
+        SELECT 
+        <include refid="base_column"/>
+        FROM section se
+        LEFT JOIN portion po on se.portionId = po.id
+        LEFT JOIN novel no on po.novelId = no.id
+        LEFT JOIN upload up on (up.relevance = 4 and se.id = up.objId)
+        WHERE se.id = #{id} AND se.creator = #{creator}
     </select>
 
     <select id="getList" resultType="section" parameterType="section">
@@ -172,39 +203,36 @@
         <include refid="base_column"/>
         FROM section se
         WHERE 
-    <trim>
-        <if test=" != null ">
-        AND se.`delflag` = #{delflag,jdbcType=TINYINT}
-        </if>
-        <if test=" != null ">
+    <trim prefixOverrides="AND">
+        <if test="creator != null ">
         AND se.`creator` = #{creator}
         </if>
-        <if test=" != null ">
+        <if test="createTime != null ">
         AND se.`createTime` = #{createTime}
         </if>
-        <if test=" != null ">
+        <if test="modifier != null ">
         AND se.`modifier` = #{modifier}
         </if>
-        <if test=" != null ">
+        <if test="modifierTime != null ">
         AND se.`modifierTime` = #{modifierTime}
         </if>
-        <if test=" != null ">
+        <if test="title != null ">
         AND se.`title` = #{title}
         </if>
-        <if test=" != null ">
+        <if test="content != null ">
         AND se.`content` = #{content}
         </if>
-        <if test=" != null ">
-        AND se.`classify` = #{classify}
-        </if>
-        <if test=" != null ">
+        <if test="portionId != null ">
         AND se.`portionId` = #{portionId}
         </if>
-        <if test=" != null ">
+        <if test="remark != null ">
         AND se.`remark` = #{remark}
         </if>
-        <if test=" != null ">
+        <if test="wordsNum != null ">
         AND se.`wordsNum` = #{wordsNum}
+        </if>
+        <if test="number != null ">
+        AND se.`number` = #{number}
         </if>
     </trim>
     </select>

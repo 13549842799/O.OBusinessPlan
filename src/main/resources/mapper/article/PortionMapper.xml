@@ -11,19 +11,31 @@
         <result property="modifierTime" column="modifierTime"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
-        <result property="classify" column="classify"/>
         <result property="novelId" column="novelId"/>
         <result property="wordsNum" column="wordsNum"/>
+        <result property="number" column="number"/>
+        <result property="sectionNum" column="sectionNum"/>
+        <collection property="sections" ofType="section">
+            <id property="id" column="se_id"/>
+            <result property="title" column="se_title"/>
+            <result property="portionId" column="portionId"/>
+            <result property="wordsNum" column="se_wordsNum"/>
+            <result property="number" column="se_number"/>
+        </collection>
     </resultMap>
 
      <sql id="base_column">
-        po.id,po.delflag,po.creator,po.createTime,po.modifier,po.modifierTime,po.title,po.content,po.classify,po.novelId,po.wordsNum
+        po.id,po.delflag,po.creator,po.createTime,po.modifier,po.modifierTime,po.title,po.content,po.novelId,po.wordsNum,po.number,po.sectionNum
+     </sql>
+     
+     <sql id="expand_base_column">
+        <include refid="base_column" />,se.id as se_id,se.title as se_title,se.portionId as se_portionId,se.wordsNum as se_wordsNum,se.number as se_number
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO portion
         (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 delflag,
                 </if>
@@ -45,19 +57,19 @@
                 <if test="content != null ">
                 content,
                 </if>
-                <if test="classify != null ">
-                classify,
-                </if>
                 <if test="novelId != null ">
                 novelId,
                 </if>
                 <if test="wordsNum != null ">
-                wordsNum
+                wordsNum,
+                </if>
+                <if test="number != null ">
+                number,
                 </if>
             </trim>
         )
         VALUES (
-            <trim>
+            <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 #{delflag,jdbcType=TINYINT},
                 </if>
@@ -79,14 +91,14 @@
                 <if test="content != null ">
                 #{content},
                 </if>
-                <if test="classify != null ">
-                #{classify},
-                </if>
                 <if test="novelId != null ">
                 #{novelId},
                 </if>
                 <if test="wordsNum != null ">
-                #{wordsNum}
+                #{wordsNum},
+                </if>
+                <if test="number != null ">
+                #{number},
                 </if>
             </trim>
         )
@@ -94,21 +106,12 @@
 
     <update id="delete" >
         UPDATE portion set delflag = #{delflag} , modifier = #{modifier},modifierTime = {modifierTime}
-         WHERE id = #{ id }
+         WHERE id = #{ id } AMD creator = #{creator}
     </update>
 
     <update id="update" parameterType="portion">
         UPDATE portion SET 
-            <trim>
-                <if test="delflag != null ">
-                delflag = #{delflag,jdbcType=TINYINT},
-                </if>
-                <if test="creator != null ">
-                creator = #{creator},
-                </if>
-                <if test="createTime != null ">
-                createTime = #{createTime},
-                </if>
+            <trim suffixOverrides=",">
                 <if test="modifier != null ">
                 modifier = #{modifier},
                 </if>
@@ -121,17 +124,14 @@
                 <if test="content != null ">
                 content = #{content},
                 </if>
-                <if test="classify != null ">
-                classify = #{classify},
-                </if>
-                <if test="novelId != null ">
-                novelId = #{novelId},
-                </if>
                 <if test="wordsNum != null ">
-                wordsNum = #{wordsNum}
+                wordsNum = #{wordsNum},
+                </if>
+                <if test="number != null ">
+                number = #{number},
                 </if>
             </trim>
-         WHERE id = #{id}
+         WHERE id = #{id} AND creator = #{creator}
     </update>
 
     <update id="updateFull" parameterType="portion">
@@ -143,10 +143,10 @@
             modifierTime = #{modifierTime},
             title = #{title},
             content = #{content},
-            classify = #{classify},
             novelId = #{novelId},
-            wordsNum = #{wordsNum}
-         WHERE id = #{id}
+            wordsNum = #{wordsNum},
+            number = #{number}
+         WHERE id = #{id} AND creator = #{creator}
     </update>
 
     <select id="getById" resultType="portion" parameterType="portion">
@@ -155,44 +155,59 @@
         FROM portion po
         WHERE po.id = #{id} AND po.delflag = #{delflag}
     </select>
-
+    
     <select id="getList" resultType="portion" parameterType="portion">
-        SELECT 
+    SELECT 
         <include refid="base_column"/>
         FROM portion po
         WHERE 
-    <trim>
-        <if test=" != null ">
+    <trim prefixOverrides="AND">
+        <if test="delflag != null ">
         AND po.`delflag` = #{delflag,jdbcType=TINYINT}
         </if>
-        <if test=" != null ">
+        <if test="creator != null ">
         AND po.`creator` = #{creator}
         </if>
-        <if test=" != null ">
-        AND po.`createTime` = #{createTime}
-        </if>
-        <if test=" != null ">
-        AND po.`modifier` = #{modifier}
-        </if>
-        <if test=" != null ">
-        AND po.`modifierTime` = #{modifierTime}
-        </if>
-        <if test=" != null ">
-        AND po.`title` = #{title}
-        </if>
-        <if test=" != null ">
-        AND po.`content` = #{content}
-        </if>
-        <if test=" != null ">
-        AND po.`classify` = #{classify}
-        </if>
-        <if test=" != null ">
+        <if test="novelId != null ">
         AND po.`novelId` = #{novelId}
         </if>
-        <if test=" != null ">
+    </trim>
+    ORDER BY po.number
+    </select>
+
+    <select id="getExpandList" resultMap="PortionMap" parameterType="portion">
+        SELECT 
+        <include refid="expand_base_column"/>
+        FROM portion po
+        LEFT JOIN section se ON po.id = se.portionId
+        WHERE 
+    <trim prefixOverrides="AND">
+        <if test="id != null ">
+        AND po.`id` = #{id}
+        </if>
+        <if test="delflag != null ">
+        AND po.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test="creator != null ">
+        AND po.`creator` = #{creator}
+        </if>
+        <if test="createTime != null ">
+        AND po.`createTime` = #{createTime}
+        </if>
+        <if test="modifier != null ">
+        AND po.`modifier` = #{modifier}
+        </if>
+        <if test="modifierTime != null ">
+        AND po.`modifierTime` = #{modifierTime}
+        </if>
+        <if test="novelId != null ">
+        AND po.`novelId` = #{novelId}
+        </if>
+        <if test="wordsNum != null ">
         AND po.`wordsNum` = #{wordsNum}
         </if>
     </trim>
+    ORDER BY po.number,se.number
     </select>
 
 </mapper>

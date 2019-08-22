@@ -18,11 +18,15 @@ public class NovelForm extends Novel {
 	
 	private String createNikeName;
 	
+	private Integer label;
+	
 	private List<Label> labelList;
 	
 	private Long startTime;
 	
 	private Long endTime;
+	
+	private String classifyName;
 
 	@JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
 	@Override
@@ -84,6 +88,22 @@ public class NovelForm extends Novel {
 
 	public void setEndTime(Long endTime) {
 		this.endTime = endTime;
+	}
+
+	public Integer getLabel() {
+		return label;
+	}
+
+	public void setLabel(Integer label) {
+		this.label = label;
+	}
+
+	public String getClassifyName() {
+		return classifyName;
+	}
+
+	public void setClassifyName(String classifyName) {
+		this.classifyName = classifyName;
 	}
 	
 	

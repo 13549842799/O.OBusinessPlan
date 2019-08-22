@@ -27,6 +27,10 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 	
 	private Byte novelState;// 状态
 	
+	private Integer portionsNum;
+	
+	private Integer sectionsNum;
+	
 
 	public Novel() {
 		super();
@@ -86,6 +90,22 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 
 	public void setNovelState(Byte novelState) {
 		this.novelState = novelState;
+	}
+
+	public Integer getPortionsNum() {
+		return portionsNum;
+	}
+
+	public void setPortionsNum(Integer portionsNum) {
+		this.portionsNum = portionsNum;
+	}
+
+	public Integer getSectionsNum() {
+		return sectionsNum;
+	}
+
+	public void setSectionsNum(Integer sectionsNum) {
+		this.sectionsNum = sectionsNum;
 	}
 
 	

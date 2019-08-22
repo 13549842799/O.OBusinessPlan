@@ -7,7 +7,7 @@ import com.oo.businessplan.article.pojo.entity.Portion;
 /**
  * 
  * @author cyz
- * @version 创建时间：2019-03-28 15:24:19
+ * @version 创建时间：2019-08-20 10:21:41
  */
 public interface PortionService extends BaseService<Portion> {
 }

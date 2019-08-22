@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.upload.mapper.UploadFileMapper">
+
+     <resultMap id="UploadFileMap" type="uploadfile">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="path" column="path"/>
+        <result property="fileType" column="fileType"/>
+        <result property="relevance" column="relevance"/>
+        <result property="objId" column="objId"/>
+        <result property="fileSize" column="fileSize"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="createTime"/>
+    </resultMap>
+
+     <sql id="base_column">
+        up.id,up.name,up.path,up.fileType,up.relevance,up.objId,up.fileSize,up.creator,up.createTime
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO upload
+        (
+            <trim suffixOverrides=",">
+                <if test="name != null ">
+                path,
+                </if>
+                <if test="path != null ">
+                path,
+                </if>
+                <if test="fileType != null ">
+                fileType,
+                </if>
+                <if test="relevance != null ">
+                relevance,
+                </if>
+                <if test="objId != null ">
+                objId,
+                </if>
+                <if test="fileSize != null ">
+                fileSize,
+                </if>
+                <if test="creator != null ">
+                creator,
+                </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim suffixOverrides=",">
+                <if test="name != null ">
+                #{name},
+                </if>
+                <if test="path != null ">
+                #{path},
+                </if>
+                <if test="fileType != null ">
+                #{fileType},
+                </if>
+                <if test="relevance != null ">
+                #{relevance},
+                </if>
+                <if test="objId != null ">
+                #{objId},
+                </if>
+                <if test="fileSize != null ">
+                #{fileSize}
+                </if>
+                <if test="creator != null ">
+                #{creator}
+                </if>
+                <if test="createTime != null ">
+                #{createTime}
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        DELETE FROM upload WHERE id = #{ id } AND creator = #{creator}
+    </update>
+
+    <update id="update" parameterType="uploadfile">
+        UPDATE upload SET 
+            <trim suffixOverrides=",">
+                <if test="path != null ">
+                path = #{path},
+                </if>
+                <if test="fileType != null ">
+                fileType = #{fileType},
+                </if>
+                <if test="relevance != null ">
+                relevance = #{relevance},
+                </if>
+                <if test="fileSize != null ">
+                fileSize = #{fileSize}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="uploadfile">
+        UPDATE upload SET 
+            path = #{path},
+            fileType = #{fileType},
+            relevance = #{relevance},
+            fileSize = #{fileSize}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="uploadfile" parameterType="uploadfile">
+        SELECT 
+        <include refid="base_column"/>
+        FROM upload up
+        WHERE up.id = #{id}
+    </select>
+
+    <select id="getList" resultType="uploadfile" parameterType="uploadfile">
+        SELECT 
+        <include refid="base_column"/>
+        FROM upload up
+        WHERE 
+    <trim prefixOverrides="AND">
+        <if test="path != null ">
+        AND up.`path` = #{path}
+        </if>
+        <if test="fileType != null ">
+        AND up.`fileType` = #{fileType}
+        </if>
+        <if test="relevance != null ">
+        AND up.`relevance` = #{relevance}
+        </if>
+        <if test="fileSize != null ">
+        AND up.`fileSize` = #{fileSize}
+        </if>
+    </trim>
+    </select>
+
+</mapper>

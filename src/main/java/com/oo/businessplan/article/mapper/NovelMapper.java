@@ -4,6 +4,9 @@ import com.oo.businessplan.basic.mapper.BaseMapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
+
 import com.oo.businessplan.article.pojo.entity.Novel;
 import com.oo.businessplan.article.pojo.form.NovelForm;
 
@@ -21,4 +24,23 @@ public interface NovelMapper extends BaseMapper<Novel> {
 	 * @return
 	 */
 	List<NovelForm> getExpandList(NovelForm form);
+	
+	/**
+	 * 
+	 * @param novel
+	 * @return
+	 */
+	NovelForm getComplete(Novel novel);
+	
+	/**
+	 * 
+	 * @param id
+	 * @param num
+	 */
+	@Update("update novel set portionsNum = portionsNum + #{num} where id = #{id}")
+	void updatePortionNum(@Param("id")int id, @Param("num")int num);
+	
+	@Update("update novel set wordsNum = wordsNum + #{wordNum} where id = (select novelId from portion where id = #{portionId})")
+	void updateWordNums(@Param("portionId")int portionId, @Param("wordNum")int wordNums);
+	
 }
