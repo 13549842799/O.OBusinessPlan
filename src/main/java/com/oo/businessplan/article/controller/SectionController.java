@@ -44,7 +44,7 @@ public class SectionController extends BaseController{
     }
     
     @IgnoreSecurity
-    @GetMapping(value = "/add.do")
+    @GetMapping(value = "/addOrUpdate.do")
     public ResponseResult<Section> section(HttpServletRequest request,
     		@RequestBody(required = true) Section section) {
         ResponseResult<Section> response = new ResponseResult<>();

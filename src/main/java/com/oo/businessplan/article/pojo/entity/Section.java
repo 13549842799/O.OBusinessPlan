@@ -128,6 +128,13 @@ public class Section extends IdEntity<Long> {
 		this.modifierTime = modifierTime;
 	}
 
+	@Override
+	public String toString() {
+		return "Section [title=" + title + ", content=" + content + ", portionId=" + portionId + ", remark=" + remark
+				+ ", wordsNum=" + wordsNum + ", number=" + number + ", files=" + files + ", creator=" + creator
+				+ ", createTime=" + createTime + ", modifier=" + modifier + ", modifierTime=" + modifierTime + "]";
+	}
+
 	
 	
 	

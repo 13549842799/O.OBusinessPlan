@@ -45,8 +45,8 @@ public class UploadFileController extends BaseController{
     @Autowired
 	private UpLoadUtil upLoadUtil;
     
-    private final String[] models = {"admin", "employee", "novel"};
-    private final String[] types = {"img", "img", "img"};
+    private final String[] models = {"admin", "employee", "novel", "section"};
+    private final String[] types = {"img", "img", "img", "img"};
     /**
      * 上传文件
      * @param request
@@ -67,18 +67,18 @@ public class UploadFileController extends BaseController{
         	return response.fail("请提交文件");
         }
 	    
-        MethodResult<String> validResult = upLoadUtil.validFile(file, 120l, types[model]);
+        MethodResult<String> validResult = upLoadUtil.validFile(file, 120l, types[model - 1]);
         
         if (validResult.fail()) {
         	return response.fail(validResult.getErrorMessage());
         }
         
-        String path = upLoadUtil.filePersistence(file, File.separator + models[model], upLoadUtil.getRandomName(getAccountName(request)));
+        String path = upLoadUtil.filePersistence(file, File.separator + models[model - 1], upLoadUtil.getRandomName(getAccountName(request)));
 	   
         UploadFile obj = new UploadFile(path, (byte)model, file.getSize());
         uploadFileService.add(obj);
         //redis
-
+        
         return response.success(obj);
     }
     
