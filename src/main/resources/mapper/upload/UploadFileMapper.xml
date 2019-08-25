@@ -23,7 +23,7 @@
         (
             <trim suffixOverrides=",">
                 <if test="name != null ">
-                path,
+                name,
                 </if>
                 <if test="path != null ">
                 path,

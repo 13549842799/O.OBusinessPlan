@@ -54,32 +54,35 @@ public class UploadFileController extends BaseController{
      * @return
      */
     @IgnoreSecurity
-    @PostMapping(value = "/s/{key}/upload.do")
+    @PostMapping(value = "/upload.do")
     public ResponseResult<UploadFile> uploadFile(HttpServletRequest request,
-    		@PathVariable(name="key") String key,
-    		@RequestParam(name="model")int model) {
+    		UploadFile upLoadFile) {
     	
         ResponseResult<UploadFile> response = new ResponseResult<>();
      
-        Map<String, MultipartFile> fileMap = upLoadUtil.getFile(key, request);
+        Map<String, MultipartFile> fileMap = upLoadUtil.getFile(upLoadFile.getName(), request);
         MultipartFile file = null;
-        if (fileMap == null || (file = fileMap.get(key)) == null) {
+        if (fileMap == null || (file = fileMap.get(upLoadFile.getName())) == null) {
         	return response.fail("请提交文件");
         }
 	    
-        MethodResult<String> validResult = upLoadUtil.validFile(file, 120l, types[model - 1]);
+        MethodResult<String> validResult = 
+        		upLoadUtil.validFile(file, 120l, types[upLoadFile.getRelevance() - 1]);
         
         if (validResult.fail()) {
         	return response.fail(validResult.getErrorMessage());
         }
         
-        String path = upLoadUtil.filePersistence(file, File.separator + models[model - 1], upLoadUtil.getRandomName(getAccountName(request)));
-	   
-        UploadFile obj = new UploadFile(path, (byte)model, file.getSize());
-        uploadFileService.add(obj);
+        String path = 
+        		upLoadUtil.filePersistence(file, File.separator + models[upLoadFile.getRelevance() - 1], upLoadUtil.getRandomName(getAccountName(request)));
+
+        upLoadFile.setPath(path);
+        upLoadFile.setFileSize(file.getSize());
+        upLoadFile.setTheType();
+        uploadFileService.add(upLoadFile, Integer.class);
         //redis
         
-        return response.success(obj);
+        return response.success(upLoadFile);
     }
     
     @IgnoreSecurity

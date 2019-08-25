@@ -16,4 +16,5 @@ import com.oo.businessplan.upload.pojo.UploadFile;
  */
 public interface UploadFileService extends BaseService<UploadFile> {
 	
+	int deleteBatch(String ids, int creator);
 }

@@ -32,6 +32,8 @@ public class Section extends IdEntity<Long> {
 	
 	private List<UploadFile> files;
 	
+	private String delImagesId;
+	
 	private Integer creator;
 	
 	private Timestamp createTime;
@@ -126,6 +128,14 @@ public class Section extends IdEntity<Long> {
 
 	public void setModifierTime(Timestamp modifierTime) {
 		this.modifierTime = modifierTime;
+	}
+
+	public String getDelImagesId() {
+		return delImagesId;
+	}
+
+	public void setDelImagesId(String delImagesId) {
+		this.delImagesId = delImagesId;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.oo.businessplan.article.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +64,14 @@ public class SectionServiceImpl extends BaseServiceImpl<Section> implements Sect
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return false;
 		}
+	}
+
+
+
+	@Override
+	public List<Section> getSimpleSections(Section section) {
+		// TODO Auto-generated method stub
+		return sectionMapper.getSimpleSections(section);
 	}
     
 	

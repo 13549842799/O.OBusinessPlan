@@ -2,6 +2,8 @@ package com.oo.businessplan.article.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +21,7 @@ import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
+import com.oo.businessplan.upload.service.UploadFileService;
 import com.oo.businessplan.article.service.SectionService;
 import com.oo.businessplan.article.pojo.entity.Section;
 
@@ -35,25 +38,40 @@ public class SectionController extends BaseController{
     @Autowired
     SectionService sectionService;
     
+    @Autowired
+    UploadFileService uploadFileService;
+    
     @IgnoreSecurity
     @GetMapping(value = "/list.re")
-    public ResponseResult<List<Section>> list(HttpServletRequest request) {
+    public ResponseResult<List<Section>> list(HttpServletRequest request,
+    		Section section) {
         ResponseResult<List<Section>> response = new ResponseResult<>();
 
-        return response.success();
+        return response.success(sectionService.getSimpleSections(section));
     }
     
     @IgnoreSecurity
-    @GetMapping(value = "/addOrUpdate.do")
+    @PostMapping(value = "/addOrUpdate.do")
     public ResponseResult<Section> section(HttpServletRequest request,
     		@RequestBody(required = true) Section section) {
         ResponseResult<Section> response = new ResponseResult<>();
-        
+        int user = currentAdminId(request);
         section.setWordsNum(StringUtil.isNotEmpty(section.getContent()) ? section.getContent().length() : 0);
-        
-        sectionService.add(section, Section.class);
-        
-        return response.success();
+        if (section.getWordsNum() < 500) {
+        	return response.fail("内容不能少于500字");
+        }
+        if (StringUtil.isNotEmpty(section.getDelImagesId())) {
+        	uploadFileService.deleteBatch(section.getDelImagesId(), user);
+        }
+        section.setCreator(user);
+        if (section.getId() == null) {
+        	section.setCreateTime(new Timestamp(new Date().getTime()));
+			sectionService.add(section, Section.class);
+		} else {
+			section.setModifier(user);
+			sectionService.update(section);
+		}      
+        return response.success(section);
     }
     
     @IgnoreSecurity

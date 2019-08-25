@@ -2,6 +2,8 @@ package com.oo.businessplan.article.mapper;
 
 import com.oo.businessplan.basic.mapper.BaseMapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -24,6 +26,9 @@ public interface SectionMapper extends BaseMapper<Section> {
 	 * @param section
 	 */
 	void addToDel(Section section);
+	
+	@Select("select id, title, portionId, wordsNum from section where portionId = ifnull(#{portionId}, portionId)")
+	List<Section> getSimpleSections(Section section);
 	
 	@Select("select ifnull(wordsNum, 0) from section where id = #{id}")
 	int sectionNum(@Param("id")long id);

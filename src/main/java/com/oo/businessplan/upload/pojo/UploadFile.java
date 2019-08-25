@@ -34,6 +34,10 @@ public class UploadFile extends CreatorEntity<Integer>{
 		this.path = path;
 		this.relevance = relevance;
 		this.fileSize = fileSize;
+	    setTheType();
+	}
+	
+	public void setTheType () {
 		if (path != null) {
 			String type = path.substring(path.lastIndexOf(".") + 1);
 			switch (type) {
