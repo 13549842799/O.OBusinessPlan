@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.admin.mapper.AccountManagerMapper">
+
+     <resultMap id="AccountManagerMap" type="accountmanager">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="source" column="source"/>
+        <result property="bind_email" column="bind_email"/>
+        <result property="bind_phone" column="bind_phone"/>
+        <result property="remark" column="remark"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="createTime"/>
+        <result property="delflag" column="delflag"/>
+    </resultMap>
+
+     <sql id="base_column">
+        ac.id,ac.username,ac.source,ac.bind_email,ac.bind_phone,ac.remark,ac.creator,ac.createTime,ac.delflag
+     </sql>
+     
+     <sql id="one_column">
+        <include refid="base_column" />, ac.password
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO account_manager
+        (
+            <trim suffixOverrides=",">
+                <if test="username != null ">
+                username,
+                </if>
+                <if test="password != null ">
+                password,
+                </if>
+                <if test="source != null ">
+                source,
+                </if>
+                <if test="bind_email != null ">
+                bind_email,
+                </if>
+                <if test="bind_phone != null ">
+                bind_phone,
+                </if>
+                <if test="remark != null ">
+                remark,
+                </if>
+                <if test="creator != null ">
+                creator,
+                </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
+                <if test="delflag != null ">
+                delflag
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim suffixOverrides=",">
+                <if test="username != null ">
+                #{username},
+                </if>
+                <if test="password != null ">
+                #{password},
+                </if>
+                <if test="source != null ">
+                #{source},
+                </if>
+                <if test="bind_email != null ">
+                #{bind_email},
+                </if>
+                <if test="bind_phone != null ">
+                #{bind_phone},
+                </if>
+                <if test="remark != null ">
+                #{remark},
+                </if>
+                <if test="creator != null ">
+                #{creator},
+                </if>
+                <if test="createTime != null ">
+                #{createTime},
+                </if>
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT}
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE account_manager set delflag = #{delflag}
+         WHERE id = #{ id }
+    </update>
+
+    <update id="update" parameterType="accountmanager">
+        UPDATE account_manager SET 
+            <trim suffixOverrides=",">
+                <if test="username != null ">
+                username = #{username},
+                </if>
+                <if test="password != null ">
+                password = #{password},
+                </if>
+                <if test="source != null ">
+                source = #{source},
+                </if>
+                <if test="bind_email != null ">
+                bind_email = #{bind_email},
+                </if>
+                <if test="bind_phone != null ">
+                bind_phone = #{bind_phone},
+                </if>
+                <if test="remark != null ">
+                remark = #{remark},
+                </if>
+                <if test="creator != null ">
+                creator = #{creator},
+                </if>
+                <if test="createTime != null ">
+                createTime = #{createTime},
+                </if>
+                <if test="delflag != null ">
+                delflag = #{delflag,jdbcType=TINYINT}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="accountmanager">
+        UPDATE account_manager SET 
+            username = #{username},
+            password = #{password},
+            source = #{source},
+            bind_email = #{bind_email},
+            bind_phone = #{bind_phone},
+            remark = #{remark},
+            creator = #{creator},
+            createTime = #{createTime},
+            delflag = #{delflag,jdbcType=TINYINT}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="accountmanager" parameterType="accountmanager">
+        SELECT 
+        <include refid="one_column"/>
+        FROM account_manager ac
+        WHERE ac.id = #{id} AND ac.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="accountmanager" parameterType="accountmanager">
+        SELECT 
+        <include refid="base_column"/>
+        FROM account_manager ac
+        WHERE 
+            1 = 1
+    <trim prefixOverrides="AND">
+        <if test="id != null ">
+        AND ac.`id` = #{id}
+        </if>
+        <if test="username != null ">
+        AND ac.`username` = #{username}
+        </if>
+        <if test="password != null ">
+        AND ac.`password` = #{password}
+        </if>
+        <if test="source != null ">
+        AND ac.`source` = #{source}
+        </if>
+        <if test="bind_email != null ">
+        AND ac.`bind_email` = #{bind_email}
+        </if>
+        <if test="bind_phone != null ">
+        AND ac.`bind_phone` = #{bind_phone}
+        </if>
+        <if test="remark != null ">
+        AND ac.`remark` = #{remark}
+        </if>
+        <if test="creator != null ">
+        AND ac.`creator` = #{creator}
+        </if>
+        <if test="createTime != null ">
+        AND ac.`createTime` = #{createTime}
+        </if>
+        <if test="delflag != null ">
+        AND ac.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+    </trim>
+    </select>
+
+</mapper>

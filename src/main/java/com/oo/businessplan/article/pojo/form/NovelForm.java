@@ -38,11 +38,22 @@ public class NovelForm extends Novel {
 	@Override
 	public Timestamp getCreateTime() {
 		return super.getCreateTime();
-	}	
+	}
 
 	@JsonProperty(defaultValue="1")
 	public Integer getPageNum() {
 		return pageNum;
+	}
+
+	
+	public String getWordsNumStr() {
+		if(this.getWordsNum() == null) {
+			return "0字";
+		}
+		if (this.getWordsNum() < 10000) {
+			return this.getWordsNum() + "字";
+		}
+		return String.format("%.2f万字", this.getWordsNum().doubleValue()/10000);
 	}
 
 	public void setPageNum(Integer pageNum) {

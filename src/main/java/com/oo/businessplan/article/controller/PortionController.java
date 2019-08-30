@@ -41,7 +41,8 @@ public class PortionController extends BaseController{
     @GetMapping(value = "/s/{novel}/list.re")
     public ResponseResult<List<Portion>> list(HttpServletRequest request,
     		@PathVariable(name="novel") Integer novelId,
-    		@RequestParam(name="portion", required = false)Integer id) {
+    		@RequestParam(name="portion", required = false)Integer id,
+    		@RequestParam(name="expand", required = false, defaultValue = "0")int  expand) {
     	
         ResponseResult<List<Portion>> response = new ResponseResult<>();
         Portion param = new Portion();
@@ -49,7 +50,7 @@ public class PortionController extends BaseController{
         param.setCreator(currentAdminId(request));
         param.setNovelId(novelId);
         param.setDelflag(DeleteFlag.VALID.getCode());
-        List<Portion> novelPortions = portionService.getList(param);
+        List<Portion> novelPortions = expand == 1 ? portionService.getExpandList(param) : portionService.getList(param);
         
         return response.success(novelPortions);
     }

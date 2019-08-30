@@ -3,6 +3,7 @@ package com.oo.businessplan.upload.controller;
 import java.util.List;
 import java.util.Map;
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
@@ -79,6 +80,8 @@ public class UploadFileController extends BaseController{
         upLoadFile.setPath(path);
         upLoadFile.setFileSize(file.getSize());
         upLoadFile.setTheType();
+        upLoadFile.setCreator(currentAdminId(request));
+        upLoadFile.setCreateTime(new Timestamp(new Date().getTime()));
         uploadFileService.add(upLoadFile, Integer.class);
         //redis
         

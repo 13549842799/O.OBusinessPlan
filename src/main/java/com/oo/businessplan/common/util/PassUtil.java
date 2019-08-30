@@ -20,6 +20,21 @@ public class PassUtil {
 	
 	private static final String HEX_NUMS_STR="0123456789ABCDEF";
     private static final Integer SALT_LENGTH = 6;
+    
+    private volatile static PassUtil passUtil = null;
+    
+    private PassUtil () {}
+    
+    public PassUtil getInstance () {
+    	if (passUtil == null) {
+    		synchronized (PassUtil.class) {
+    			if (passUtil == null) {
+				    passUtil = new PassUtil();
+    			}
+			}   		
+    	}
+    	return passUtil;
+    }
 	
 
     public static byte[] hexStringToByte(String hex) {

@@ -25,9 +25,9 @@ import com.oo.businessplan.common.pageModel.MethodResult;
  */
 public class UpLoadUtil {
 	
-	   //public static final String LOCALPREFIX = File.separator + "usr" + File.separator + "local" + File.separator + "tomcat" + File.separator + "O.OBusinessPlanFile";
+	   public static final String LOCALPREFIX = File.separator + "usr" + File.separator + "local" + File.separator + "tomcat" + File.separator + "O.OBusinessPlanFile";
 	   
-	   public static final String LOCALPREFIX = "E:" + File.separator + "O.OMusicRelated";
+	   //public static final String LOCALPREFIX = "E:" + File.separator + "O.OMusicRelated";
 	
 	   //public static final String LOCALPREFIX = "D:" + File.separator + "gitRes" + File.separator + "O.OBusinessPlanFile";
 	   

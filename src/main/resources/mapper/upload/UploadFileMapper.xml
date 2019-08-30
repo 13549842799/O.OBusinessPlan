@@ -66,13 +66,13 @@
                 #{objId},
                 </if>
                 <if test="fileSize != null ">
-                #{fileSize}
+                #{fileSize},
                 </if>
                 <if test="creator != null ">
-                #{creator}
+                #{creator},
                 </if>
                 <if test="createTime != null ">
-                #{createTime}
+                #{createTime},
                 </if>
             </trim>
         )

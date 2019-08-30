@@ -65,6 +65,14 @@ public class PortionServiceImpl extends BaseServiceImpl<Portion> implements Port
 		
 		return t != null && t.getId() != null ? portionMapper.getExpandList(t) : super.getList(t);
 	}
+
+	@Override
+	public List<Portion> getExpandList(Portion portion) {
+		
+		return portionMapper.getExpandList(portion);
+	}
+	
+	
     
 	
 }

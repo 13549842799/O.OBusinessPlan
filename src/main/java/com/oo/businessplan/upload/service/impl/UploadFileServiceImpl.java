@@ -48,6 +48,11 @@ public class UploadFileServiceImpl extends BaseServiceImpl<UploadFile> implement
 		}
 		return count;
 	}
+
+	@Override
+	public void relatedUserAndFile(int adminId, String ids) {
+		int count = uploadFileMapper.updateObjId(adminId, ids);
+	}
     
     
     

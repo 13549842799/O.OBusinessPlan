@@ -15,11 +15,11 @@
         <result property="wordsNum" column="wordsNum"/>
         <result property="number" column="number"/>      
         <collection property="files" ofType="uploadfile">
-            <id property="id" column="id"/>
-            <result property="creator" column="creator"/>
-            <result property="createTime" column="createTime"/>
-            <result property="name" column="name"/>
-            <result property="path" column="path"/>
+            <id property="id" column="up_id"/>
+            <result property="creator" column="up_creator"/>
+            <result property="createTime" column="up_createTime"/>
+            <result property="name" column="up_name"/>
+            <result property="path" column="up_path"/>
             <result property="fileType" column="fileType"/>
             <result property="relevance" column="relevance"/>
             <result property="objId" column="objId"/>
@@ -37,7 +37,7 @@
     </sql>
     
     <sql id="expand_column">
-        <include refid="base_column" />, up.id as up_id, up.delflag as up_delflag, up.name as up_name, up.path as up_path
+        <include refid="base_column" />, up.id as up_id, up.name as up_name, up.path as up_path
     </sql>
     
     <sql id="form_column">
