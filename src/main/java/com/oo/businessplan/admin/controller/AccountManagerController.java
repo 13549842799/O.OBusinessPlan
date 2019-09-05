@@ -5,6 +5,8 @@ import java.util.Map;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.basic.service.PageService;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
+import com.oo.businessplan.common.pageModel.PageParams;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.admin.service.AccountManagerService;
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.admin.pojo.entity.AccountManager;
 import com.oo.businessplan.admin.pojo.entity.Key;
 
@@ -35,6 +41,9 @@ public class AccountManagerController extends BaseController{
 
     @Autowired
     AccountManagerService accountManagerService;
+    
+    @Resource(name="accountManagerService")
+    PageService<AccountManager> pageService;
     
     @IgnoreSecurity
     @PostMapping(value = "/checkKey.re")
@@ -56,13 +65,16 @@ public class AccountManagerController extends BaseController{
         return response.success();
     }
     
-    @IgnoreSecurity
+	@IgnoreSecurity
     @GetMapping(value = "/list.re")
-    public ResponseResult<List<AccountManager>> list(HttpServletRequest request,
-    		AccountManager manager) {
-        ResponseResult<List<AccountManager>> response = new ResponseResult<>();
-
-        return response.success(accountManagerService.getList(manager));
+    public ResponseResult<PageInfo<AccountManager>> list(HttpServletRequest request,
+    		AccountManager manager,
+    		PageParams<AccountManager> params) {
+        ResponseResult<PageInfo<AccountManager>> response = new ResponseResult<>();
+        manager.setDelflag(DeleteFlag.VALID.getCode());
+        manager.setCreator(currentAdminId(request));
+        params.setParams(manager);
+        return response.success(pageService.getPage(params));
     }
     
     @IgnoreSecurity
@@ -73,6 +85,7 @@ public class AccountManagerController extends BaseController{
         AccountManager am = new AccountManager();
         am.setId(id);
         am.setCreator(currentAdminId(request));
+        am.setDelflag(DeleteFlag.VALID.getCode());
         return response.success(accountManagerService.getById(am));
     }
     
@@ -87,9 +100,13 @@ public class AccountManagerController extends BaseController{
         }
         account.setPassword(accountManagerService.encryptPassword(account.getPassword(), user));
         account.setCreator(user);
-        account.setCreateTime(new Date());
-        accountManagerService.add(account, Integer.class);
-        
+        if (account.getId() == null) {
+        	 account.setCreateTime(new Timestamp(new Date().getTime()));
+        	 accountManagerService.add(account, Integer.class);
+        } else {
+        	accountManagerService.update(account);
+        }
+ 
         return response.success(account);
     }
     

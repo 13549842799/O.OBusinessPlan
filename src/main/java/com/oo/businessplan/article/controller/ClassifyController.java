@@ -1,10 +1,10 @@
 package com.oo.businessplan.article.controller;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,10 @@ import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Classify;
 import com.oo.businessplan.article.service.ClassifyService;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.basic.service.PageService;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
+import com.oo.businessplan.common.pageModel.PageParams;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
@@ -41,6 +43,9 @@ public class ClassifyController extends BaseController {
 	
 	@Autowired
 	private ClassifyService clsService;
+	
+	@Resource(name="classifyService")
+	private PageService<Classify> pageService;
 	
 	/**
 	 * 用户获取自身的对应的分类分页列表
@@ -67,7 +72,8 @@ public class ClassifyController extends BaseController {
 		cls.setChildType(childType);
 		cls.setName(name);
 		cls.setDelflag(DeleteFlag.VALID.getCode());
-		PageInfo<Classify> page = clsService.getPage(cls, pageNum, pageSize);
+		PageParams<Classify> params = new PageParams<>(cls);
+		PageInfo<Classify> page = pageService.getPage(params);
 		System.out.println(page.getList());
 		return response.success(page);
 	}
@@ -88,7 +94,6 @@ public class ClassifyController extends BaseController {
 			@RequestParam(value="childType", required=false)Byte childType) {
 		
 		ResponseResult<List<Classify>> response = new ResponseResult<>();
-		
 		Classify cls = new Classify();
 		cls.setCreator(currentAdminId(request));
 		cls.setType(type);

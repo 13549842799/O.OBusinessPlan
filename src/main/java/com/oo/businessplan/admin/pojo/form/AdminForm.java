@@ -1,25 +1,17 @@
 package com.oo.businessplan.admin.pojo.form;
 
+import com.oo.businessplan.admin.pojo.entity.Admin;
 
-import com.oo.businessplan.common.pageModel.PageParams;
-
-public class AdminForm extends PageParams{
+public class AdminForm extends Admin{
 	
-	private Integer id;
+	private static final long serialVersionUID = 5195780158839157318L;
 	private String accountname;
 	private String nikename;
-    private Byte state;
-	private Byte delflag;
 	private String relatedName;
 	private String relatedCode;
 	private Byte roleState;
 	private Byte roleDelflag;
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	
 	public String getAccountname() {
 		return accountname;
 	}
@@ -31,18 +23,6 @@ public class AdminForm extends PageParams{
 	}
 	public void setNikename(String nikename) {
 		this.nikename = nikename;
-	}
-	public Byte getState() {
-		return state;
-	}
-	public void setState(Byte state) {
-		this.state = state;
-	}
-	public Byte getDelflag() {
-		return delflag;
-	}
-	public void setDelflag(Byte delflag) {
-		this.delflag = delflag;
 	}
 	public String getRelatedName() {
 		return relatedName;

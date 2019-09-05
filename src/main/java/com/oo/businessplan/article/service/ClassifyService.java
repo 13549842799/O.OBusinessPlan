@@ -52,6 +52,6 @@ public interface ClassifyService extends BaseService<Classify> {
 	 * @param pageSize
 	 * @return
 	 */
-	PageInfo<Classify> getPage(Classify cls, Integer pageNum, Integer pageSize);
+	//PageInfo<Classify> getPage(Classify cls, Integer pageNum, Integer pageSize);
 
 }

@@ -45,6 +45,7 @@ import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.net.SessionInfo;
 import com.oo.businessplan.common.pageModel.MethodResult;
+import com.oo.businessplan.common.pageModel.PageParams;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 
 import com.oo.businessplan.common.security.IgnoreSecurity;
@@ -436,11 +437,13 @@ public class AdminController extends BaseController{
 		    adminForm.setDelflag(DeleteFlag.VALID.getCode());
 		    adminForm.setRelatedName(relatedName);
 		    adminForm.setRelatedCode(relatedCode);
-		    adminForm.setPageNum(pageNo);
-		    adminForm.setPageSize(pageSize);
 		    adminForm.setRoleState(StatusFlag.ENABLE.getCode());
 		    adminForm.setRoleDelflag(DeleteFlag.VALID.getCode());
-		    PageInfo<Padmin> page = adminService.getAdminList(adminForm);
+		    PageParams<AdminForm> params = new PageParams<>();
+		    params.setParams(adminForm);
+		    params.setPageNum(pageNo);
+		    params.setPageSize(pageSize);
+		    PageInfo<Padmin> page = adminService.getAdminList(params);
 
 		    return response.success(page);
 		   

@@ -1,13 +1,13 @@
 package com.oo.businessplan.admin.pojo.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
-public class AccountManager implements Serializable {
+import com.oo.businessplan.basic.entity.CreatorEntity;
+
+public class AccountManager extends CreatorEntity<Integer> implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-    private Integer id;
 
     private String username;
 
@@ -20,20 +20,6 @@ public class AccountManager implements Serializable {
     private String bind_phone;
 
     private String remark;
-
-    private Integer creator;
-
-    private Date createTime;
-
-    private Boolean delflag;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -83,27 +69,5 @@ public class AccountManager implements Serializable {
         this.remark = remark == null ? null : remark.trim();
     }
 
-    public Integer getCreator() {
-        return creator;
-    }
 
-    public void setCreator(Integer creator) {
-        this.creator = creator;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Boolean getDelflag() {
-        return delflag;
-    }
-
-    public void setDelflag(Boolean delflag) {
-        this.delflag = delflag;
-    }
 }

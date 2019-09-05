@@ -16,11 +16,7 @@
     </resultMap>
 
      <sql id="base_column">
-        ac.id,ac.username,ac.source,ac.bind_email,ac.bind_phone,ac.remark,ac.creator,ac.createTime,ac.delflag
-     </sql>
-     
-     <sql id="one_column">
-        <include refid="base_column" />, ac.password
+        ac.id,ac.password,ac.username,ac.source,ac.bind_email,ac.bind_phone,ac.remark,ac.creator,ac.createTime,ac.delflag
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
@@ -144,9 +140,9 @@
 
     <select id="getById" resultType="accountmanager" parameterType="accountmanager">
         SELECT 
-        <include refid="one_column"/>
+        <include refid="base_column"/>
         FROM account_manager ac
-        WHERE ac.id = #{id} AND ac.delflag = #{delflag}
+        WHERE ac.id = #{id} AND ac.delflag = #{delflag} AND ac.creator = #{creator}
     </select>
 
     <select id="getList" resultType="accountmanager" parameterType="accountmanager">
@@ -154,7 +150,6 @@
         <include refid="base_column"/>
         FROM account_manager ac
         WHERE 
-            1 = 1
     <trim prefixOverrides="AND">
         <if test="id != null ">
         AND ac.`id` = #{id}

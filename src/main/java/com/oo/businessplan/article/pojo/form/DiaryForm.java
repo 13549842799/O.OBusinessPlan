@@ -6,13 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oo.businessplan.article.pojo.entity.Diary;
 import com.oo.businessplan.article.pojo.entity.Label;
 import com.oo.businessplan.article.service.DiaryService;
-import com.oo.businessplan.common.pageModel.PageService;
 /**
  * 日记类的参数类，用来接收页面传递的参数
  * @author cyz
  *
  */
-public class DiaryForm extends Diary implements PageService {
+public class DiaryForm extends Diary{
 
 	/**
 	 * 

@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 import org.apache.ibatis.type.Alias;
 
-import com.oo.businessplan.common.pageModel.PageParams;
+import com.oo.businessplan.admin.pojo.entity.Department;
 
 @Alias("departmentForm")
-public class DepartmentForm extends PageParams implements Serializable{
+public class DepartmentForm extends Department implements Serializable{
 	
 
 	private static final long serialVersionUID = -7151168779423769932L;
@@ -17,8 +17,7 @@ public class DepartmentForm extends PageParams implements Serializable{
 	private String dcode;
 	private Integer minCount;//部门人数
 	private Integer maxCount;//最大部门人数
-	private Byte state;
-	private Byte delflag;
+
 	public Integer[] getIds() {
 		return ids;
 	}
@@ -55,18 +54,7 @@ public class DepartmentForm extends PageParams implements Serializable{
 	public void setMaxCount(Integer maxCount) {
 		this.maxCount = maxCount;
 	}
-	public Byte getState() {
-		return state;
-	}
-	public void setState(Byte state) {
-		this.state = state;
-	}
-	public Byte getDelflag() {
-		return delflag;
-	}
-	public void setDelflag(Byte delflag) {
-		this.delflag = delflag;
-	}
+
     
 	
 	

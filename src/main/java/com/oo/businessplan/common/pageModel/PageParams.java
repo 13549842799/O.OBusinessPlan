@@ -1,50 +1,49 @@
 package com.oo.businessplan.common.pageModel;
 
-public class PageParams {
+public class PageParams<T> {
 	
-	public static final int[] sizeGroup = new int[]{20,40,60,80};
-		
 	private Integer pageNum;
+	
 	private Integer pageSize;
-    private Integer count;
+	
+	private T params;
+	
+	public PageParams() {}
+	
+	public PageParams(T params) {
+		this.params = params;
+	}
+	
+	public PageParams(T params, Integer pageNum, Integer pageSize) {
+		this(params);
+		this.pageNum = pageNum;
+		this.pageSize = pageSize;
+	}
+
 	public Integer getPageNum() {
 		return pageNum;
 	}
+
 	public void setPageNum(Integer pageNum) {
 		this.pageNum = pageNum;
 	}
+
 	public Integer getPageSize() {
 		return pageSize;
 	}
+
 	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
 	}
-	public Integer getCount() {
-		return count;
+
+	public T getParams() {
+		return params;
 	}
-	public void setCount(Integer count) {
-		this.count = count;
+
+	public void setParams(T params) {
+		this.params = params;
 	}
 	
-	/**
-	 * 初始化页数和叶容量的参数
-	 */
-	public void init(){
-		if (pageNum==null||pageSize==null) {
-			pageNum =0;
-			pageSize=sizeGroup[0];
-		}
-		if (pageNum!=null&&pageSize!=null) {
-			pageNum = pageNum>=1?pageNum:1;
-			for (int i = 0; i < sizeGroup.length; i++) {
-				if (sizeGroup[i]==pageSize) {
-					pageNum = (pageNum-1)*pageSize;
-					return;
-				}
-			}
-			pageSize = sizeGroup[0];
-			pageNum = (pageNum-1)*pageSize;
-		}
-	}
+	
 
 }

@@ -10,11 +10,12 @@ import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.mapper.ClassifyMapper;
 import com.oo.businessplan.article.pojo.entity.Classify;
 import com.oo.businessplan.article.service.ClassifyService;
+import com.oo.businessplan.basic.service.PageService;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 
 @Service("classifyService")
-public class ClassifyServiceImpl extends BaseServiceImpl<Classify> implements ClassifyService {
+public class ClassifyServiceImpl extends BaseServiceImpl<Classify> implements ClassifyService, PageService<Classify> {
 	
 	@Autowired
 	private ClassifyMapper classifyMapper;
@@ -35,7 +36,7 @@ public class ClassifyServiceImpl extends BaseServiceImpl<Classify> implements Cl
 
 
 
-	@Override
+	/*@Override
 	public PageInfo<Classify> getPage(Classify cls, Integer pageNum, Integer pageSize) {
 		
 		PageHelper.startPage(pageNum, pageSize);
@@ -43,7 +44,7 @@ public class ClassifyServiceImpl extends BaseServiceImpl<Classify> implements Cl
 		PageInfo<Classify> page = new PageInfo<>(list);
 		return page;
 
-	}
+	}*/
 
 
 

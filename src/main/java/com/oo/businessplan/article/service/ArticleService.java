@@ -8,7 +8,6 @@ import com.oo.businessplan.article.mapper.ArticleMapper;
 import com.oo.businessplan.article.pojo.AbstractArticle;
 import com.oo.businessplan.basic.service.BaseService;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
-import com.oo.businessplan.common.pageModel.PageService;
 
 /**
  * 文章类的相关接口

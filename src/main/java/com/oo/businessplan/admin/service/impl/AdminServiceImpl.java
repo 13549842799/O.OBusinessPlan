@@ -24,7 +24,6 @@ import com.oo.businessplan.admin.service.AdminService;
 
 import com.oo.businessplan.authority.service.AuthorityService;
 import com.oo.businessplan.authority.service.RoleService;
-
 import com.oo.businessplan.basic.service.RedisCacheService;
 
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
@@ -38,12 +37,12 @@ import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectExistException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.exception.login.LoginException;
-
+import com.oo.businessplan.common.pageModel.PageParams;
 import com.oo.businessplan.common.util.PassUtil;
 import com.oo.businessplan.common.util.StringUtil;
 
 @Service("adminService")
-public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminService {
+public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminService{
 	
 	@Autowired
 	private AdminMapper adminMapper;
@@ -115,10 +114,10 @@ public class AdminServiceImpl extends RedisCacheSupport<Admin> implements AdminS
 	}
 
 	@Override
-	public PageInfo<Padmin> getAdminList(AdminForm adminForm) {
+	public PageInfo<Padmin> getAdminList(PageParams<AdminForm> params) {
 		
-		PageHelper.startPage(adminForm.getPageNum(), adminForm.getPageSize());
-		List<Padmin> list = adminMapper.getListByForm(adminForm);
+		PageHelper.startPage(params.getPageNum(), params.getPageSize());
+		List<Padmin> list = adminMapper.getListByForm(params.getParams());
 		PageInfo<Padmin> page = new PageInfo<>(list);
 		return page;
 	}

@@ -2,8 +2,6 @@ package com.oo.businessplan.admin.service;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.additional.pojo.WebMessage;
@@ -15,8 +13,7 @@ import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.exception.NullUserException;
 import com.oo.businessplan.common.exception.ObjectExistException;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
-import com.oo.businessplan.common.exception.login.PasswordValidException;
-import com.oo.businessplan.common.pageModel.MethodResult;
+import com.oo.businessplan.common.pageModel.PageParams;
 
 public interface AdminService extends BaseService<Admin>{
 	
@@ -57,7 +54,7 @@ public interface AdminService extends BaseService<Admin>{
 	 */
 	int alterPassword(String oldPass, String newPass);
 
-	PageInfo<Padmin> getAdminList(AdminForm adminForm);
+	PageInfo<Padmin> getAdminList(PageParams<AdminForm> adminForm);
 
 	Admin registAdmin(String employeeCode,Integer creator) throws ObjectNotExistException,ObjectExistException, NoSuchAlgorithmException, UnsupportedEncodingException;
 

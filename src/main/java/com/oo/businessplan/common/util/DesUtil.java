@@ -1,18 +1,17 @@
 package com.oo.businessplan.common.util;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 
-import javax.crypto.BadPaddingException;
+
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+
+
+import org.apache.commons.codec.binary.Base64;
+
 
 public final class DesUtil {
 	
@@ -23,6 +22,8 @@ public final class DesUtil {
     private static final String ALGORITHM = "DES";
 	
     private static final String TRANSFORMATION = "DES/ECB/PKCS5Padding";
+    
+    private static final String CODE_TYPE = "UTF-8";
 	
 	public static DesUtil getInstance() {
 		
@@ -44,42 +45,52 @@ public final class DesUtil {
 	 * @param key
 	 * @return
 	 */
-	public String encrypt (byte[] data, byte[] key) {
-		
-		try {
+    public String encrypt (String data, String key){
+    	try {
+			//Cipher对象实际完成加密操作
 			Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-			SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
-			KeySpec keySpec = new DESKeySpec(key);
-            SecretKey secretKey = secretKeyFactory.generateSecret(keySpec);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey,new SecureRandom());
-            byte[] enMsgBytes = cipher.doFinal(data);
-            return new String(enMsgBytes);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException | BadPaddingException e) {
+			//创建一个密匙工厂，然后用它把DESKeySpec转换成
+			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ALGORITHM);
+			DESKeySpec desKey = new DESKeySpec(key.getBytes(CODE_TYPE));
+			SecretKey securekey = keyFactory.generateSecret(desKey); 
+			//用密匙初始化Cipher对象
+			cipher.init(Cipher.ENCRYPT_MODE, securekey, new SecureRandom());
+			//现在，获取数据并加密
+			byte[] temp = Base64.encodeBase64(cipher.doFinal(data.getBytes(CODE_TYPE)));
+			return new String(temp, CODE_TYPE);
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
-		}
+		} 
 	}
-	
-	/**
+    
+    /**
 	 * decrypt the encryptedData whick encrypt by des
 	 * @param encryptedData
 	 * @param key
 	 * @return
 	 */
-	public String decrypt(byte[] encryptedData, byte[] key) {
-		try {
-            //解密
-            //Cipher deCipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-            Cipher deCipher = Cipher.getInstance(TRANSFORMATION);
-            SecretKeyFactory deDecretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
-            KeySpec deKeySpec = new DESKeySpec(key);
-            SecretKey deSecretKey = deDecretKeyFactory.generateSecret(deKeySpec);
-            deCipher.init(Cipher.DECRYPT_MODE, deSecretKey,new SecureRandom());
-            return new String(deCipher.doFinal(encryptedData));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public String decrypt(String encryptedData, String key){
+    	try {
+	    	// DES算法要求有一个可信任的随机数源
+	
+	        // 创建一个DESKeySpec对象
+	        DESKeySpec desKey = new DESKeySpec(key.getBytes(CODE_TYPE));
+	        // 创建一个密匙工厂
+	        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+	        // 将DESKeySpec对象转换成SecretKey对象
+	        SecretKey securekey = keyFactory.generateSecret(desKey);
+	        // Cipher对象实际完成解密操作
+	        Cipher cipher = Cipher.getInstance("DES");
+	        // 用密匙初始化Cipher对象
+	        cipher.init(Cipher.DECRYPT_MODE, securekey, new SecureRandom());
+	        // 真正开始解密操作
+	        return new String(cipher.doFinal(Base64.decodeBase64(encryptedData)), CODE_TYPE);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+			return null;
+    	}
 	}
+
 
 }
