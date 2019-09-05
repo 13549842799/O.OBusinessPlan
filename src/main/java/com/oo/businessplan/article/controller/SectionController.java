@@ -57,9 +57,9 @@ public class SectionController extends BaseController{
         ResponseResult<Section> response = new ResponseResult<>();
         int user = currentAdminId(request);
         section.setWordsNum(StringUtil.isNotEmpty(section.getContent()) ? section.getContent().length() : 0);
-        if (section.getWordsNum() < 500) {
+        /*if (section.getWordsNum() < 500) {
         	return response.fail("内容不能少于500字");
-        }
+        }*/
         section.setCreator(user);
         if (section.getId() == null) {
         	section.setCreateTime(new Timestamp(new Date().getTime()));
