@@ -28,9 +28,11 @@ public class Section extends IdEntity<Long> {
 	
 	private Integer wordsNum;
 	
-	private Double number; //章节数
+	private Double number; //章节号
 	
 	private List<UploadFile> files;
+	
+	private String addImagesId;
 	
 	private String delImagesId;
 	
@@ -41,6 +43,10 @@ public class Section extends IdEntity<Long> {
 	private Integer modifier;
 	
 	private Timestamp modifierTime;
+	
+	private Integer pageNum; //章节可分为多少页
+	
+	private String pageIndexs;//页开头字符在content中的下标
 
 	public Integer getPortionId() {
 		return portionId;
@@ -136,6 +142,14 @@ public class Section extends IdEntity<Long> {
 
 	public void setDelImagesId(String delImagesId) {
 		this.delImagesId = delImagesId;
+	}
+
+	public String getAddImagesId() {
+		return addImagesId;
+	}
+
+	public void setAddImagesId(String addImagesId) {
+		this.addImagesId = addImagesId;
 	}
 
 	@Override

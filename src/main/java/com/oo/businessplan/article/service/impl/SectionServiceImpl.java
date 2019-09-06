@@ -26,7 +26,7 @@ import com.oo.businessplan.article.pojo.form.SectionForm;
 public class SectionServiceImpl extends BaseServiceImpl<Section> implements SectionService {
 
     @Autowired
-    SectionMapper sectionMapper;
+    public SectionMapper sectionMapper;
     
     @Autowired
     PortionMapper portionMapper;

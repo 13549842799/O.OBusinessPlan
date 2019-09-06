@@ -60,6 +60,7 @@ public class SectionController extends BaseController{
         /*if (section.getWordsNum() < 500) {
         	return response.fail("内容不能少于500字");
         }*/
+        String[] tempContent = section.getContent().split("\n");
         section.setCreator(user);
         if (section.getId() == null) {
         	section.setCreateTime(new Timestamp(new Date().getTime()));
@@ -71,9 +72,12 @@ public class SectionController extends BaseController{
         if (StringUtil.isNotEmpty(section.getDelImagesId())) {
         	uploadFileService.deleteBatch(section.getDelImagesId(), user);
         }
-        uploadFileService.relatedUserAndFile(user, section.getDelImagesId());
+        if (StringUtil.isNotEmpty(section.getAddImagesId())) {
+        	uploadFileService.relatedUserAndFile(user, section.getAddImagesId());
+        }     
         return response.success(section);
     }
+    
     
     @IgnoreSecurity
     @GetMapping(value = "/s/{id}/read.re")
