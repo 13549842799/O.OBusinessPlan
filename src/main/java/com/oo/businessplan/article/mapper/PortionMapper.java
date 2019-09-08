@@ -25,8 +25,8 @@ public interface PortionMapper extends BaseMapper<Portion> {
 	  */
 	 List<Portion> getExpandList(Portion portion);
 	 
-	 @Select("select count(id) from portion where novelId = #{novelId} and delflag = #{delflag}")
-	 int getNovelPortionNum(@Param("novelId")int novelId, @Param("delflag")byte delflag);
+	 @Select("select count(id) from portion where novelId = #{novelId} and type = #{type} and delflag = #{delflag}")
+	 int getNovelPortionNum(@Param("novelId")int novelId, @Param("delflag")byte delflag, @Param("type")byte ype);
 	 
 	 @Select("select ifnull(max(number),0) from portion where novelId = #{novelId} and delflag = #{delflag}")
 	 int getNovelMaxPortion(@Param("novelId")int novelId, @Param("delflag")byte delflag);

@@ -12,6 +12,10 @@ import com.oo.businessplan.basic.entity.ModifierEntity;
  */
 public class Portion extends ModifierEntity<Integer> implements Serializable {
 	
+	public static final byte WORKSINFO = 0; //作品相关
+	
+	public static final byte CONTENT = 1; //正文
+	
 	/**
 	 * 
 	 */
@@ -28,6 +32,8 @@ public class Portion extends ModifierEntity<Integer> implements Serializable {
 	private Double number; //序号 ，卷号
 	
 	private Integer sectionNum; // 拥有的章节数
+	
+	private Byte type = CONTENT; //分卷类型 
 	
 	private List<Section> sections;
 	
@@ -94,7 +100,17 @@ public class Portion extends ModifierEntity<Integer> implements Serializable {
 	public void setSectionNum(Integer sectionNum) {
 		this.sectionNum = sectionNum;
 	}
+
+	public Byte getType() {
+		return type;
+	}
+
+	public void setType(Byte type) {
+		this.type = type;
+	}
 	
-	
+	public boolean judgeWorksInfo() {
+		return this.type == WORKSINFO;
+	}
 
 }
