@@ -60,7 +60,6 @@ public class SectionController extends BaseController{
         /*if (section.getWordsNum() < 500) {
         	return response.fail("内容不能少于500字");
         }*/
-        String[] tempContent = section.getContent().split("\n");
         section.setCreator(user);
         if (section.getId() == null) {
         	section.setCreateTime(new Timestamp(new Date().getTime()));
