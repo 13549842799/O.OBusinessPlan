@@ -28,10 +28,12 @@ import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.util.UpLoadUtil;
 import com.oo.businessplan.article.service.NovelService;
+import com.oo.businessplan.article.service.PortionService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Novel;
+import com.oo.businessplan.article.pojo.entity.Portion;
 import com.oo.businessplan.article.pojo.form.NovelForm;
 
 
@@ -48,6 +50,9 @@ public class NovelController extends BaseController{
     NovelService novelService;
     
     @Autowired
+    PortionService portionService;
+    
+    @Autowired
 	private UpLoadUtil upLoadUtil;
     
     @IgnoreSecurity
@@ -55,7 +60,6 @@ public class NovelController extends BaseController{
     public ResponseResult<Novel> createNovel(HttpServletRequest request,
     		Novel novel, String fileName) {
         ResponseResult<Novel> response = new ResponseResult<>();
-        System.out.println("进入save接口");
         if (StringUtil.isEmpty(novel.getTitle())) {
         	return response.fail("请输入标题");
         }
@@ -73,6 +77,14 @@ public class NovelController extends BaseController{
         	novel.setCreator(creator);      
         	novel.setCreateTime(new Timestamp(new Date().getTime()));
         	novelService.add(novel, Integer.class);
+        	Portion worksInfo = new Portion();
+        	worksInfo.setTitle("作品相关");
+        	worksInfo.setCreator(creator);
+        	worksInfo.setCreateTime(new Timestamp(new Date().getTime()));
+        	worksInfo.setNovelId(novel.getId());
+        	worksInfo.setNumber(0d);
+        	worksInfo.setType(Portion.WORKSINFO);
+        	portionService.add(worksInfo);
         } else {
         	novel.setModifier(creator);
         	if (novelService.update(novel) != 1) {

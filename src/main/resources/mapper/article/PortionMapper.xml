@@ -15,6 +15,7 @@
         <result property="wordsNum" column="wordsNum"/>
         <result property="number" column="number"/>
         <result property="sectionNum" column="sectionNum"/>
+        <result property="type" column="type"/>
         <collection property="sections" ofType="section">
             <id property="id" column="se_id"/>
             <result property="title" column="se_title"/>
@@ -25,7 +26,7 @@
     </resultMap>
 
      <sql id="base_column">
-        po.id,po.delflag,po.creator,po.createTime,po.modifier,po.modifierTime,po.title,po.content,po.novelId,po.wordsNum,po.number,po.sectionNum
+        po.id,po.delflag,po.creator,po.createTime,po.modifier,po.modifierTime,po.title,po.content,po.novelId,po.wordsNum,po.number,po.sectionNum,po.type
      </sql>
      
      <sql id="expand_base_column">
@@ -66,6 +67,9 @@
                 <if test="number != null ">
                 number,
                 </if>
+                <if test="type != null ">
+                type,
+                </if>
             </trim>
         )
         VALUES (
@@ -99,6 +103,9 @@
                 </if>
                 <if test="number != null ">
                 #{number},
+                </if>
+                <if test="type != null">
+                #{type},
                 </if>
             </trim>
         )

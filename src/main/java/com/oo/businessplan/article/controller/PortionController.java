@@ -64,7 +64,9 @@ public class PortionController extends BaseController{
         if (portion.getNovelId() == null) {
         	return response.fail("请选择小说");
         }
-              
+        if (portion.judgeWorksInfo()) {
+        	return response.fail("参数错误");
+        }    
         portion.setDelflag(DeleteFlag.VALID.getCode());
         if (portion.getId() == null) {
         	portion.setCreator(currentAdminId(request));
@@ -103,10 +105,14 @@ public class PortionController extends BaseController{
         
         if (id == null) {
         	return response.fail("请选择小说");
+        }       
+        Portion portion = portionService.getById(new Portion(id));
+        if (portion == null) {
+        	return response.fail("不存在小说");
         }
-        
-        Portion portion = new Portion(id);
-        
+        if (portion.judgeWorksInfo()) {
+        	return response.fail("参数错误");
+        }
         Integer user = currentAdminId(request);
         portion.setCreator(user);       
         portion.setDelflag(DeleteFlag.VALID.getCode());

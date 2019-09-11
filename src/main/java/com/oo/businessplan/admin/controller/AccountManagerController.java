@@ -95,14 +95,14 @@ public class AccountManagerController extends BaseController{
     		@RequestBody AccountManager account) {
         ResponseResult<AccountManager> response = new ResponseResult<>();
         Integer user = currentAdminId(request);
-        if (StringUtil.isEmpty(account.getPassword())) {
-        	return response.fail("必须填写密码");
-        }
         account.setPassword(accountManagerService.encryptPassword(account.getPassword(), user));
         account.setCreator(user);
         if (account.getId() == null) {
-        	 account.setCreateTime(new Timestamp(new Date().getTime()));
-        	 accountManagerService.add(account, Integer.class);
+        	if (StringUtil.isEmpty(account.getPassword())) {
+            	return response.fail("必须填写密码");
+            }
+        	account.setCreateTime(new Timestamp(new Date().getTime()));
+        	accountManagerService.add(account, Integer.class);
         } else {
         	accountManagerService.update(account);
         }
