@@ -60,15 +60,35 @@ public class SectionController extends BaseController{
         /*if (section.getWordsNum() < 500) {
         	return response.fail("内容不能少于500字");
         }*/
-        String[] tempContent = section.getContent().split("\n");
         section.setCreator(user);
-        if (section.getId() == null) {
+        if (section.getId() == null) {       	
+        
         	section.setCreateTime(new Timestamp(new Date().getTime()));
 			sectionService.add(section, Section.class);
-		} else {
-			section.setModifier(user);
-			sectionService.update(section);
+			
+			section = sectionService.getById(section);
+			Long lastId = sectionService.lastSectionId(section);
+			if (lastId != null) {
+				Section last = new Section();
+				last.setId(lastId);
+				last.setNextSection(section.getId());
+				sectionService.update(last);
+			}
+			Long nextId = sectionService.nextSectionId(section);
+			if (nextId != null) {
+				Section next = new Section();
+				next.setId(nextId);
+				next.setLastSection(section.getId());
+				sectionService.update(next);
+			}
+			section = new Section(section.getId());
+			section.setLastSection(lastId);
+			section.setNextSection(nextId);
 		}
+        
+        section.setModifier(user);
+		sectionService.update(section);
+		
         if (StringUtil.isNotEmpty(section.getDelImagesId())) {
         	uploadFileService.deleteBatch(section.getDelImagesId(), user);
         }
@@ -105,7 +125,6 @@ public class SectionController extends BaseController{
         section.setId(id);
         section.setCreator(user);
         section.setModifier(user);
-        System.out.println("sectionId=" + section.getId());
         return response.deleteResult(sectionService.delete(section));
     }
 }

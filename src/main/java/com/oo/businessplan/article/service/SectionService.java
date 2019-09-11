@@ -18,4 +18,19 @@ public interface SectionService extends BaseService<Section> {
 	SectionForm getExpandSection(Section section);
 
 	List<Section> getSimpleSections(Section section);
+	
+	/**
+	 * 
+	 * @param current <id, novelId, portionId, number>
+	 * @return
+	 */
+	Long lastSectionId(Section current);
+	
+	/**
+	 * 插入最新章的下一个章节,也就是下一卷的第一个章节
+	 * @param current
+	 * @return
+	 */
+	Long nextSectionId(Section current);
+	
 }

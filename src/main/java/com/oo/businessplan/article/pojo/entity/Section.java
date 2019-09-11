@@ -22,6 +22,8 @@ public class Section extends IdEntity<Long> {
 	
 	private String content;
 
+	private Integer novelId;//小说id
+	
 	private Integer portionId;//分卷id
 	
 	private String remark; //备注，也就是ps
@@ -44,9 +46,16 @@ public class Section extends IdEntity<Long> {
 	
 	private Timestamp modifierTime;
 	
-	private Integer pageNum; //章节可分为多少页
+	private Long lastSection;
 	
-	private String pageIndexs;//页开头字符在content中的下标
+	private Long nextSection;
+	
+	
+	public Section() {}
+	
+	public Section(Long id) {
+		this.setId(id);
+	}
 
 	public Integer getPortionId() {
 		return portionId;
@@ -150,6 +159,31 @@ public class Section extends IdEntity<Long> {
 
 	public void setAddImagesId(String addImagesId) {
 		this.addImagesId = addImagesId;
+	}
+
+	public Long getLastSection() {
+		return lastSection;
+	}
+
+	public void setLastSection(Long lastSection) {
+		this.lastSection = lastSection;
+	}
+
+	public Long getNextSection() {
+		return nextSection;
+	}
+
+	public void setNextSection(Long nextSection) {
+		this.nextSection = nextSection;
+	}
+	
+
+	public Integer getNovelId() {
+		return novelId;
+	}
+
+	public void setNovelnId(Integer novelId) {
+		this.novelId = novelId;
 	}
 
 	@Override

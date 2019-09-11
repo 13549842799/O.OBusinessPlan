@@ -10,10 +10,13 @@
         <result property="modifierTime" column="modifierTime"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
+        <result property="novelId" column="novelId"/>
         <result property="portionId" column="portionId"/>
         <result property="remark" column="remark"/>
         <result property="wordsNum" column="wordsNum"/>
-        <result property="number" column="number"/>      
+        <result property="number" column="number"/>
+        <result property="lastSection" column="lastSection"/>
+        <result property="nextSection" column="nextSection"/>
         <collection property="files" ofType="uploadfile">
             <id property="id" column="up_id"/>
             <result property="creator" column="up_creator"/>
@@ -33,7 +36,7 @@
     </resultMap>
 
     <sql id="base_column">
-        se.id,se.creator,se.createTime,se.modifier,se.modifierTime,se.title,se.content,se.portionId,se.remark,se.wordsNum,se.number
+        se.id,se.creator,se.createTime,se.modifier,se.modifierTime,se.title,se.content,se.novelId,se.portionId,se.remark,se.wordsNum,se.number, se.lastSection, se.nextSection
     </sql>
     
     <sql id="expand_column">
@@ -65,17 +68,18 @@
                 <if test="content != null ">
                 content,
                 </if>
+                <if test="novelId != null">
+                novelId,
+                </if>
                 <if test="portionId != null ">
                 portionId,
+                number,
                 </if>
                 <if test="remark != null ">
                 remark,
                 </if>
                 <if test="wordsNum != null ">
                 wordsNum,
-                </if>
-                <if test="number != null ">
-                number,
                 </if>
             </trim>
         )
@@ -99,17 +103,18 @@
                 <if test="content != null ">
                 #{content},
                 </if>
+                <if test="novelId != null ">
+                #{novelId},
+                </if>
                 <if test="portionId != null ">
                 #{portionId},
+                (SELECT num FROM (SELECT IFNULL(MAX(number), 0) + 1 as num FROM section WHERE portionId = #{portionId}) t),
                 </if>
                 <if test="remark != null ">
                 #{remark},
                 </if>
                 <if test="wordsNum != null ">
                 #{wordsNum},
-                </if>
-                <if test="number != null ">
-                #{number},
                 </if>
             </trim>
         )
@@ -160,7 +165,13 @@
                 wordsNum = #{wordsNum},
                 </if>
                 <if test="number != null ">
-                number = #{number}
+                number = #{number},
+                </if>
+                <if test="lastSection != null">
+                lastSection = #{lastSection},
+                </if>
+                <if test="nextSection != null">
+                nextSection = #{nextSection},
                 </if>
             </trim>
          WHERE id = #{id}
@@ -235,6 +246,41 @@
         AND se.`number` = #{number}
         </if>
     </trim>
+        ORDER BY se.number
+    </select>
+    
+    <select id="lastSectionId" parameterType="section" resultType="long">
+    SELECT
+        id
+    FROM
+        section se
+    WHERE
+        se.novelId = #{novelId}
+    <if test="number == 1">
+     AND
+        se.portionId = (select id from portion where novelId = #{novelId} and id != #{portionId} order by number desc limit 1)
+    </if>
+    <if test="number != 1">
+    AND
+        se.portionId = #{portionId}
+    AND 
+        se.id != #{id}
+    </if>
+    ORDER BY se.number desc
+    LIMIT 1
+    </select>
+    
+    <select id="nextSectionId" parameterType="section" resultType="long">
+    SELECT
+        id
+    FROM
+        section se
+    WHERE
+        se.novelId = #{novelId}
+     AND
+        se.portionId = (select id from portion where novelId = #{novelId} and id > #{portionId} order by number limit 1)
+    ORDER BY se.number
+    LIMIT 1
     </select>
 
 </mapper>

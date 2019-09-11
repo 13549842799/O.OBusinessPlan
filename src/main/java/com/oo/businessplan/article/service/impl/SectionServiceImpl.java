@@ -42,38 +42,47 @@ public class SectionServiceImpl extends BaseServiceImpl<Section> implements Sect
 		return sectionMapper.getExpandSection(section);
 	}
 
-
-
-	@Override
-	@Transactional
-	public boolean delete(Section t) {
-		t = sectionMapper.getById(t);
-		if (t == null) {
-			System.out.println("delete:不存在对应的章节:id");
-			return false;
-		}
-		System.out.println("进入维护序列");
-		try {
-			sectionMapper.addToDel(t);
-			if (super.delete(t)) {
-				return true;
-			}
-			throw new Exception();
-		} catch (Exception e) {
-			System.out.println("删除失败");
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			return false;
-		}
-	}
-
-
-
 	@Override
 	public List<Section> getSimpleSections(Section section) {
 		// TODO Auto-generated method stub
 		return sectionMapper.getSimpleSections(section);
 	}
-    
+
+	@Override
+	public Long lastSectionId(Section current) {
+		if (current == null) {
+			return null;
+		}
+		return sectionMapper.lastSectionId(current);
+	}
+
+	@Override
+	public Long nextSectionId(Section current) {
+		if (current == null) {
+			return null;
+		}
+		return sectionMapper.nextSectionId(current);
+	}
+
+	@Transactional
+	@Override
+	public boolean delete(Section t) {
+		if (t == null) {
+			return false;
+		}
+		t = sectionMapper.getById(t);
+
+		Section last = new Section(t.getLastSection());
+		last.setNextSection(t.getNextSection());
+		
+		Section next = new Section(t.getNextSection());
+		next.setLastSection(t.getLastSection());
+		sectionMapper.update(last);
+		sectionMapper.update(next);
+		return super.delete(t);
+	}
+
+	
 	
 	
     
