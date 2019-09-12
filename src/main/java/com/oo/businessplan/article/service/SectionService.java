@@ -15,6 +15,11 @@ import com.oo.businessplan.article.pojo.form.SectionForm;
  */
 public interface SectionService extends BaseService<Section> {
 	
+	/**
+	 * it will search the first section when the id is -1 
+	 * @param section
+	 * @return
+	 */
 	SectionForm getExpandSection(Section section);
 
 	List<Section> getSimpleSections(Section section);

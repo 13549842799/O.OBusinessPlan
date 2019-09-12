@@ -14,7 +14,7 @@
 
         <!-- 数据库链接URL、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://39.97.99.250:3306/oobusinessplan"
+                        connectionURL="jdbc:mysql://39.97.99.250:3306/oobusinessplan?characterEncoding=utf-8"
                         userId="cyz"
                         password="cyz1996224">
         </jdbcConnection>
@@ -86,7 +86,7 @@
             <!--<property name="useActualColumnNames" value="true"/>-->
         <!--</table>-->
 
-        <table tableName="acceptmessage" domainObjectName="AcceptMessage"
+        <table tableName="account_manager" domainObjectName="AccountManager"
                enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false" >
             <property name="useActualColumnNames" value="true"/>

@@ -23,6 +23,11 @@
     <resultMap id="ExpandMap" type="novelForm" extends="NovelMap">
         <result property="createNikeName" column="nike_name" />
         <result property="classifyName" column="cl_name" />
+        <association property="lastetSection" javaType="sectionForm">
+            <id property="id" column="se_id"/>
+            <result property="title" column="se_title"/>
+            <result property="createTime" column="se_createTime"/>
+        </association>
         <collection property="labelList" ofType="label">
             <id property="id" column="la_id"/>
             <result property="name" column="la_name"/>
@@ -34,7 +39,7 @@
      </sql>
      
      <sql id="expand_column">
-        <include refid="base_column" />, la.id as la_id, la.name as la_name
+        <include refid="base_column" />, la.id as la_id, la.name as la_name,ad.nikename as nike_name, cl.name as cl_name,se_id,se_title,se_createTime
      </sql>
      
      <sql id="expand_list_column">
@@ -201,6 +206,9 @@
         <include refid="expand_column"/>
         FROM novel no
         LEFT JOIN label la ON FIND_IN_SET(la.id, no.labels)
+        LEFT JOIN classify cl ON no.classify = cl.id
+        LEFT JOIN admin ad ON no.creator = ad.id
+        LEFT JOIN (SELECT id as se_id, title as se_title, createTime as se_createTime, novelId FROM section WHERE novelId = #{id} ORDER BY createTime desc LIMIT 1) se ON se.novelId = no.id
         WHERE no.id = #{id} AND no.delflag = #{delflag}
         <if test="creator != null">
         AND no.creator = IFNULL(#{creator}, no.creator)

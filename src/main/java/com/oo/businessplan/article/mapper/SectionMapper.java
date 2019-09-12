@@ -19,7 +19,11 @@ import com.oo.businessplan.article.pojo.form.SectionForm;
  */
 public interface SectionMapper extends BaseMapper<Section> {
 	
-	
+	/**
+	 * 如果section中id为-1表示查找当前小说的第一章
+	 * @param section
+	 * @return
+	 */
 	SectionForm getExpandSection(Section section);
 	
 	/**

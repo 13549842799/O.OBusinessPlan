@@ -16,4 +16,10 @@ public class Test2 {
 		Timestamp tt = new Timestamp(t);
 		System.out.println(tt);
 	}
+	
+	@Test
+	public void testMacth() {
+		String str ="哈哈abc123哈哈哈";
+		System.out.println(str.replaceAll("[\\d\\w]", ""));
+	}
 }

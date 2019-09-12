@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,22 +23,33 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.oo.businessplan.admin.mapper.AccountManagerMapper;
 import com.oo.businessplan.admin.mapper.AdminMapper;
 import com.oo.businessplan.admin.mapper.EmployeeMapper;
+import com.oo.businessplan.admin.pojo.entity.AccountManager;
 import com.oo.businessplan.admin.pojo.form.AdminForm;
 import com.oo.businessplan.admin.pojo.page.Padmin;
+import com.oo.businessplan.admin.service.AccountManagerService;
+import com.oo.businessplan.admin.service.impl.AccountManagerServiceImpl;
 import com.oo.businessplan.article.mapper.ClassifyMapper;
 import com.oo.businessplan.article.mapper.DiaryMapper;
+import com.oo.businessplan.article.mapper.PortionMapper;
+import com.oo.businessplan.article.mapper.SectionMapper;
 import com.oo.businessplan.article.pojo.entity.Classify;
 import com.oo.businessplan.article.pojo.entity.Diary;
+import com.oo.businessplan.article.pojo.entity.Portion;
+import com.oo.businessplan.article.pojo.entity.Section;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
 import com.oo.businessplan.article.service.ClassifyService;
+import com.oo.businessplan.article.service.SectionService;
+import com.oo.businessplan.article.service.impl.SectionServiceImpl;
 import com.oo.businessplan.authority.mapper.AuthorityMapper;
 import com.oo.businessplan.authority.mapper.ResourceMapper;
 import com.oo.businessplan.authority.pojo.Authority;
 import com.oo.businessplan.authority.pojo.Resource;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
+import com.oo.businessplan.common.util.DesUtil;
 import com.sun.org.apache.bcel.internal.generic.CPInstruction;
 
 import io.swagger.util.Json;
@@ -56,6 +69,42 @@ public class MyBatisTest {
 	}
 	
 	@Test
+	public void testPassword () {
+	   /* AccountManagerMapper am = context.getBean("accountManagerMapper", AccountManagerMapper.class);
+	    
+	    AccountManagerServiceImpl as = new AccountManagerServiceImpl();
+	    as.accountManagerMapper = am;
+	    
+	    AccountManager a = new AccountManager();
+	    a.setId(2);
+	    a.setDelflag(DeleteFlag.VALID.getCode());
+	    a = am.getById(a);
+	    
+	    String ps = as.decryptPassword(a.getPassword(), 1);
+	    System.out.println(ps);*/
+		DesUtil util = DesUtil.getInstance();
+		
+		String password = "cyz1996224";
+		String key="1234567891234567";
+		String ep = "";
+		try {
+			ep = util.encrypt(password, key);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println(ep);
+		String dp = "";
+		try {
+			dp = util.decrypt(ep, key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(dp);
+	}
+	
+	
+	@Test
 	public void test() {
 		AdminMapper  am = context.getBean("adminMapper", AdminMapper.class);
 		AdminForm adminForm = new AdminForm();
@@ -63,6 +112,40 @@ public class MyBatisTest {
 	    adminForm.setDelflag(DeleteFlag.VALID.getCode());
 	    List<Padmin> ads = am.getListByForm(adminForm);
 	    ads.forEach(System.out::println);
+	}
+	
+	@Test
+	public void testSaveSection () {
+		
+	}
+	
+	@Test
+	public void testPortion() {
+		PortionMapper pm  = context.getBean("portionMapper", PortionMapper.class);
+		Portion p = new Portion();
+	    p.setTitle("测试");
+	    p.setContent("简介");
+	    p.setCreator(1);
+	    p.setCreateTime(new Timestamp(new Date().getTime()));
+	    p.setDelflag(DeleteFlag.VALID.getCode());
+	    p.setNovelId(1);
+	    try {
+			pm.add(p);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testSection() {
+		SectionMapper pm  = context.getBean("sectionMapper", SectionMapper.class);
+		Section se = new Section(1018l);
+		se.setNovelnId(10);
+	    pm.getExpandSection(se);
 	}
 	
 	@Test

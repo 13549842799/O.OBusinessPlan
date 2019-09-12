@@ -38,7 +38,6 @@ public class SectionServiceImpl extends BaseServiceImpl<Section> implements Sect
 
 	@Override
 	public SectionForm getExpandSection(Section section) {
-		
 		return sectionMapper.getExpandSection(section);
 	}
 

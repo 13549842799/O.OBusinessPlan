@@ -27,6 +27,8 @@ public class NovelForm extends Novel {
 	private Long endTime;
 	
 	private String classifyName;
+	
+	private SectionForm lastetSection;
 
 	@JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
 	@Override
@@ -115,6 +117,14 @@ public class NovelForm extends Novel {
 
 	public void setClassifyName(String classifyName) {
 		this.classifyName = classifyName;
+	}
+
+	public SectionForm getLastetSection() {
+		return lastetSection;
+	}
+
+	public void setLastetSection(SectionForm lastetSection) {
+		this.lastetSection = lastetSection;
 	}
 	
 	

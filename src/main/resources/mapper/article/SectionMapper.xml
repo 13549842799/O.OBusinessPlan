@@ -206,7 +206,13 @@
         LEFT JOIN portion po on se.portionId = po.id
         LEFT JOIN novel no on po.novelId = no.id
         LEFT JOIN upload up on (up.relevance = 4 and se.id = up.objId)
-        WHERE se.id = #{id} AND se.creator = #{creator}
+        WHERE 
+        <if test="id != -1">
+        se.id = #{id} AND se.creator = #{creator}
+        </if>
+        <if test="id == -1">
+        se.novelId = #{novelId} AND se.lastSection is null 
+        </if>
     </select>
 
     <select id="getList" resultType="section" parameterType="section">

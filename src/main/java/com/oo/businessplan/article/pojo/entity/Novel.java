@@ -25,7 +25,7 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 	
 	private List<Portion> portions; //分卷集合
 	
-	private Byte novelState;// 状态
+	private Byte novelState;// 状态  0-未开始 1-连载中 2-没有更新 3-完结
 	
 	private Integer portionsNum;
 	
