@@ -102,11 +102,13 @@ public class SectionController extends BaseController{
     @IgnoreSecurity
     @GetMapping(value = "/s/{id}/read.re")
     public ResponseResult<Section> getSection(HttpServletRequest request,
-    		@PathVariable(name="id")Long id) {
+    		@PathVariable(name="id")Long id,
+    		@RequestParam(name="novelId", required=false)Integer novelId) {
         ResponseResult<Section> response = new ResponseResult<>();
         
         Section section = new Section();
         section.setId(id);
+        section.setNovelnId(novelId);
         section.setCreator(currentAdminId(request));
         section = sectionService.getExpandSection(section);
         
