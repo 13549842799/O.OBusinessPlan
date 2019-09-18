@@ -14,6 +14,12 @@ public class PageParams<T> {
 		this.params = params;
 	}
 	
+	public PageParams(T params, int pageNum, int pageSize) {
+		this(params);
+		this.pageNum = pageNum;
+		this.pageSize = pageSize;
+	}
+	
 	public PageParams(T params, Integer pageNum, Integer pageSize) {
 		this(params);
 		this.pageNum = pageNum;

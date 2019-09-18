@@ -20,6 +20,8 @@ public class DiaryForm extends Diary{
 	
 	private List<Label> labelList;
 	
+	private String classifyName;
+	
 	private Integer pageNum;
 	
 	private Integer pageSize;
@@ -50,6 +52,14 @@ public class DiaryForm extends Diary{
 
 	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
+	}
+
+	public String getClassifyName() {
+		return classifyName;
+	}
+
+	public void setClassifyName(String classifyName) {
+		this.classifyName = classifyName;
 	}
 
 	

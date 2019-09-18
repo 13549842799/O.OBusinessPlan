@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.oo.businessplan.admin.mapper.EmployeeMapper;
 import com.oo.businessplan.admin.pojo.entity.Employee;
 import com.oo.businessplan.admin.service.EmployeeService;
+import com.oo.businessplan.basic.service.PageService;
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.constant.ResultConstant;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
@@ -24,7 +25,7 @@ import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.util.UpLoadUtil;
 
 @Service("employeeService")
-public class EmployeeServiceImpl extends RedisCacheSupport<Employee> implements EmployeeService {
+public class EmployeeServiceImpl extends RedisCacheSupport<Employee> implements EmployeeService, PageService<Employee> {
 	
 	@Autowired
 	private EmployeeMapper employeeMapper;

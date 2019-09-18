@@ -3,7 +3,7 @@ package com.oo.businessplan.admin.controller;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.admin.pojo.entity.Employee;
 import com.oo.businessplan.admin.service.EmployeeService;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.basic.service.PageService;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.exception.ObjectNotExistException;
 import com.oo.businessplan.common.net.SessionInfo;
+import com.oo.businessplan.common.pageModel.PageParams;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 
@@ -35,6 +38,9 @@ public class EmployeeController extends BaseController{
 	
 	    @Autowired
 	    private EmployeeService employeeService;
+	    
+	    @Resource(name="employeeService")
+		private PageService<Employee> pageService;
 	
 	    @RequestMapping(value="/page/add/addEmployee.do",method=RequestMethod.POST)
 	    @ApiOperation(value = "员工信息入档")
@@ -80,6 +86,20 @@ public class EmployeeController extends BaseController{
 				return response.fail(e.getMessage());
 			  } 
 	    	   	
+	    }
+	    
+	    @GetMapping("/page.re")
+	    @ApiOperation(value = "员工列表")
+	    @IgnoreSecurity()
+	    public ResponseResult<PageInfo<Employee>> employeeList(HttpServletRequest request,
+	    		Employee employee,
+	    		@RequestParam(value="pageNum", required=false)Integer pageNum,
+				@RequestParam(value="pageSize", required=false)Integer pageSize){ // type 0-简单  1-所有信息
+	    	
+	    	  ResponseResult<PageInfo<Employee>> response = new ResponseResult<>();
+              PageParams<Employee> params = new PageParams<Employee>(employee, pageNum, pageSize);
+          
+	    	  return response.success(pageService.getPage(params)); 	
 	    }
 	    
 	    @GetMapping("/info.re")

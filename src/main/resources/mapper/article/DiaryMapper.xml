@@ -19,6 +19,7 @@
     </resultMap>
     
     <resultMap id="DiaryWithLabelMap" type="diaryForm" extends="DiaryMap">
+        <result property="classifyName" column="cl_name"/>
         <collection property="labelList" ofType="label">
             <id property="id" column="l_id"/>
             <result property="name" column="l_name"/>
@@ -191,7 +192,7 @@
     
     <select id="getCompleteDiaryById" resultMap="DiaryWithLabelMap" >
     SELECT
-         <include refid="base_column"/>, la.id as l_id, la.name as l_name
+         <include refid="base_column"/>, la.id as l_id, la.name as l_name, cl.name as cl_name
     FROM diary di
     LEFT JOIN classify cl ON di.classify = cl.id
     LEFT JOIN (
@@ -205,7 +206,7 @@
     
     <select id="getListWithLabels" resultMap="DiaryWithLabelMap" parameterType="diaryForm">
     SELECT 
-        <include refid="base_column"/>, la.id as l_id, la.name as l_name
+        <include refid="base_column"/>,cl.name as cl_name
         FROM diary di
         LEFT JOIN classify cl ON di.classify = cl.id
         LEFT JOIN label la ON FIND_IN_SET(la.id, di.labels)
@@ -248,6 +249,9 @@
         </if>
         <if test="labels != null ">
         AND di.`labels` = #{labels}
+        </if>
+        <if test="status != null ">
+        AND di.`status` = #{status}
         </if>
     </trim>
     </sql>

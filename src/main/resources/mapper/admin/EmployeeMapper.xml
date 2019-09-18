@@ -414,7 +414,7 @@
         SELECT 
         <include refid="base_column"/>
         FROM employee em
-        WHERE 
+    <where>
     <trim prefixOverrides="AND">
         <if test="ecode != null ">
         AND em.`ecode` = #{ecode}
@@ -504,6 +504,8 @@
         AND em.`delflag` = #{delflag,jdbcType=TINYINT}
         </if>
     </trim>
+    </where>
+   
     </select>
     
     <select id="list" resultType="employee" parameterType="employeeForm">

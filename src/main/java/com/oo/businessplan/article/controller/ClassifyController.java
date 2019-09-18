@@ -72,7 +72,7 @@ public class ClassifyController extends BaseController {
 		cls.setChildType(childType);
 		cls.setName(name);
 		cls.setDelflag(DeleteFlag.VALID.getCode());
-		PageParams<Classify> params = new PageParams<>(cls);
+		PageParams<Classify> params = new PageParams<>(cls, pageNum, pageSize);
 		PageInfo<Classify> page = pageService.getPage(params);
 		System.out.println(page.getList());
 		return response.success(page);
