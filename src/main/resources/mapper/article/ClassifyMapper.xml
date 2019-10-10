@@ -121,7 +121,7 @@
         AND (cl.`creator` = #{creator} OR cl.`type` = 1)
         </if>
         <if test="name != null ">
-        AND cl.`name` LIKE CONCAT(#{name}, '%')
+        AND cl.`name` LIKE CONCAT('%', #{name}, '%')
         </if>
         <if test="type != null ">
         AND cl.`type` = #{type}

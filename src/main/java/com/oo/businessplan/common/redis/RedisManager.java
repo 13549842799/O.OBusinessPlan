@@ -10,7 +10,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 public class RedisManager {
 	
-	
 	//超时时间	
 	protected long expired;
 		
