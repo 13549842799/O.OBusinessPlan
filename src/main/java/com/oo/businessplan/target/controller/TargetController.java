@@ -41,4 +41,16 @@ public class TargetController extends BaseController{
 
         return response.success();
     }
+    
+    @IgnoreSecurity
+    @PostMapping(value = "/add.do")
+    public ResponseResult<List<Target>> add(HttpServletRequest request,
+    		@RequestBody(required=true)Target target) {
+        ResponseResult<List<Target>> response = new ResponseResult<>();
+        
+        
+        
+        return response.success();
+    }
+    
 }

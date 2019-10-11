@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.oo.businessplan.basic.entity.CreatorEntity;
+import com.oo.businessplan.common.annotation.FieldMeta;
 
 /**
  * 目标模块
@@ -26,11 +27,13 @@ public class Target extends CreatorEntity<Integer>{
 	/**
 	 * 原因
 	 */
+	@FieldMeta("原因")
 	private String cause;
 	
 	/**
 	 * 目标内容
 	 */
+	@FieldMeta("目标内容")
 	private String content;
 	
 	/**
@@ -41,16 +44,19 @@ public class Target extends CreatorEntity<Integer>{
 	/**
 	 * 紧急程度  1-远期目标  2-中期目标  3-近期目标  4-紧急目标
 	 */
+	@FieldMeta("紧急等级")
 	private Byte level;
 	
 	/**
 	 * 目标类型 1-生活 2-学习 3-工作
 	 */
+	@FieldMeta("目标类型")
 	private Byte type;
 	
 	/**
 	 * 预期完成时间
 	 */
+	@FieldMeta("预期完成时间")
 	private Date expectFinishTime;
 	
 	/**
