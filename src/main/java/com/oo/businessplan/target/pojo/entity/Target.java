@@ -5,6 +5,17 @@ import java.util.List;
 
 import com.oo.businessplan.basic.entity.CreatorEntity;
 
+/**
+ * 目标模块
+ * 记录使用者未来要达成的目标，包括目标内容，为什么要达成这个目标，怎样才算达成目标，紧急程度，目标类型还有相关时间。
+ * 首先用户打开app，由 个人中心 - 目标管理 。
+ * 1.记录目标
+ * 2.记录计划
+ * 3.记录每次计划执行结果
+ * 4.实时提醒（应该执行某个计划了）
+ * @author cyz
+ *
+ */
 public class Target extends CreatorEntity<Integer>{
 
 	/**
