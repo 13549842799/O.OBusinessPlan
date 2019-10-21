@@ -3,6 +3,7 @@ package test1;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URLClassLoader;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -50,6 +51,7 @@ import com.oo.businessplan.authority.pojo.Resource;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.enumeration.StatusFlag;
 import com.oo.businessplan.common.util.DesUtil;
+import com.oo.businessplan.target.pojo.entity.Target;
 import com.sun.org.apache.bcel.internal.generic.CPInstruction;
 
 import io.swagger.util.Json;
@@ -216,5 +218,12 @@ public class MyBatisTest {
 		params.put("delflag", DeleteFlag.VALID.getCode());
 		mapper.getFullEmployeeByAdmin(params);
 	}
+	
+	@Test
+	public void testClass() {
+		ClassLoader cl = this.getClass().getClassLoader();
+	    
+	}
+	
 
 }

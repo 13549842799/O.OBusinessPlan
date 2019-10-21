@@ -58,7 +58,7 @@
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" 
 			ref="dataSource" />
-	    <property name="typeAliasesPackage" value="com.oo.businessplan.admin.pojo,com.oo.businessplan.additional.pojo,com.oo.businessplan.authority.pojo,com.oo.businessplan.article.pojo,com.oo.businessplan.system.pojo,com.oo.businessplan.upload.pojo" />
+	    <property name="typeAliasesPackage" value="com.oo.businessplan.admin.pojo,com.oo.businessplan.additional.pojo,com.oo.businessplan.authority.pojo,com.oo.businessplan.article.pojo,com.oo.businessplan.system.pojo,com.oo.businessplan.upload.pojo,com.oo.businessplan.target.pojo" />
 		<property name="mapperLocations" 
 			value="classpath:mapper/*/*.xml" />
 	    <property name="plugins">
