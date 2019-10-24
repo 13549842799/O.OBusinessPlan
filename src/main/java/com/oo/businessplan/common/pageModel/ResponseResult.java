@@ -3,6 +3,8 @@ package com.oo.businessplan.common.pageModel;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,6 +36,9 @@ public class ResponseResult<T> implements Serializable{
 	
 	private int status;// 200 成功   100  失败   300异常  400
 	private String message;
+	
+	private Map<String, List<String>> messages;
+	
 	private T data;
 	
 	
@@ -87,7 +92,12 @@ public class ResponseResult<T> implements Serializable{
 	public void setData(T data) {
 		this.data = data;
 	}
-	
+	public Map<String, List<String>> getMessages() {
+		return messages;
+	}
+	public void setMessages(Map<String, List<String>> messages) {
+		this.messages = messages;
+	}
 	private ResponseResult<T> setValue(int status, String message, T data) {
 		this.message = message;
 		this.data = data;

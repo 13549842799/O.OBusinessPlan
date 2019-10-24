@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,16 +61,9 @@ public class TestOne {
 	
 	@Test
 	public void testEmailTemplate() throws Exception{
-		   /*String string = "abcnn";
-		   String result = XmlUtil.readXmlAsString("emailTemplate/activateEmail.xml");
-		   Map<String,String> params = new HashMap<>();
-		   params.put("content", "真是的内容哈哈哈");
-		   result = EmailServer.replare(result, params);
-		   System.out.println(result);*/
-		   // StringBuilder sb = new StringBuilder("ab");
-		   //System.out.println(sb.charAt(sb.length()-1));
-		   //stringbuilder的delete方法要想全部清除必须是完整的长度而不是长度-1
-		   //System.out.println(sb.delete(0, sb.length()-1).toString());
+		Pattern pattern = Pattern.compile("^[-\\+]?[\\d.]*$");  
+        boolean re = pattern.matcher("15").matches();
+        System.out.println(re);
 	}
 	
 	@Test

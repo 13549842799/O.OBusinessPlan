@@ -48,6 +48,7 @@ public class MapperScanner extends ClassPathBeanDefinitionScanner {
         for (BeanDefinitionHolder holder : holders) {
             convertToMapperFactoryBean(holder.getBeanDefinition());
         }
+        
         return holders;
     }
 

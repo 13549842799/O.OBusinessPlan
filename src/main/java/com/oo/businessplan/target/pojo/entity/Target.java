@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.oo.businessplan.basic.entity.CreatorEntity;
-import com.oo.businessplan.common.annotation.FieldMeta;
+import com.oo.businessplan.common.valid.EnableCheckOut;
+import com.oo.businessplan.common.valid.FieldMeta;
 
 /**
  * 目标模块
@@ -17,6 +18,7 @@ import com.oo.businessplan.common.annotation.FieldMeta;
  * @author cyz
  *
  */
+@EnableCheckOut
 public class Target extends CreatorEntity<Integer>{
 
 	/**
@@ -33,7 +35,7 @@ public class Target extends CreatorEntity<Integer>{
 	/**
 	 * 目标内容
 	 */
-	@FieldMeta("目标内容")
+	@FieldMeta(value="目标内容")
 	private String content;
 	
 	/**
@@ -44,13 +46,13 @@ public class Target extends CreatorEntity<Integer>{
 	/**
 	 * 紧急程度  1-远期目标  2-中期目标  3-近期目标  4-紧急目标
 	 */
-	@FieldMeta("紧急等级")
+	@FieldMeta(value="紧急等级", max="4", min="1")
 	private Byte level;
 	
 	/**
 	 * 目标类型 1-生活 2-学习 3-工作
 	 */
-	@FieldMeta("目标类型")
+	@FieldMeta(value="目标类型", max="3", maxMess="请选择合适的目标类型", min="1", minMess="请选择合适的目标类型")
 	private Byte type;
 	
 	/**
@@ -62,12 +64,13 @@ public class Target extends CreatorEntity<Integer>{
 	/**
 	 * 真正的完成时间
 	 */
+	@FieldMeta("真正完成时间")
 	private Date realFinishTime;
 	
 	/**
 	 * 是否开启提醒  0-关闭 1-开启
 	 */
-	private Byte alert;
+	private Byte alert = 0;
 	
 	public List<TargetPlan> plans;
 	

@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
+import com.oo.businessplan.common.valid.ValidService;
 import com.oo.businessplan.target.service.TargetService;
 import com.oo.businessplan.target.pojo.entity.Target;
 
 
 /**
+ * 保存目标： 
+ * 废弃目标：
  * 
  * @author cyz
  * @version 创建时间：2019-10-11 08:57:13
@@ -34,6 +37,9 @@ public class TargetController extends BaseController{
     @Autowired
     TargetService targetService;
     
+    @Autowired
+    ValidService validUtil;
+    
     @IgnoreSecurity
     @GetMapping(value = "/list.re")
     public ResponseResult<List<Target>> list(HttpServletRequest request) {
@@ -44,11 +50,16 @@ public class TargetController extends BaseController{
     
     @IgnoreSecurity
     @PostMapping(value = "/add.do")
-    public ResponseResult<List<Target>> add(HttpServletRequest request,
+    public ResponseResult<Target> add(HttpServletRequest request,
     		@RequestBody(required=true)Target target) {
-        ResponseResult<List<Target>> response = new ResponseResult<>();
+        ResponseResult<Target> response = new ResponseResult<>();
         
+        String result = validUtil.validReturnFirstError(target);
+        if (result != null) {
+        	return response.fail(result);
+        }
         
+        targetService.add(target, Target.class);
         
         return response.success();
     }

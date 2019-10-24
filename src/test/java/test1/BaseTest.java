@@ -7,7 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class BaseTest {
 	
-ApplicationContext context = null;
+    ApplicationContext context = null;
 	
 	@Before
 	public void before() {

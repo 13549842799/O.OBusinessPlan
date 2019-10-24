@@ -22,9 +22,8 @@ import org.apache.commons.logging.LogFactory;
 
 public class StringUtil {
 
-    private static Pattern numericPattern = Pattern.compile("^[0-9\\-]+$");
-    private static Pattern numericStringPattern = Pattern
-            .compile("^[0-9\\-\\-]+$");
+    private static Pattern numericPattern = Pattern.compile("^[-\\+]?[\\d.]*$"); 
+    private static Pattern numericStringPattern = Pattern.compile("^[0-9\\-\\-]+$");
     private static Pattern floatNumericPattern = Pattern
             .compile("^[0-9\\-\\.]+$");
     private static Pattern abcPattern = Pattern.compile("^[a-z|A-Z]+$");
@@ -41,10 +40,7 @@ public class StringUtil {
     public static boolean isNumeric(String src) {
         boolean return_value = false;
         if (src != null && src.length() > 0) {
-            Matcher m = numericPattern.matcher(src);
-            if (m.find()) {
-                return_value = true;
-            }
+            return numericPattern.matcher(src).matches();
         }
         return return_value;
     }
