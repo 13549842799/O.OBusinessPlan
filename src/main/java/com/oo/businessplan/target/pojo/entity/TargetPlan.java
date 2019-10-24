@@ -19,6 +19,7 @@ public class TargetPlan extends DeleteAbleEntity<Integer>{
 	
 	/**
 	 * 执行时间,小计划开始执行时间
+	 * 保存前需要校验是否存在重叠时间的计划执行，如果有则提醒。
 	 */
 	private Timestamp executionTime;
 	

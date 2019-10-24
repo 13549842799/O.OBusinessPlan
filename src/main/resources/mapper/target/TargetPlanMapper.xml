@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.target.mapper.TargetPlanMapper">
+
+     <resultMap id="TargetPlanMap" type="targetplan">
+        <id property="id" column="id"/>
+        <result property="delflag" column="delflag"/>
+        <result property="content" column="content"/>
+        <result property="executionTime" column="executionTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="period" column="period"/>
+        <result property="unit" column="unit"/>
+        <collection property="actions" ofType="planaction">
+            <id property="id" column="id"/>
+            <result property="startTime" column="startTime"/>
+            <result property="endTime" column="endTime"/>
+            <result property="overTime" column="overTime"/>
+            <result property="result" column="result"/>
+            <result property="reason" column="reason"/>
+        </collection>
+    </resultMap>
+
+     <sql id="base_column">
+        ta.id,ta.delflag,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO TargetPlan
+        (
+            <trim suffixOverrides=",">
+                <if test="delflag != null ">
+                delflag,
+                </if>
+                <if test="content != null ">
+                content,
+                </if>
+                <if test="executionTime != null ">
+                executionTime,
+                </if>
+                <if test="endTime != null ">
+                endTime,
+                </if>
+                <if test="period != null ">
+                period,
+                </if>
+                <if test="unit != null ">
+                unit
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim suffixOverrides=",">
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="content != null ">
+                #{content},
+                </if>
+                <if test="executionTime != null ">
+                #{executionTime},
+                </if>
+                <if test="endTime != null ">
+                #{endTime},
+                </if>
+                <if test="period != null ">
+                #{period},
+                </if>
+                <if test="unit != null ">
+                #{unit}
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE TargetPlan set delflag = #{delflag}
+         WHERE id = #{ id }
+    </update>
+
+    <update id="update" parameterType="targetplan">
+        UPDATE TargetPlan SET 
+            <trim suffixOverrides=",">
+                <if test="delflag != null ">
+                delflag = #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="content != null ">
+                content = #{content},
+                </if>
+                <if test="executionTime != null ">
+                executionTime = #{executionTime},
+                </if>
+                <if test="endTime != null ">
+                endTime = #{endTime},
+                </if>
+                <if test="period != null ">
+                period = #{period},
+                </if>
+                <if test="unit != null ">
+                unit = #{unit}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="targetplan">
+        UPDATE TargetPlan SET 
+            delflag = #{delflag,jdbcType=TINYINT},
+            content = #{content},
+            executionTime = #{executionTime},
+            endTime = #{endTime},
+            period = #{period},
+            unit = #{unit}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="targetplan" parameterType="targetplan">
+        SELECT 
+        <include refid="base_column"/>
+        FROM TargetPlan ta
+        WHERE ta.id = #{id} AND ta.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="targetplan" parameterType="targetplan">
+        SELECT 
+        <include refid="base_column"/>
+        FROM TargetPlan ta
+        WHERE 
+    <trim prefixOverrides="AND">
+        <if test="delflag != null ">
+        AND ta.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test="content != null ">
+        AND ta.`content` = #{content}
+        </if>
+        <if test="executionTime != null ">
+        AND ta.`executionTime` = #{executionTime}
+        </if>
+        <if test="endTime != null ">
+        AND ta.`endTime` = #{endTime}
+        </if>
+        <if test="period != null ">
+        AND ta.`period` = #{period}
+        </if>
+        <if test="unit != null ">
+        AND ta.`unit` = #{unit}
+        </if>
+    </trim>
+    </select>
+
+</mapper>

@@ -42,10 +42,13 @@ public class TargetController extends BaseController{
     
     @IgnoreSecurity
     @GetMapping(value = "/list.re")
-    public ResponseResult<List<Target>> list(HttpServletRequest request) {
+    public ResponseResult<List<Target>> list(HttpServletRequest request,
+    		@RequestBody Target target) {
         ResponseResult<List<Target>> response = new ResponseResult<>();
 
-        return response.success();
+        List<Target> list = targetService.getList(target);
+        
+        return response.success(list);
     }
     
     @IgnoreSecurity
@@ -58,7 +61,6 @@ public class TargetController extends BaseController{
         if (result != null) {
         	return response.fail(result);
         }
-        
         targetService.add(target, Target.class);
         
         return response.success();
