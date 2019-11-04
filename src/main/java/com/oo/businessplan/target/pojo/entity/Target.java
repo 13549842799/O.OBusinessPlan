@@ -3,6 +3,7 @@ package com.oo.businessplan.target.pojo.entity;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oo.businessplan.basic.entity.CreatorEntity;
 import com.oo.businessplan.common.valid.EnableCheckOut;
 import com.oo.businessplan.common.valid.FieldMeta;
@@ -110,6 +111,7 @@ public class Target extends CreatorEntity<Integer>{
 		this.level = level;
 	}
 
+	@JsonFormat(pattern="yyyy-MM-dd")
 	public Date getExpectFinishTime() {
 		return expectFinishTime;
 	}
@@ -118,6 +120,7 @@ public class Target extends CreatorEntity<Integer>{
 		this.expectFinishTime = expectFinishTime;
 	}
 
+	@JsonFormat(pattern="yyyy-MM-dd")
 	public Date getRealFinishTime() {
 		return realFinishTime;
 	}
