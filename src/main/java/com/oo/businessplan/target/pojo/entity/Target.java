@@ -1,10 +1,12 @@
 package com.oo.businessplan.target.pojo.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oo.businessplan.basic.entity.CreatorEntity;
+import com.oo.businessplan.basic.entity.CreatorWithStateEntity;
 import com.oo.businessplan.common.valid.EnableCheckOut;
 import com.oo.businessplan.common.valid.FieldMeta;
 
@@ -25,7 +27,15 @@ import com.oo.businessplan.common.valid.FieldMeta;
  *
  */
 @EnableCheckOut
-public class Target extends CreatorEntity<Integer>{
+public class Target extends CreatorWithStateEntity<Integer> implements Serializable{
+	
+	public static final byte DRAFT = 0;//草稿
+	
+	public static final byte RUN = 1;//进行中
+	
+	public static final byte FINISH = 2;//完成
+	
+	public static final byte GIVEUP = 3;//放弃
 
 	/**
 	 * 
@@ -47,12 +57,13 @@ public class Target extends CreatorEntity<Integer>{
 	/**
 	 * 完成标志，做到什么程度才算完成
 	 */
+	@FieldMeta(value="完成标志")
 	private String finishSign;
 	
 	/**
 	 * 紧急程度  1-远期目标  2-中期目标  3-近期目标  4-紧急目标
 	 */
-	@FieldMeta(value="紧急等级", max="4", min="1")
+	@FieldMeta(value="紧急等级", max="4", min="1", commonMess="请正确的选择紧急程度")
 	private Byte level;
 	
 	/**

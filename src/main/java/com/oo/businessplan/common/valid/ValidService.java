@@ -98,7 +98,7 @@ public final class ValidService {
 		for (String name : keyName) {
 			List<String> l = res.get(name);
 			for (String mess : l) {
-				return mess;
+				return name + "," + mess;
 			}
 		}
 		return null;
@@ -148,16 +148,13 @@ public final class ValidService {
 			return mapResult;
 		}
 		Map<String, ValidMessage> clsMapper = mapper.get(entity.getClass());
-		
-		Assert.isNull(clsMapper, "当前类没有加入校验中");
-		
+		Assert.notNull(clsMapper, "当前类没有加入校验中");
 		Set<String> fieldNames = handleFileds(clsMapper.keySet(), type, fields);
 		ValidMessage valid = null;
 		FieldMeta meta = null;
 		for (String name : fieldNames) {
 			valid = clsMapper.get(name);
-			
-			Assert.isNull(valid, "当前属性没有加入校验中");
+			Assert.notNull(valid, "当前属性没有加入校验中");
 			Object val = null;
 			try {
 				val = valid.getMethod.invoke(entity);
@@ -166,10 +163,11 @@ public final class ValidService {
 				continue;
 			}
 			
-			List<String> errMessage = new LinkedList<>();
+			// 判断是否需要校验结束 ======
 			
+			List<String> errMessage = new LinkedList<>();
 			meta = valid.meta;			
-			mapResult.put(meta.key().equals("") ? name : meta.key(), errMessage);			
+			mapResult.put(meta.key().equals("") ? name : meta.key(), errMessage);		
 			
 			//判断是否开启非空校验
 			if (meta.notNull() && val == null) {
@@ -177,38 +175,49 @@ public final class ValidService {
 				//if the value is null and it open the not null checkout, that you need to checkout latter valid
 				continue;
 			}
-			
-			//判断最大值校验                                             //判断最小值校验
-			boolean maxResult = false, minResult = false;
-			String maxResultMess = null, minResultMess = null;
-
-			int typeNum = switchType(valid.type);
-			switch (typeNum) {
-			case 1:
-				maxResult = validMax(val, meta.max(), 1);
-				maxResultMess = meta.value()+"最大长度是" + meta.max() + "字";
-				
-				minResult = validMax(val, meta.min(), 1);
-				minResultMess = meta.value()+"最小长度是" + meta.max() + "字" ;
-				break;
-			case 2:
-				maxResult = validMax(val, meta.max(), 2);
-				maxResultMess = meta.value()+"最大值不能超过" + meta.max();
-				
-				minResult = validMax(val, meta.max(), 2);
-				minResultMess = meta.value()+"最小值不能小于" + meta.max() ;
-				break;
+			//检验最大值
+			if (StringUtil.isNotEmpty(meta.max())) {
+			    boolean maxResult = false;
+				String maxResultMess = null;
+				int typeNum = switchType(valid.type);
+				switch (typeNum) {
+				case 1:
+					maxResult = validMax(val, meta.max(), 1);
+					maxResultMess = meta.value()+"最大长度是" + meta.max() + "字";
+					break;
+				case 2:
+					maxResult = validMax(val, meta.max(), 2);
+					maxResultMess = meta.value()+"最大值不能超过" + meta.max();
+					break;
+			    }
+				Assert.notNull(maxResult, "属性：" + name + "的最大值标识含有非数字或非小数点的符号");
+				if (!maxResult) {
+					String res = "".equals(meta.commonMess()) ? ("".equals(meta.maxMess()) ? maxResultMess : meta.maxMess()) : meta.commonMess();
+					errMessage.add(res);
+				}
 			}
+			//校验最小值
+			if (StringUtil.isNotEmpty(meta.min())) {				
+				boolean minResult = false;
+				String minResultMess = null;
+				int typeNum = switchType(valid.type);
+				switch (typeNum) {
+				case 1:
+					minResult = validMin(val, meta.min(), 1);
+					minResultMess = meta.value()+"最小长度是" + meta.max() + "字" ;
+					break;
+				case 2:		
+					minResult = validMin(val, meta.max(), 2);
+					minResultMess = meta.value()+"最小值不能小于" + meta.max() ;
+					break;
+			    }
+				Assert.notNull(minResult, "属性：" + name + "的最小值标识含有非数字或非小数点的符号");		
+				if (!minResult) {
+					String res = "".equals(meta.commonMess()) ? ("".equals(meta.minMess()) ? minResultMess : meta.minMess()) : meta.commonMess();
+					errMessage.add(res);
+				}
+			}	
 			
-			Assert.isNull(maxResult, "属性：" + name + "的最大值标识含有非数字或非小数点的符号");
-			if (!maxResult) {
-				errMessage.add("".equals(meta.maxMess()) ?maxResultMess : meta.maxMess());
-			}
-			
-		    Assert.isNull(minResult, "属性：" + name + "的最小值标识含有非数字或非小数点的符号");		
-			if (!minResult) {
-				errMessage.add("".equals(meta.minMess()) ?minResultMess : meta.minMess());
-			}
 			
 			if (validType == VALIDFORONE && errMessage.size() > 0) {
 				break;
@@ -218,13 +227,19 @@ public final class ValidService {
 		
 		return mapResult;
 	}
-	
+
+	/**
+	 * return the type'num of the value
+	 * @param type
+	 * @return
+	 */
 	private int switchType(String type) {
 		switch (type) {
 			case "String":
 				return 1;
 			case "int":case "Integer":case "double":
 			case "Double":case "float":case "Float":
+			case "Byte":
 				return 2;
         }
 		return 0;
@@ -252,10 +267,10 @@ public final class ValidService {
 		
 		Double max = Double.parseDouble(maxStr);
 		switch (type) {
-		case 1:
-			return val.toString().length() <= max;
-		case 2:
-			return Double.parseDouble(val.toString()) <= max;
+			case 1:
+				return val.toString().length() <= max;
+			case 2:
+				return Double.parseDouble(val.toString()) <= max;
 		}
 		return false;
 	}

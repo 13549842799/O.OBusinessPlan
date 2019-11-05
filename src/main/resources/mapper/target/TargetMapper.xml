@@ -4,6 +4,7 @@
 
      <resultMap id="TargetMap" type="target">
         <id property="id" column="id"/>
+        <result property="state" column="state"/>
         <result property="delflag" column="delflag"/>
         <result property="creator" column="creator"/>
         <result property="createTime" column="createTime"/>
@@ -27,11 +28,11 @@
     </resultMap>
 
      <sql id="base_column">
-        ta.id,ta.delflag,ta.creator,ta.createTime,ta.cause,ta.content,ta.finishSign,ta.level,ta.type,ta.expectFinishTime,ta.realFinishTime,ta.alert
+        ta.id,ta.state,ta.delflag,ta.creator,ta.createTime,ta.cause,ta.content,ta.finishSign,ta.level,ta.type,ta.expectFinishTime,ta.realFinishTime,ta.alert
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Target
+        INSERT INTO target
         (
             <trim suffixOverrides=",">
                 <if test="delflag != null ">
@@ -66,6 +67,9 @@
                 </if>
                 <if test="alert != null ">
                 alert,
+                </if>
+                <if test="state != null ">
+                state,
                 </if>
             </trim>
         )
@@ -104,17 +108,25 @@
                 <if test="alert != null ">
                 #{alert},
                 </if>
+                <if test="state != null ">
+                #{state},
+                </if>
             </trim>
         )
     </insert>
 
     <update id="delete" >
-        UPDATE Target set delflag = #{delflag}
+        UPDATE target set delflag = #{delflag}
+         WHERE id = #{ id }
+    </update>
+    
+    <update id="state" >
+        UPDATE Target set state = #{state}
          WHERE id = #{ id }
     </update>
 
     <update id="update" parameterType="target">
-        UPDATE Target SET 
+        UPDATE target SET 
             <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 delflag = #{delflag,jdbcType=TINYINT},
@@ -154,7 +166,7 @@
     </update>
 
     <update id="updateFull" parameterType="target">
-        UPDATE Target SET 
+        UPDATE target SET 
             delflag = #{delflag,jdbcType=TINYINT},
             creator = #{creator},
             createTime = #{createTime},
@@ -172,14 +184,14 @@
     <select id="getById" resultType="target" parameterType="target">
         SELECT 
         <include refid="base_column"/>
-        FROM Target ta
+        FROM target ta
         WHERE ta.id = #{id} AND ta.delflag = #{delflag}
     </select>
 
     <select id="getList" resultType="target" parameterType="target">
         SELECT 
         <include refid="base_column"/>
-        FROM Target ta
+        FROM target ta
         WHERE 
     <trim prefixOverrides="AND">
         <if test="delflag != null ">

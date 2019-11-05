@@ -2,6 +2,8 @@ package com.oo.businessplan.target.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 
@@ -54,18 +56,25 @@ public class TargetController extends BaseController{
     }
     
     @IgnoreSecurity
-    @PostMapping(value = "/add.do")
+    @PostMapping(value = "/save.do")
     public ResponseResult<Target> add(HttpServletRequest request,
     		@RequestBody(required=true)Target target) {
         ResponseResult<Target> response = new ResponseResult<>();
         
-        String result = validUtil.validReturnFirstError(target);
-        if (result != null) {
-        	return response.fail(result);
+        if (target.getState() != Target.DRAFT) {
+        	String result = validUtil.validReturnFirstError(target);
+            if (result != null) {
+            	return response.fail(result);
+            }
         }
-        targetService.add(target, Target.class);
-        
-        return response.success();
+        if (target.getId() == null) {
+        	target.setCreator(currentAdminId(request));
+        	target.setCreateTime(new Timestamp(new Date().getTime()));
+        	targetService.add(target, Integer.class);
+        } else {
+        	targetService.update(target);
+        }        
+        return response.success(target);
     }
     
     /**
