@@ -27,6 +27,8 @@ import com.oo.businessplan.target.pojo.entity.Target;
  * 保存目标： 
  * 废弃目标：
  * 
+ * 
+ * 
  * @author cyz
  * @version 创建时间：2019-10-11 08:57:13
  */
@@ -64,6 +66,30 @@ public class TargetController extends BaseController{
         targetService.add(target, Target.class);
         
         return response.success();
+    }
+    
+    /**
+     * 废弃目标
+     * @param request
+     * @param id
+     * @return
+     */
+    @IgnoreSecurity
+    @PostMapping(value = "/s/{id}/delete.do")
+    public ResponseResult<Target> delete(HttpServletRequest request,
+    		@PathVariable("id") Integer id) {
+        ResponseResult<Target> response = new ResponseResult<>();
+        
+        Target target = new Target();
+        target.setId(id);
+        target = targetService.getById(target);
+        
+        Integer adminId = currentAdminId(request);
+        if (adminId != target.getCreator()) {
+        	return response.fail("没有权限");
+        }
+    
+        return response.deleteResult(targetService.delete(target));
     }
     
 }
