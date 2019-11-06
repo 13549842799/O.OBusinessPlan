@@ -1,11 +1,11 @@
 package com.oo.businessplan.target.pojo.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.oo.businessplan.basic.entity.CreatorEntity;
 import com.oo.businessplan.basic.entity.CreatorWithStateEntity;
 import com.oo.businessplan.common.valid.EnableCheckOut;
 import com.oo.businessplan.common.valid.FieldMeta;
@@ -87,7 +87,7 @@ public class Target extends CreatorWithStateEntity<Integer> implements Serializa
 	/**
 	 * 是否开启提醒  0-关闭 1-开启
 	 */
-	private Byte alert = 0;
+	private Byte alert = null;
 	
 	public List<TargetPlan> plans;
 	
@@ -169,6 +169,65 @@ public class Target extends CreatorWithStateEntity<Integer> implements Serializa
 		this.type = type;
 	}
 	
+	public String getLevelName() {
+		if (this.level == null) {
+			return "未选择";
+		}
+		switch (this.level) {
+		case 1:
+			return "远期目标";
+		case 2:
+			return "中期目标";
+		case 3:
+			return "近期目标";
+		case 4:
+			return "紧急目标";
+		default:
+			return "数据错误";
+		}
+	}
 	
+	public long getLeftOverTime() {
+		if (this.expectFinishTime == null) {
+			return 0;
+		}
+		long dis = this.expectFinishTime.getTime() - System.currentTimeMillis();
+        if (dis < 0) {
+        	return 0;
+        }
+		return (dis/1000)/60/60/24;
+	}
+	
+	public String getTypeName() {
+		if (this.type == null) {
+			return "未选择";
+		}
+		switch (this.type) {
+		case 1:
+			return "生活";
+        case 2:
+			return "学习";
+        case 3:
+	        return "工作";
+		}
+		return "";
+	}
+	
+	public String getStateName() {
+		if (this.getState() == null) {
+			return "草稿";
+		}
+		switch (this.getState()) {
+		case 0:
+		    return "草稿";
+		case 1:
+		    return "进行中";
+		case 2:
+		    return "完成";
+		case 3:
+		    return "放弃";
+		}
+		return null;
+	}
 	
 }

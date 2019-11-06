@@ -192,7 +192,7 @@
         SELECT 
         <include refid="base_column"/>
         FROM target ta
-        WHERE 
+    <where>
     <trim prefixOverrides="AND">
         <if test="delflag != null ">
         AND ta.`delflag` = #{delflag,jdbcType=TINYINT}
@@ -228,6 +228,7 @@
         AND ta.`alert` = #{alert}
         </if>
     </trim>
+    </where>
     </select>
 
 </mapper>

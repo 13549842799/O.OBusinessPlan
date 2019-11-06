@@ -168,9 +168,9 @@ public final class ValidService {
 			List<String> errMessage = new LinkedList<>();
 			meta = valid.meta;			
 			mapResult.put(meta.key().equals("") ? name : meta.key(), errMessage);		
-			
+			int typeNum = switchType(valid.type); //值类型
 			//判断是否开启非空校验
-			if (meta.notNull() && val == null) {
+			if (meta.notNull() && (val == null || (typeNum == 1 && val.toString().trim().equals("")) )) {
 				errMessage.add(meta.value() + "不能为空");
 				//if the value is null and it open the not null checkout, that you need to checkout latter valid
 				continue;
@@ -179,7 +179,6 @@ public final class ValidService {
 			if (StringUtil.isNotEmpty(meta.max())) {
 			    boolean maxResult = false;
 				String maxResultMess = null;
-				int typeNum = switchType(valid.type);
 				switch (typeNum) {
 				case 1:
 					maxResult = validMax(val, meta.max(), 1);
@@ -200,7 +199,6 @@ public final class ValidService {
 			if (StringUtil.isNotEmpty(meta.min())) {				
 				boolean minResult = false;
 				String minResultMess = null;
-				int typeNum = switchType(valid.type);
 				switch (typeNum) {
 				case 1:
 					minResult = validMin(val, meta.min(), 1);

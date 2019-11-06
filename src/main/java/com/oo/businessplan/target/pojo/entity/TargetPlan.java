@@ -11,6 +11,11 @@ public class TargetPlan extends DeleteAbleEntity<Integer>{
 	 * 
 	 */
 	private static final long serialVersionUID = -4477529079701235809L;
+	
+	/**
+	 * 计划名称
+	 */
+	private String planName;
 
 	/**
 	 * 计划内容
@@ -89,6 +94,14 @@ public class TargetPlan extends DeleteAbleEntity<Integer>{
 
 	public void setActions(List<PlanAction> actions) {
 		this.actions = actions;
+	}
+
+	public String getPlanName() {
+		return planName;
+	}
+
+	public void setPlanName(String planName) {
+		this.planName = planName;
 	}
 	
 	

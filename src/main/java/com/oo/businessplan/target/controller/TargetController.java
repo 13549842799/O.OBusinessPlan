@@ -1,23 +1,26 @@
 package com.oo.businessplan.target.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.basic.service.PageService;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
+import com.oo.businessplan.common.pageModel.PageParams;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.valid.ValidService;
@@ -41,18 +44,30 @@ public class TargetController extends BaseController{
     @Autowired
     TargetService targetService;
     
+    @Resource(name="targetService")
+    PageService<Target> pageService;
+    
     @Autowired
     ValidService validUtil;
     
     @IgnoreSecurity
     @GetMapping(value = "/list.re")
-    public ResponseResult<List<Target>> list(HttpServletRequest request,
-    		@RequestBody Target target) {
-        ResponseResult<List<Target>> response = new ResponseResult<>();
-
-        List<Target> list = targetService.getList(target);
+    public ResponseResult<PageInfo<Target>> list(HttpServletRequest request,
+    		@RequestParam(value="pageNum", required=false)Integer pageNum,
+			@RequestParam(value="pageSize", required=false)Integer pageSize,
+    		Target target) {
+        ResponseResult<PageInfo<Target>> response = new ResponseResult<>();
+        if (target == null) {
+        	target = new Target();
+        }
+        System.out.println(target.getType());
+        target.setCreator(currentAdminId(request));
+        target.setDelflag(DeleteFlag.VALID.getCode());
+        PageParams<Target> params = new PageParams<>(target, pageNum, pageSize);
         
-        return response.success(list);
+        PageInfo<Target> page = pageService.getPage(params);
+        
+        return response.success(page);
     }
     
     @IgnoreSecurity
