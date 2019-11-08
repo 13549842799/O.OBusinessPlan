@@ -41,6 +41,19 @@ public class Target extends CreatorWithStateEntity<Integer> implements Serializa
 	 * 
 	 */
 	private static final long serialVersionUID = 6546368015226396621L;
+	
+	public Target() {
+	}
+
+	public Target(Integer id, Byte delflag) {
+		super(id, delflag);
+		// TODO Auto-generated constructor stub
+	}
+
+	public Target(Integer id) {
+		super(id);
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * 原因
@@ -81,7 +94,7 @@ public class Target extends CreatorWithStateEntity<Integer> implements Serializa
 	/**
 	 * 真正的完成时间
 	 */
-	@FieldMeta("真正完成时间")
+	@FieldMeta(value="真正完成时间", notNull=false)
 	private Date realFinishTime;
 	
 	/**

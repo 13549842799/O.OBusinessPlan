@@ -159,7 +159,10 @@
                 realFinishTime = #{realFinishTime},
                 </if>
                 <if test="alert != null ">
-                alert = #{alert}
+                alert = #{alert},
+                </if>
+                <if test="state != null">
+                state = #{state}
                 </if>
             </trim>
          WHERE id = #{id}
@@ -177,7 +180,8 @@
             type = #{type},
             expectFinishTime = #{expectFinishTime},
             realFinishTime = #{realFinishTime},
-            alert = #{alert}
+            alert = #{alert},
+            state = #{state}
          WHERE id = #{id}
     </update>
 

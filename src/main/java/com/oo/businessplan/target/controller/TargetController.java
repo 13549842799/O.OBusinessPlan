@@ -71,6 +71,20 @@ public class TargetController extends BaseController{
     }
     
     @IgnoreSecurity
+    @GetMapping(value = "/s/{id}/target.re")
+    public ResponseResult<Target> getOne(HttpServletRequest request,
+    		@PathVariable(name="id", required = true) Integer id) {
+        ResponseResult<Target> response = new ResponseResult<>();
+        
+        Target target = new Target();
+        target.setId(id);
+        target.setDelflag(DeleteFlag.VALID.getCode());
+        target = targetService.getById(target);
+        
+        return response.success(target);
+    }
+    
+    @IgnoreSecurity
     @PostMapping(value = "/save.do")
     public ResponseResult<Target> add(HttpServletRequest request,
     		@RequestBody(required=true)Target target) {
@@ -87,7 +101,18 @@ public class TargetController extends BaseController{
         	target.setCreateTime(new Timestamp(new Date().getTime()));
         	targetService.add(target, Integer.class);
         } else {
-        	targetService.update(target);
+        	Target old = targetService.getById(new Target(target.getId(), DeleteFlag.VALID.getCode()));
+        	if (old == null) {
+        		return response.fail("找不到目标");
+        	}
+        	if (old.getState() == Target.FINISH) {
+        		return response.fail("当前目标已经在运行了");
+        	}
+        	target.setCreateTime(old.getCreateTime());
+        	target.setCreator(old.getCreator());
+        	target.setDelflag(old.getDelflag());
+        	
+        	targetService.updateFull(target);
         }        
         return response.success(target);
     }
