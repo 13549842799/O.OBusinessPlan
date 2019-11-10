@@ -201,6 +201,9 @@
         <if test="delflag != null ">
         AND ta.`delflag` = #{delflag,jdbcType=TINYINT}
         </if>
+        <if test="state != null ">
+        AND ta.`state` = #{state,jdbcType=TINYINT}
+        </if>
         <if test="creator != null ">
         AND ta.`creator` = #{creator}
         </if>

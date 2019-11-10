@@ -60,7 +60,6 @@ public class TargetController extends BaseController{
         if (target == null) {
         	target = new Target();
         }
-        System.out.println(target.getType());
         target.setCreator(currentAdminId(request));
         target.setDelflag(DeleteFlag.VALID.getCode());
         PageParams<Target> params = new PageParams<>(target, pageNum, pageSize);
