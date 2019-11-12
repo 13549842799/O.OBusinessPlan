@@ -167,7 +167,6 @@ public class AdminController extends BaseController{
 			Admin admin = null;
 			try {
 				admin = adminService.getAdminByName(form.getUserName());
-				System.out.println("admin:" + admin.getPassword());
 			    if (!adminService.checkPasswordValid(admin.getPassword(), form.getPassword())) {
 					return response.fail("密码错误");
 				}

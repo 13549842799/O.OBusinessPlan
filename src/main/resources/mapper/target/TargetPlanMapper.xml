@@ -5,12 +5,15 @@
      <resultMap id="TargetPlanMap" type="targetplan">
         <id property="id" column="id"/>
         <result property="delflag" column="delflag"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="createTime"/>
+        <result property="targetId" column="targetId"/>
         <result property="content" column="content"/>
         <result property="executionTime" column="executionTime"/>
         <result property="endTime" column="endTime"/>
         <result property="period" column="period"/>
         <result property="unit" column="unit"/>
-        <collection property="actions" ofType="planaction">
+        <collection property="actions" ofType="planAction">
             <id property="id" column="id"/>
             <result property="startTime" column="startTime"/>
             <result property="endTime" column="endTime"/>
@@ -21,7 +24,7 @@
     </resultMap>
 
      <sql id="base_column">
-        ta.id,ta.delflag,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit
+        ta.id,ta.delflag,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit,ta.targetId,ta.creator,ta.createTime
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
@@ -43,8 +46,14 @@
                 <if test="period != null ">
                 period,
                 </if>
-                <if test="unit != null ">
-                unit
+                <if test="targetId != null ">
+                targetId
+                </if>
+                <if test="creator != null ">
+                creator
+                </if>
+                <if test="creator != null ">
+                creator
                 </if>
             </trim>
         )
@@ -66,7 +75,16 @@
                 #{period},
                 </if>
                 <if test="unit != null ">
-                #{unit}
+                #{unit},
+                </if>
+                <if test="targetId != null ">
+                #{targetId},
+                </if>
+                <if test="creator != null ">
+                #{creator},
+                </if>
+                <if test="creator != null ">
+                #{creator},
                 </if>
             </trim>
         )
@@ -118,6 +136,9 @@
         <include refid="base_column"/>
         FROM TargetPlan ta
         WHERE ta.id = #{id} AND ta.delflag = #{delflag}
+        <if test="creator != null">
+        AND ta.creator = #{creator}
+        </if>
     </select>
 
     <select id="getList" resultType="targetplan" parameterType="targetplan">
@@ -143,6 +164,12 @@
         </if>
         <if test="unit != null ">
         AND ta.`unit` = #{unit}
+        </if>
+        <if test="targetId != null ">
+        AND ta.`targetId` = #{targetId}
+        </if>
+        <if test="creator != null ">
+        AND ta.`creator` = #{creator}
         </if>
     </trim>
     </select>

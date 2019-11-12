@@ -116,8 +116,35 @@ public class TargetController extends BaseController{
         return response.success(target);
     }
     
+    
     /**
      * 废弃目标
+     * @param request
+     * @param id
+     * @return
+     */
+    @IgnoreSecurity
+    @PostMapping(value = "/s/{id}/giveUp.do")
+    public ResponseResult<Target> giveUp(HttpServletRequest request,
+    		@PathVariable("id") Integer id) {
+        ResponseResult<Target> response = new ResponseResult<>();
+        
+        Target target = new Target();
+        target.setId(id);
+        target.setDelflag(DeleteFlag.VALID.getCode());
+        target = targetService.getById(target);
+        
+        Integer adminId = currentAdminId(request);
+        if (adminId != target.getCreator()) {
+        	return response.fail("没有权限");
+        }
+        target.setState(Target.GIVEUP);
+        return response.updateResult(targetService.update(target));
+    }
+    
+    
+    /**
+     * 删除目标
      * @param request
      * @param id
      * @return

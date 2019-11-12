@@ -3,15 +3,27 @@ package com.oo.businessplan.target.pojo.entity;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.oo.businessplan.basic.entity.DeleteAbleEntity;
+import com.oo.businessplan.basic.entity.CreatorEntity;
 
-public class TargetPlan extends DeleteAbleEntity<Integer>{
+public class TargetPlan extends CreatorEntity<Integer>{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4477529079701235809L;
 	
+	
+	
+	public TargetPlan() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public TargetPlan(Byte delflag) {
+		super(delflag);
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * 计划名称
 	 */
@@ -42,6 +54,11 @@ public class TargetPlan extends DeleteAbleEntity<Integer>{
 	 * 单位 1-小时  2-天 3-周  4-月
 	 */
 	private Byte unit;
+	
+	/**
+	 * 对应的目标的id
+	 */
+	private Integer targetId;
 	
 	/**
 	 * 实际执行的结果
@@ -102,6 +119,14 @@ public class TargetPlan extends DeleteAbleEntity<Integer>{
 
 	public void setPlanName(String planName) {
 		this.planName = planName;
+	}
+
+	public Integer getTargetId() {
+		return targetId;
+	}
+
+	public void setTargetId(Integer targetId) {
+		this.targetId = targetId;
 	}
 	
 	
