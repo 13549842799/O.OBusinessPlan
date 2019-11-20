@@ -3,6 +3,7 @@ package com.oo.businessplan.target.pojo.entity;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oo.businessplan.basic.entity.CreatorEntity;
 
 public class TargetPlan extends CreatorEntity<Integer>{
@@ -73,6 +74,7 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.content = content;
 	}
 
+	@JsonFormat(pattern="HH:mm")
 	public Timestamp getExecutionTime() {
 		return executionTime;
 	}
@@ -81,6 +83,7 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.executionTime = executionTime;
 	}
 
+	@JsonFormat(pattern="HH:mm")
 	public Timestamp getEndTime() {
 		return endTime;
 	}

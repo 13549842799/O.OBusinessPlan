@@ -59,4 +59,32 @@ public class TargetPlanController extends BaseController{
         
         return response.success(plans);
     }
+    
+    @IgnoreSecurity
+    @GetMapping(value = "/save.do")
+    public ResponseResult<TargetPlan> saveOrUpdate(HttpServletRequest request,
+    		TargetPlan plan) {
+        ResponseResult<TargetPlan> response = new ResponseResult<>();
+        
+        plan = plan == null ? new TargetPlan(DeleteFlag.VALID.getCode()) : plan;
+        
+        plan.setCreator(currentAdminId(request));
+        
+        targetPlanService.add(plan, Integer.class);
+        
+        return response.success(plan);
+    }
+    
+    @IgnoreSecurity
+    @GetMapping(value = "/s/{id}/del.do")
+    public ResponseResult<TargetPlan> giveUpPlan(HttpServletRequest request,
+    		@PathVariable(name="id")Integer id) {
+        ResponseResult<TargetPlan> response = new ResponseResult<>();
+        
+        TargetPlan plan = new TargetPlan(DeleteFlag.VALID.getCode());
+        plan.setId(id);
+        plan.setCreator(currentAdminId(request));
+        
+        return response.success(plan);
+    }
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oo.businessplan.target.mapper.TargetPlanMapper">
 
-     <resultMap id="TargetPlanMap" type="targetplan">
+     <resultMap id="TargetPlanMap" type="targetPlan">
         <id property="id" column="id"/>
         <result property="delflag" column="delflag"/>
         <result property="creator" column="creator"/>
@@ -95,7 +95,7 @@
          WHERE id = #{ id }
     </update>
 
-    <update id="update" parameterType="targetplan">
+    <update id="update" parameterType="targetPlan">
         UPDATE TargetPlan SET 
             <trim suffixOverrides=",">
                 <if test="delflag != null ">
@@ -120,7 +120,7 @@
          WHERE id = #{id}
     </update>
 
-    <update id="updateFull" parameterType="targetplan">
+    <update id="updateFull" parameterType="targetPlan">
         UPDATE TargetPlan SET 
             delflag = #{delflag,jdbcType=TINYINT},
             content = #{content},
@@ -131,7 +131,7 @@
          WHERE id = #{id}
     </update>
 
-    <select id="getById" resultType="targetplan" parameterType="targetplan">
+    <select id="getById" resultType="targetplan" parameterType="targetPlan">
         SELECT 
         <include refid="base_column"/>
         FROM TargetPlan ta
@@ -141,7 +141,7 @@
         </if>
     </select>
 
-    <select id="getList" resultType="targetplan" parameterType="targetplan">
+    <select id="getList" resultType="targetplan" parameterType="targetPlan">
         SELECT 
         <include refid="base_column"/>
         FROM TargetPlan ta
