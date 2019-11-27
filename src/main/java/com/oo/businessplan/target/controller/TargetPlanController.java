@@ -81,10 +81,10 @@ public class TargetPlanController extends BaseController{
     		@PathVariable(name="id")Integer id) {
         ResponseResult<TargetPlan> response = new ResponseResult<>();
         
-        TargetPlan plan = new TargetPlan(DeleteFlag.VALID.getCode());
+        TargetPlan plan = new TargetPlan();
         plan.setId(id);
         plan.setCreator(currentAdminId(request));
         
-        return response.success(plan);
+        return response.deleteResult(targetPlanService.delete(plan));
     }
 }

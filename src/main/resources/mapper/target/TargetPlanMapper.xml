@@ -92,7 +92,7 @@
 
     <update id="delete" >
         UPDATE TargetPlan set delflag = #{delflag}
-         WHERE id = #{ id }
+         WHERE id = #{ id } AND creator = #{creator}
     </update>
 
     <update id="update" parameterType="targetPlan">

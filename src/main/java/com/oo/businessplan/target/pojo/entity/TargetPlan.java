@@ -62,6 +62,11 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	private Integer targetId;
 	
 	/**
+	 * [old_name,old_content,reson,old_ExecutionTime,modifierTime]
+	 */
+	private String modifierRecord;
+	
+	/**
 	 * 实际执行的结果
 	 */
 	private List<PlanAction> actions;
@@ -131,6 +136,16 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	public void setTargetId(Integer targetId) {
 		this.targetId = targetId;
 	}
+
+	public String getModifierRecord() {
+		return modifierRecord;
+	}
+
+	public void setModifierRecord(String modifierRecord) {
+		this.modifierRecord = modifierRecord;
+	}
+
+	
 	
 	
 	
