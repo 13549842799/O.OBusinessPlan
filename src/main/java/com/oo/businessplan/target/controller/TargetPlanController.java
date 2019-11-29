@@ -26,7 +26,7 @@ import com.oo.businessplan.target.pojo.entity.TargetPlan;
 
 
 /**
- * 
+ * 目标计划接口
  * @author cyz
  * @version 创建时间：2019-10-24 16:38:41
  */
@@ -56,6 +56,24 @@ public class TargetPlanController extends BaseController{
         plan.setCreator(currentAdminId(request));
         
         List<TargetPlan> plans = targetPlanService.getList(plan);
+        
+        return response.success(plans);
+    }
+    
+    /**
+     * 倒计时计划列表，获取用户当天将要执行的计划的列表
+     * @param request
+     * @param plan
+     * @return
+     */
+    @IgnoreSecurity
+    @GetMapping(value = "/wlist.re")
+    public ResponseResult<List<TargetPlan>> willList(HttpServletRequest request,
+    		TargetPlan plan) {
+        ResponseResult<List<TargetPlan>> response = new ResponseResult<>();
+        
+        
+        List<TargetPlan> plans = targetPlanService.getWillExecutePlanListInDay(currentAdminId(request));
         
         return response.success(plans);
     }

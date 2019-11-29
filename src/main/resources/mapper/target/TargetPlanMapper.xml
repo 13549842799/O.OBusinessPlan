@@ -13,6 +13,7 @@
         <result property="endTime" column="endTime"/>
         <result property="period" column="period"/>
         <result property="unit" column="unit"/>
+        <result property="startDate" column="startDate"/>
         <collection property="actions" ofType="planAction">
             <id property="id" column="id"/>
             <result property="startTime" column="startTime"/>
@@ -24,11 +25,11 @@
     </resultMap>
 
      <sql id="base_column">
-        ta.id,ta.delflag,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit,ta.targetId,ta.creator,ta.createTime
+        ta.id,ta.delflag,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit,ta.startDate,ta.targetId,ta.creator,ta.createTime
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO TargetPlan
+        INSERT INTO target_plan
         (
             <trim suffixOverrides=",">
                 <if test="delflag != null ">
@@ -46,14 +47,17 @@
                 <if test="period != null ">
                 period,
                 </if>
+                <if test="unit != null ">
+                unit,
+                </if>
+                <if test="startDate != null ">
+                startDate,
+                </if>
                 <if test="targetId != null ">
-                targetId
+                targetId,
                 </if>
                 <if test="creator != null ">
-                creator
-                </if>
-                <if test="creator != null ">
-                creator
+                creator,
                 </if>
             </trim>
         )
@@ -77,11 +81,11 @@
                 <if test="unit != null ">
                 #{unit},
                 </if>
+                <if test="startDate != null">
+                #{startDate},
+                </if>
                 <if test="targetId != null ">
                 #{targetId},
-                </if>
-                <if test="creator != null ">
-                #{creator},
                 </if>
                 <if test="creator != null ">
                 #{creator},
@@ -96,7 +100,7 @@
     </update>
 
     <update id="update" parameterType="targetPlan">
-        UPDATE TargetPlan SET 
+        UPDATE target_plan SET 
             <trim suffixOverrides=",">
                 <if test="delflag != null ">
                 delflag = #{delflag,jdbcType=TINYINT},
@@ -121,7 +125,7 @@
     </update>
 
     <update id="updateFull" parameterType="targetPlan">
-        UPDATE TargetPlan SET 
+        UPDATE target_plan SET 
             delflag = #{delflag,jdbcType=TINYINT},
             content = #{content},
             executionTime = #{executionTime},
@@ -134,7 +138,7 @@
     <select id="getById" resultType="targetplan" parameterType="targetPlan">
         SELECT 
         <include refid="base_column"/>
-        FROM TargetPlan ta
+        FROM target_plan ta
         WHERE ta.id = #{id} AND ta.delflag = #{delflag}
         <if test="creator != null">
         AND ta.creator = #{creator}
@@ -144,7 +148,7 @@
     <select id="getList" resultType="targetplan" parameterType="targetPlan">
         SELECT 
         <include refid="base_column"/>
-        FROM TargetPlan ta
+        FROM target_plan ta
         WHERE 
     <trim prefixOverrides="AND">
         <if test="delflag != null ">
@@ -172,6 +176,49 @@
         AND ta.`creator` = #{creator}
         </if>
     </trim>
+    </select>
+    
+    <select id="getListByTarget" resultType="targetplan" parameterType="targetPlanForm">
+        SELECT 
+        <include refid="base_column"/>
+        FROM target_plan ta
+        LEFT JOIN target t ON ta.targetId = t.id
+    where
+    <trim prefixOverrides="AND">
+        <if test="target != null">
+            <if test="target.creator != null">
+                AND t.creator = #{target.creator}
+            </if>
+            <if test="target.state != null">
+                AND t.state = #{target.state}
+            </if>
+            <if test="target.delflag != null">
+                AND t.delflag = #{target.delflag}
+            </if>         
+        </if>
+        <if test="delflag != null ">
+        AND ta.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test="executionTime != null ">
+        AND ta.`executionTime` = #{executionTime}
+        </if>
+        <if test="endTime != null ">
+        AND ta.`endTime` = #{endTime}
+        </if>
+        <if test="period != null ">
+        AND ta.`period` = #{period}
+        </if>
+        <if test="unit != null ">
+        AND ta.`unit` = #{unit}
+        </if>
+        <if test="targetId != null ">
+        AND ta.`targetId` = #{targetId}
+        </if>
+        <if test="creator != null ">
+        AND ta.`creator` = #{creator}
+        </if>
+    </trim>
+    AND ta.`endTime` > now()
     </select>
 
 </mapper>

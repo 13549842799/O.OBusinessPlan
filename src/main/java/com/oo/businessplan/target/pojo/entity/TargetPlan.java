@@ -1,6 +1,8 @@
 package com.oo.businessplan.target.pojo.entity;
 
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -52,9 +54,14 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	private Integer period;
 	
 	/**
-	 * 单位 1-小时  2-天 3-周  4-月
+	 * 单位 1-小时（弃用）  2-天 3-周  4-月
 	 */
 	private Byte unit;
+	
+	/**
+	 * 计划第一次开始的日期
+	 */
+	private Date startDate;
 	
 	/**
 	 * 对应的目标的id
@@ -79,7 +86,15 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.content = content;
 	}
 
-	@JsonFormat(pattern="HH:mm")
+	public Integer getPeriod() {
+		return period;
+	}
+    
+	public void setPeriod(Integer period) {
+		this.period = period;
+	}
+	
+    @JsonFormat(pattern="HH:mm")
 	public Timestamp getExecutionTime() {
 		return executionTime;
 	}
@@ -87,22 +102,14 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	public void setExecutionTime(Timestamp executionTime) {
 		this.executionTime = executionTime;
 	}
-
-	@JsonFormat(pattern="HH:mm")
+	
+    @JsonFormat(pattern="HH:mm")
 	public Timestamp getEndTime() {
 		return endTime;
 	}
 
 	public void setEndTime(Timestamp endTime) {
 		this.endTime = endTime;
-	}
-
-	public Integer getPeriod() {
-		return period;
-	}
-
-	public void setPeriod(Integer period) {
-		this.period = period;
 	}
 
 	public Byte getUnit() {
@@ -143,6 +150,15 @@ public class TargetPlan extends CreatorEntity<Integer>{
 
 	public void setModifierRecord(String modifierRecord) {
 		this.modifierRecord = modifierRecord;
+	}
+
+	@JsonFormat(pattern="YYYY年MM月dd日")
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
 	
