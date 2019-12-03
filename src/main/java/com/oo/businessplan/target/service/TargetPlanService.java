@@ -19,4 +19,11 @@ public interface TargetPlanService extends BaseService<TargetPlan> {
 	 */
 	public List<TargetPlan> getWillExecutePlanListInDay(int creator);
 	
+	/**
+	 * 判断计划的执行时间是否存在重叠的区域
+	 * @param plan
+	 * @return
+	 */
+	public List<TargetPlan> isOverLappedTime(TargetPlan plan);
+	
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oo.businessplan.basic.entity.CreatorEntity;
+import com.oo.businessplan.common.valid.FieldMeta;
 
 public class TargetPlan extends CreatorEntity<Integer>{
 	
@@ -30,32 +31,38 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	/**
 	 * 计划名称
 	 */
+	@FieldMeta("计划名称")
 	private String planName;
 
 	/**
 	 * 计划内容
 	 */
+	@FieldMeta(value="计划内容", max="200")
 	private String content;
 	
 	/**
 	 * 执行时间,小计划开始执行时间
 	 * 保存前需要校验是否存在重叠时间的计划执行，如果有则提醒。
 	 */
-	private Timestamp executionTime;
+	@FieldMeta(value="开始执行时间")
+	private Time executionTime;
 	
 	/**
 	 * 预期结束时间
 	 */
-	private Timestamp endTime;
+	@FieldMeta(value="执行结束时间")
+	private Time endTime;
 	
 	/**
 	 * 周期 
 	 */
+	@FieldMeta(value="周期")
 	private Integer period;
 	
 	/**
 	 * 单位 1-小时（弃用）  2-天 3-周  4-月
 	 */
+	@FieldMeta(value="时间单位")
 	private Byte unit;
 	
 	/**
@@ -69,9 +76,9 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	private Integer targetId;
 	
 	/**
-	 * [old_name,old_content,reson,old_ExecutionTime,modifierTime]
+	 * 删除理由
 	 */
-	private String modifierRecord;
+	private String deleteReason;
 	
 	/**
 	 * 实际执行的结果
@@ -95,20 +102,20 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	}
 	
     @JsonFormat(pattern="HH:mm")
-	public Timestamp getExecutionTime() {
+	public Time getExecutionTime() {
 		return executionTime;
 	}
 
-	public void setExecutionTime(Timestamp executionTime) {
+	public void setExecutionTime(Time executionTime) {
 		this.executionTime = executionTime;
 	}
 	
     @JsonFormat(pattern="HH:mm")
-	public Timestamp getEndTime() {
+	public Time getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Timestamp endTime) {
+	public void setEndTime(Time endTime) {
 		this.endTime = endTime;
 	}
 
@@ -144,12 +151,12 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.targetId = targetId;
 	}
 
-	public String getModifierRecord() {
-		return modifierRecord;
+	public String getDeleteReason() {
+		return deleteReason;
 	}
 
-	public void setModifierRecord(String modifierRecord) {
-		this.modifierRecord = modifierRecord;
+	public void setDeleteReason(String deleteReason) {
+		this.deleteReason = deleteReason;
 	}
 
 	@JsonFormat(pattern="YYYY年MM月dd日")

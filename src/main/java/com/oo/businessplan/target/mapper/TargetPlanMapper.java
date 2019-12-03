@@ -1,9 +1,13 @@
 package com.oo.businessplan.target.mapper;
 
+import java.sql.Time;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.oo.businessplan.basic.mapper.BaseMapper;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
+import com.oo.businessplan.target.pojo.entity.TargetPlanAlterRecord;
 import com.oo.businessplan.target.pojo.form.TargetPlanForm;
 
 
@@ -15,4 +19,22 @@ import com.oo.businessplan.target.pojo.form.TargetPlanForm;
 public interface TargetPlanMapper extends BaseMapper<TargetPlan> {
 	
 	public List<TargetPlan> getListByTarget(TargetPlanForm form);
+	
+	/**
+	 * 查看执行时间重叠的计划
+	 * @param creator
+	 * @param delflag
+	 * @param executionTime
+	 * @param endTime
+	 * @return
+	 */
+	public List<TargetPlan> overLappedTimePlans(@Param("creator")int creator, @Param("delflag")Byte delflag
+			, @Param("executionTime")Time executionTime, @Param("endTime")Time endTime, @Param("filter")String filterIds);
+	
+	/**
+	 * 保存修改记录
+	 * @param record
+	 * @return
+	 */
+	public int saveRecord(TargetPlanAlterRecord record);
 }

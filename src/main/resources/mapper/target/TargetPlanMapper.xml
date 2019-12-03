@@ -95,7 +95,7 @@
     </insert>
 
     <update id="delete" >
-        UPDATE TargetPlan set delflag = #{delflag}
+        UPDATE TargetPlan set delflag = #{delflag}, deleteReason = #{deleteReason}
          WHERE id = #{ id } AND creator = #{creator}
     </update>
 
@@ -221,4 +221,34 @@
     AND ta.`endTime` > now()
     </select>
 
+    <select id="overLappedTimePlans" resultType="targetPlan">
+    select
+        <include refid="base_column"/>
+    from 
+        target_plan ta
+    where
+        ta.creator = #{creator}
+    AND
+        ta.delflag = #{delflag}
+    AND (
+    <![CDATA[
+        (ta.`executionTime` >= #{executionTime} and  ta.`executionTime` <= #{endTime})
+    ]]>
+    OR
+    <![CDATA[
+        (ta.`endTime` >= #{executionTime} and ta.`endTime` <= #{endTime})
+    ]]> )
+    <if test="filter != null">
+    AND
+       ta.id not in (${filter})
+    </if>
+    </select>
+    
+    <insert id="saveRecord" >
+        INSERT INTO target_plan_alter_record
+            (planName, content, executionTime, endTime, startDate, period, unit, targetPlanId, reason, createTime)
+        VALUES 
+            (#{planName},#{content},#{executionTime},#{endTime},#{startDate},#{period},#{unit},#{targetPlanId},#{reason},#{createTime})
+    </insert>
+    
 </mapper>

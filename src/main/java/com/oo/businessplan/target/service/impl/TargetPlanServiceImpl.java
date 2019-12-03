@@ -1,5 +1,7 @@
 package com.oo.businessplan.target.service.impl;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -20,6 +22,7 @@ import com.oo.businessplan.target.mapper.TargetPlanMapper;
 import com.oo.businessplan.target.service.TargetPlanService;
 import com.oo.businessplan.target.pojo.entity.Target;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
+import com.oo.businessplan.target.pojo.entity.TargetPlanAlterRecord;
 import com.oo.businessplan.target.pojo.form.TargetPlanForm;
 
 
@@ -53,10 +56,9 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 		form.setTarget(target);
 		form.setDelflag(DeleteFlag.VALID.getCode());
 
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
 		List<TargetPlan> plans = targetPlanMapper.getListByTarget(form);
 		for (TargetPlan plan : plans) {
-
 		    LocalDate startDate = LocalDate.parse(sdf.format(plan.getStartDate()));//开始时间
 		    LocalDate now = LocalDate.now();
 		    
@@ -99,5 +101,43 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 				return false;
 	    }
 	}
+
+	@Override
+	public List<TargetPlan> isOverLappedTime(TargetPlan plan) {
+		
+		List<TargetPlan> lapperds = targetPlanMapper.overLappedTimePlans(plan.getCreator(), DeleteFlag.VALID.getCode(), plan.getExecutionTime(), plan.getEndTime(),  plan.getId() == null ? null : plan.getId().toString());
+        
+		/*if (lapperds == null || lapperds.size() == 0) {
+			return null;
+		}
+		
+		List<TargetPlan> res = new LinkedList<>();
+		if (plan.getUnit() == TargetPlan.)
+		for (TargetPlan p : lapperds) {
+			
+		}*/
+		
+		return lapperds;
+	}
+
+
+	@Override
+	public int update(TargetPlan plan) {
+		
+		TargetPlan oldPlan = this.getById(plan);
+        if (oldPlan.getStartDate().after(new Date())) {
+        	oldPlan.setStartDate(plan.getStartDate());
+        }
+		oldPlan.setPlanName(plan.getPlanName());
+		oldPlan.setContent(plan.getContent());
+		oldPlan.setExecutionTime(plan.getExecutionTime());
+		oldPlan.setEndTime(plan.getEndTime());
+		oldPlan.setPeriod(plan.getPeriod());
+		oldPlan.setUnit(plan.getUnit());
+		targetPlanMapper.saveRecord(new TargetPlanAlterRecord(plan));
+		return super.update(oldPlan);
+	}
+	
+	
    
 }
