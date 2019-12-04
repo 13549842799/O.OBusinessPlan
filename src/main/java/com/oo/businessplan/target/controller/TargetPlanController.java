@@ -28,6 +28,7 @@ import com.oo.businessplan.target.service.TargetPlanService;
 import com.oo.businessplan.target.service.TargetService;
 import com.oo.businessplan.target.pojo.entity.Target;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
+import com.oo.businessplan.target.pojo.entity.TargetPlanAlterRecord;
 
 
 /**
@@ -84,6 +85,35 @@ public class TargetPlanController extends BaseController{
         List<TargetPlan> plans = targetPlanService.getWillExecutePlanListInDay(currentAdminId(request));
         
         return response.success(plans);
+    }
+    
+    @IgnoreSecurity
+    @GetMapping(value = "/s/{id}/records.re")
+    public ResponseResult<List<TargetPlanAlterRecord>> recordsList(HttpServletRequest request,
+    		@PathVariable("id")int id) {
+        ResponseResult<List<TargetPlanAlterRecord>> response = new ResponseResult<>();
+        
+        
+        List<TargetPlanAlterRecord> records = targetPlanService.recordsList(id, currentAdminId(request));
+        
+        return response.success(records);
+    }
+    
+    /**
+     * 通过id获取单个计划实体
+     */
+    @IgnoreSecurity
+    @GetMapping(value = "/s/{id}/read.re")
+    public ResponseResult<TargetPlan> readOne(HttpServletRequest request,
+    		@PathVariable("id")Integer id) {
+        ResponseResult<TargetPlan> response = new ResponseResult<>();
+        
+        TargetPlan plan = new TargetPlan(DeleteFlag.VALID.getCode());
+        plan.setId(id);
+        plan.setCreator(currentAdminId(request));
+        plan = targetPlanService.getById(plan);
+        
+        return response.success(plan);
     }
     
     @IgnoreSecurity

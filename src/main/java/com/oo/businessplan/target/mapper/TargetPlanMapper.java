@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import com.oo.businessplan.basic.mapper.BaseMapper;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
@@ -37,4 +38,7 @@ public interface TargetPlanMapper extends BaseMapper<TargetPlan> {
 	 * @return
 	 */
 	public int saveRecord(TargetPlanAlterRecord record);
+	
+	@Select("select re.* from target_plan_alter_record re left join target_plan p on re.targetPlanId = p.id where p.id = #{targetPlanId} and p.creator=#{creator}")
+	public List<TargetPlanAlterRecord> getRecordsList(@Param("targetPlanId")int planId, @Param("creator")int creatorId);
 }

@@ -81,6 +81,11 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	private String deleteReason;
 	
 	/**
+	 * 当前将要或正在执行的计划动作
+	 */
+	private PlanAction action;
+	
+	/**
 	 * 实际执行的结果
 	 */
 	private List<PlanAction> actions;
@@ -166,6 +171,14 @@ public class TargetPlan extends CreatorEntity<Integer>{
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
+	}
+
+	public PlanAction getAction() {
+		return action;
+	}
+
+	public void setAction(PlanAction action) {
+		this.action = action;
 	}
 
 	

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.oo.businessplan.basic.service.BaseService;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
+import com.oo.businessplan.target.pojo.entity.TargetPlanAlterRecord;
 
 
 /**
@@ -25,5 +26,13 @@ public interface TargetPlanService extends BaseService<TargetPlan> {
 	 * @return
 	 */
 	public List<TargetPlan> isOverLappedTime(TargetPlan plan);
+	
+	/**
+	 * 获取修改记录列表
+	 * @param id
+	 * @param creatorId
+	 * @return
+	 */
+	public List<TargetPlanAlterRecord> recordsList(Integer id, Integer creatorId);
 	
 }

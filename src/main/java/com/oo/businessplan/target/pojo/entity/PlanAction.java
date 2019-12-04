@@ -1,15 +1,56 @@
 package com.oo.businessplan.target.pojo.entity;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import com.oo.businessplan.basic.entity.IdEntity;
 
-public class PlanAction extends IdEntity<Integer> {
+public class PlanAction extends IdEntity<Long> {
+	
+	/**
+	 * 不可执行
+	 */
+	public static final byte UNSTART = 0; //不可执行
+	
+	/**
+	 * 等待执行
+	 */
+	public static final byte WAITSTART = 1;
+	
+	/**
+	 * 正在执行
+	 */
+	public static final byte ACTIONING = 2;
+
+	/**
+	 * 执行结束
+	 */
+	public static final byte COMPLETE = 3;
+
+	/**
+	 * 超时结束
+	 */
+	public static final byte OVERCOMPLETE = 4;
+
+	/**
+	 * 没有完成
+	 */
+	public static final byte UNCOMPLETE = 5;
+
+	/**
+	 * 放弃
+	 */
+	public static final byte GIVEUP = 6;
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3539248306510355439L;
+	
+	/**
+	 * 当前执行动作是对应计划的最新次数
+	 */
+	private int num;
 
 	/**
 	 * 实际开始时间
@@ -22,12 +63,17 @@ public class PlanAction extends IdEntity<Integer> {
 	private Timestamp endTime;
 	
 	/**
+	 * 消耗时间
+	 */
+	private Long consumeTime;
+	
+	/**
 	 * 超时时长
 	 */
 	private Long overTime;
 	
 	/**
-	 * 执行结果 0-没有执行 1-超时完成  2-按时完成
+	 * 执行结果 0-不可执行 1-等待执行 2-正在执行 3-执行完成 4-超时完成  5-没有完成 6.放弃执行
 	 */
 	private Byte result;
 	
@@ -35,6 +81,13 @@ public class PlanAction extends IdEntity<Integer> {
 	 * 没有完成的客观原因
 	 */
 	private String reason;
+	
+	private Integer targetPlanId;
+	
+	/**
+	 * 动作执行的日期
+	 */
+	private Date actionDate;
 
 	public Timestamp getStartTime() {
 		return startTime;
@@ -74,6 +127,38 @@ public class PlanAction extends IdEntity<Integer> {
 
 	public void setReason(String reason) {
 		this.reason = reason;
+	}
+
+	public Long getConsumeTime() {
+		return consumeTime;
+	}
+
+	public void setConsumeTime(Long consumeTime) {
+		this.consumeTime = consumeTime;
+	}
+
+	public Integer getTargetPlanId() {
+		return targetPlanId;
+	}
+
+	public void setTargetPlanId(Integer targetPlanId) {
+		this.targetPlanId = targetPlanId;
+	}
+
+	public int getNum() {
+		return num;
+	}
+
+	public void setNum(int num) {
+		this.num = num;
+	}
+
+	public Date getActionDate() {
+		return actionDate;
+	}
+
+	public void setActionDate(Date actionDate) {
+		this.actionDate = actionDate;
 	}
 	
 	

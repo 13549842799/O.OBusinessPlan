@@ -2,6 +2,8 @@ package com.oo.businessplan.target.service.impl;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -18,8 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.oo.businessplan.basic.service.support.RedisCacheSupport;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
+import com.oo.businessplan.target.mapper.PlanActionMapper;
 import com.oo.businessplan.target.mapper.TargetPlanMapper;
 import com.oo.businessplan.target.service.TargetPlanService;
+import com.oo.businessplan.target.pojo.entity.PlanAction;
 import com.oo.businessplan.target.pojo.entity.Target;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
 import com.oo.businessplan.target.pojo.entity.TargetPlanAlterRecord;
@@ -36,6 +40,9 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 
     @Autowired
     TargetPlanMapper targetPlanMapper;
+    
+    @Autowired
+    PlanActionMapper actionMapper;
 
     /**
      * 获取当天的当前时间后将要或正在进行（结束时间大于当前时间）的目标（运行状态）计划。
@@ -68,6 +75,30 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 		    willPlans.add(plan);
 		}
 		
+		if (willPlans.size() == 0) {
+		    return willPlans;
+		}
+		Date now  = new Date();
+		for (TargetPlan plan : willPlans) {
+			PlanAction action = actionMapper.getLaststActionToday(plan.getId());
+			if (action == null) {
+				action = new PlanAction();
+				action.setTargetPlanId(plan.getId());
+				action.setActionDate(now);
+				action.setResult(plan.getExecutionTime().before(now) ? PlanAction.WAITSTART : PlanAction.UNSTART);
+				try {
+					actionMapper.add(action);
+				} catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+					e.printStackTrace();
+					break;
+				}
+			}
+			plan.setAction(action);
+			if (action != null && (action.getResult() > 2) ) {
+				continue;
+			}
+			break;
+		}		
 		return willPlans;
 	}
     
@@ -125,6 +156,9 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 	public int update(TargetPlan plan) {
 		
 		TargetPlan oldPlan = this.getById(plan);
+		
+		targetPlanMapper.saveRecord(new TargetPlanAlterRecord(oldPlan));
+		
         if (oldPlan.getStartDate().after(new Date())) {
         	oldPlan.setStartDate(plan.getStartDate());
         }
@@ -134,8 +168,13 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 		oldPlan.setEndTime(plan.getEndTime());
 		oldPlan.setPeriod(plan.getPeriod());
 		oldPlan.setUnit(plan.getUnit());
-		targetPlanMapper.saveRecord(new TargetPlanAlterRecord(plan));
 		return super.update(oldPlan);
+	}
+
+	@Override
+	public List<TargetPlanAlterRecord> recordsList(Integer id, Integer creatorId) {
+		
+		return targetPlanMapper.getRecordsList(id, creatorId);
 	}
 	
 	
