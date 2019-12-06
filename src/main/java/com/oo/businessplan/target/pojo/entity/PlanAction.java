@@ -89,6 +89,7 @@ public class PlanAction extends IdEntity<Long> {
 	 */
 	private Date actionDate;
 
+	
 	public Timestamp getStartTime() {
 		return startTime;
 	}
@@ -159,6 +160,13 @@ public class PlanAction extends IdEntity<Long> {
 
 	public void setActionDate(Date actionDate) {
 		this.actionDate = actionDate;
+	}
+
+	@Override
+	public String toString() {
+		return "PlanAction [num=" + num + ", startTime=" + startTime + ", endTime=" + endTime + ", consumeTime="
+				+ consumeTime + ", overTime=" + overTime + ", result=" + result + ", reason=" + reason
+				+ ", targetPlanId=" + targetPlanId + ", actionDate=" + actionDate + "]";
 	}
 	
 	

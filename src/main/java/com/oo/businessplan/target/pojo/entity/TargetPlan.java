@@ -181,6 +181,14 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.action = action;
 	}
 
+	@Override
+	public String toString() {
+		return "TargetPlan [planName=" + planName + ", content=" + content + ", executionTime=" + executionTime
+				+ ", endTime=" + endTime + ", period=" + period + ", unit=" + unit + ", startDate=" + startDate
+				+ ", targetId=" + targetId + ", deleteReason=" + deleteReason + ", action=" + action + ", actions="
+				+ actions + "]";
+	}
+
 	
 	
 	
