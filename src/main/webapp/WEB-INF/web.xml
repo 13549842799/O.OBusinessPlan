@@ -6,7 +6,7 @@
     <filter-class>com.oo.businessplan.common.filter.CorsFilter</filter-class>
     <init-param>
       <param-name>allowOrigin</param-name>
-      <param-value>http://localhost:8082,http://192.168.188.123:8084,http://192.168.3.25:8083,http://localhost:8084,http://caiyangzhi.com</param-value>
+      <param-value>http://localhost:8082,http://192.168.188.123:8084,http://192.168.3.25:8083,http://localhost:8084,http://caiyangzhi.com,http://192.168.0.108:8084</param-value>
     </init-param>
     <init-param>
       <param-name>allowMethods</param-name>
