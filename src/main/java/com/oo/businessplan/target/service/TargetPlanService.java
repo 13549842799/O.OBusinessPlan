@@ -35,4 +35,6 @@ public interface TargetPlanService extends BaseService<TargetPlan> {
 	 */
 	public List<TargetPlanAlterRecord> recordsList(Integer id, Integer creatorId);
 	
+	public List<TargetPlan> unCompleteList(int creator);
+	
 }

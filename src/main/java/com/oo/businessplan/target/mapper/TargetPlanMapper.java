@@ -41,4 +41,12 @@ public interface TargetPlanMapper extends BaseMapper<TargetPlan> {
 	
 	@Select("select re.* from target_plan_alter_record re left join target_plan p on re.targetPlanId = p.id where p.id = #{targetPlanId} and p.creator=#{creator}")
 	public List<TargetPlanAlterRecord> getRecordsList(@Param("targetPlanId")int planId, @Param("creator")int creatorId);
+	
+	/**
+	 * 查询当天没有完成的动作的计划
+	 * @param creator
+	 * @param delflag
+	 * @return
+	 */
+	public List<TargetPlan> unCompleteList(@Param("creator")int creator, @Param("delflag")byte delflag);
 }

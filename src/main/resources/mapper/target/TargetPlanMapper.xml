@@ -16,23 +16,33 @@
         <result property="unit" column="unit"/>
         <result property="startDate" column="startDate"/>
         <collection property="actions" ofType="planAction">
-            <id property="id" column="id"/>
-            <result property="startTime" column="startTime"/>
-            <result property="endTime" column="endTime"/>
-            <result property="overTime" column="overTime"/>
-            <result property="result" column="result"/>
-            <result property="reason" column="reason"/>
+            <id property="id" column="ac_id"/>
+            <result property="num" column="ac_num"/>
+            <result property="startTime" column="ac_startTime"/>
+            <result property="endTime" column="ac_endTime"/>
+            <result property="consumeTime" column="ac_consumeTime"/>
+            <result property="overTime" column="ac_overTime"/>
+            <result property="result" column="ac_result"/>
+            <result property="reason" column="ac_reason"/>
+            <result property="targetPlanId" column="id"/>
+            <result property="actionDate" column="ac_actionDate"/>
         </collection>
     </resultMap>
 
      <sql id="base_column">
         ta.id,ta.delflag,ta.planName,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit,ta.startDate,ta.targetId,ta.creator,ta.createTime
      </sql>
+     
+     <sql id="with_action_column">
+         <include refid="base_column"/>,ac.id as ac_id,ac.num as ac_num,ac.startTime as ac_startTime,ac.endTime as ac_endTime,ac.consumeTime as ac_consumeTime,
+         ac.overTime as ac_overTime,ac.result as ac_result,ac.reason as ac_reason,ac.actionDate as ac_actionDate
+     </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO target_plan
         (
             <trim suffixOverrides=",">
+            
                 <if test="delflag != null ">
                 delflag,
                 </if>
@@ -252,5 +262,26 @@
         VALUES 
             (#{planName},#{content},#{executionTime},#{endTime},#{startDate},#{period},#{unit},#{targetPlanId},#{reason},#{createTime})
     </insert>
+    
+    <select id="unCompleteList" resultMap="TargetPlanMap">
+        SELECT
+        <include refid="with_action_column" />
+        FROM
+            target_plan ta
+        LEFT JOIN
+            plan_action ac on ta.id = ac.targetPlanId
+        WHERE
+            ta.creator = #{creator}
+        AND
+            TO_DAYS(ac.actionDate) = TO_DAYS(NOW())
+        AND 
+            ta.delflag = #{delflag}
+        AND
+            ac.result in (1,2)
+        AND
+        <![CDATA[
+            ta.endTime < NOW()
+        ]]>
+    </select>
     
 </mapper>

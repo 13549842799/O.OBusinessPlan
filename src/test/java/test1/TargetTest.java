@@ -17,8 +17,9 @@ public class TargetTest extends BaseTest {
 	public void testTargetPlan() {
 		TargetPlanMapper tpm = context.getBean("targetPlanMapper", TargetPlanMapper.class);
 		
-		List<TargetPlan> count = tpm.overLappedTimePlans(2, DeleteFlag.VALID.getCode(), new Time(7, 50, 0), new Time(9, 50, 0), "1");
-		System.out.println(count);
+		//List<TargetPlan> count = tpm.overLappedTimePlans(2, DeleteFlag.VALID.getCode(), new Time(7, 50, 0), new Time(9, 50, 0), "1");
+		List<TargetPlan> ps = tpm.unCompleteList(2, DeleteFlag.VALID.getCode());
+		System.out.println(ps);
 	}
 	
 	@Test

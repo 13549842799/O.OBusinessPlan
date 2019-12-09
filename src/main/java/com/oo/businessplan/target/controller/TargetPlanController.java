@@ -88,6 +88,16 @@ public class TargetPlanController extends BaseController{
     }
     
     @IgnoreSecurity
+    @GetMapping(value = "/un-complete.re")
+    public ResponseResult<List<TargetPlan>> unCmpleteList(HttpServletRequest request) {
+        ResponseResult<List<TargetPlan>> response = new ResponseResult<>();
+       
+        List<TargetPlan> plans = targetPlanService.unCompleteList(currentAdminId(request));
+        
+        return response.success(plans);
+    }
+    
+    @IgnoreSecurity
     @GetMapping(value = "/s/{id}/records.re")
     public ResponseResult<List<TargetPlanAlterRecord>> recordsList(HttpServletRequest request,
     		@PathVariable("id")int id) {
