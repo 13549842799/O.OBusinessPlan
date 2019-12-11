@@ -1,21 +1,16 @@
 package com.oo.businessplan.target.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.oo.businessplan.basic.controller.BaseController;
@@ -87,6 +82,11 @@ public class TargetPlanController extends BaseController{
         return response.success(plans);
     }
     
+    /**
+     * 计划执行当日未完成列表
+     * @param request
+     * @return
+     */
     @IgnoreSecurity
     @GetMapping(value = "/un-complete.re")
     public ResponseResult<List<TargetPlan>> unCmpleteList(HttpServletRequest request) {
@@ -97,6 +97,12 @@ public class TargetPlanController extends BaseController{
         return response.success(plans);
     }
     
+    /**
+     * 计划修改记录列表
+     * @param request
+     * @param id
+     * @return
+     */
     @IgnoreSecurity
     @GetMapping(value = "/s/{id}/records.re")
     public ResponseResult<List<TargetPlanAlterRecord>> recordsList(HttpServletRequest request,
@@ -146,6 +152,12 @@ public class TargetPlanController extends BaseController{
         return response.success(plan);
     }
     
+    /**
+     * 
+     * @param request
+     * @param plan
+     * @return
+     */
     @IgnoreSecurity
     @PostMapping(value = "/update.do")
     public ResponseResult<TargetPlan> update(HttpServletRequest request,
@@ -183,10 +195,10 @@ public class TargetPlanController extends BaseController{
     }
     
     @IgnoreSecurity
-    @PostMapping(value = "/s/{id}/del.do")
+    @GetMapping(value = "/s/{id}/del.do")
     public ResponseResult<TargetPlan> giveUpPlan(HttpServletRequest request,
     		@PathVariable(name="id")Integer id,
-    		@Param("reason")String reason) {
+    		@RequestParam("reason")String reason) {
         ResponseResult<TargetPlan> response = new ResponseResult<>();
         
         TargetPlan plan = new TargetPlan();

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.quzrtz.mapper.SysTaskCronJobMapper">
+
+     <resultMap id="SysTaskCronJobMap" type="systaskcronjob">
+        <id property="id" column="id"/>
+        <result property="delflag" column="delflag"/>
+        <result property="jobName" column="jobName"/>
+        <result property="jobKey" column="jobKey"/>
+        <result property="cron" column="cron"/>
+        <result property="jobClassName" column="jobClassName"/>
+        <result property="jobMethodName" column="jobMethodName"/>
+        <result property="jobParams" column="jobParams"/>
+        <result property="jobDescription" column="jobDescription"/>
+        <result property="jobNumber" column="jobNumber"/>
+        <result property="enabled" column="enabled"/>
+    </resultMap>
+
+     <sql id="base_column">
+        sy.id,sy.delflag,sy.jobName,sy.jobKey,sy.cron,sy.jobClassName,sy.jobMethodName,sy.jobParams,sy.jobDescription,sy.jobNumber,sy.enabled
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_task_cron_job
+        (
+            <trim suffixOverrides=",">
+                <if test="delflag != null ">
+                delflag,
+                </if>
+                <if test="jobName != null ">
+                jobName,
+                </if>
+                <if test="jobKey != null ">
+                jobKey,
+                </if>
+                <if test="cron != null ">
+                cron,
+                </if>
+                <if test="jobClassName != null ">
+                jobClassName,
+                </if>
+                <if test="jobMethodName != null ">
+                jobMethodName,
+                </if>
+                <if test="jobParams != null ">
+                jobParams,
+                </if>
+                <if test="jobDescription != null ">
+                jobDescription,
+                </if>
+                <if test="jobNumber != null ">
+                jobNumber,
+                </if>
+                <if test="enabled != null ">
+                enabled
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim suffixOverrides=",">
+                <if test="delflag != null ">
+                #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="jobName != null ">
+                #{jobName},
+                </if>
+                <if test="jobKey != null ">
+                #{jobKey},
+                </if>
+                <if test="cron != null ">
+                #{cron},
+                </if>
+                <if test="jobClassName != null ">
+                #{jobClassName},
+                </if>
+                <if test="jobMethodName != null ">
+                #{jobMethodName},
+                </if>
+                <if test="jobParams != null ">
+                #{jobParams},
+                </if>
+                <if test="jobDescription != null ">
+                #{jobDescription},
+                </if>
+                <if test="jobNumber != null ">
+                #{jobNumber},
+                </if>
+                <if test="enabled != null ">
+                #{enabled}
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE sys_task_cron_job set delflag = #{delflag}
+         WHERE id = #{ id }
+    </update>
+
+    <update id="update" parameterType="systaskcronjob">
+        UPDATE sys_task_cron_job SET 
+            <trim suffixOverrides=",">
+                <if test="delflag != null ">
+                delflag = #{delflag,jdbcType=TINYINT},
+                </if>
+                <if test="jobName != null ">
+                jobName = #{jobName},
+                </if>
+                <if test="jobKey != null ">
+                jobKey = #{jobKey},
+                </if>
+                <if test="cron != null ">
+                cron = #{cron},
+                </if>
+                <if test="jobClassName != null ">
+                jobClassName = #{jobClassName},
+                </if>
+                <if test="jobMethodName != null ">
+                jobMethodName = #{jobMethodName},
+                </if>
+                <if test="jobParams != null ">
+                jobParams = #{jobParams},
+                </if>
+                <if test="jobDescription != null ">
+                jobDescription = #{jobDescription},
+                </if>
+                <if test="jobNumber != null ">
+                jobNumber = #{jobNumber},
+                </if>
+                <if test="enabled != null ">
+                enabled = #{enabled}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="systaskcronjob">
+        UPDATE sys_task_cron_job SET 
+            delflag = #{delflag,jdbcType=TINYINT},
+            jobName = #{jobName},
+            jobKey = #{jobKey},
+            cron = #{cron},
+            jobClassName = #{jobClassName},
+            jobMethodName = #{jobMethodName},
+            jobParams = #{jobParams},
+            jobDescription = #{jobDescription},
+            jobNumber = #{jobNumber},
+            enabled = #{enabled}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="systaskcronjob" parameterType="systaskcronjob">
+        SELECT 
+        <include refid="base_column"/>
+        FROM sys_task_cron_job sy
+        WHERE sy.id = #{id} AND sy.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="systaskcronjob" parameterType="systaskcronjob">
+        SELECT 
+        <include refid="base_column"/>
+        FROM sys_task_cron_job sy
+        WHERE 
+    <trim prefixOverrides="AND">
+        <if test="delflag != null ">
+        AND sy.`delflag` = #{delflag,jdbcType=TINYINT}
+        </if>
+        <if test="jobName != null ">
+        AND sy.`jobName` = #{jobName}
+        </if>
+        <if test="jobKey != null ">
+        AND sy.`jobKey` = #{jobKey}
+        </if>
+        <if test="cron != null ">
+        AND sy.`cron` = #{cron}
+        </if>
+        <if test="jobClassName != null ">
+        AND sy.`jobClassName` = #{jobClassName}
+        </if>
+        <if test="jobMethodName != null ">
+        AND sy.`jobMethodName` = #{jobMethodName}
+        </if>
+        <if test="jobParams != null ">
+        AND sy.`jobParams` = #{jobParams}
+        </if>
+        <if test="jobDescription != null ">
+        AND sy.`jobDescription` = #{jobDescription}
+        </if>
+        <if test="jobNumber != null ">
+        AND sy.`jobNumber` = #{jobNumber}
+        </if>
+        <if test="enabled != null ">
+        AND sy.`enabled` = #{enabled}
+        </if>
+    </trim>
+    </select>
+
+</mapper>
