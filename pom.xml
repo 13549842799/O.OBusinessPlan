@@ -6,7 +6,7 @@
   <packaging>war</packaging>
   <properties>
       <mybatis></mybatis>
-      <security.version>4.2.12.RELEASE</security.version> 
+      <security.version>5.2.1.RELEASE</security.version> 
   </properties>
  
   <dependencies>
