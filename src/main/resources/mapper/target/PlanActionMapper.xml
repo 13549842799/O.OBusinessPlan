@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oo.businessplan.target.mapper.PlanActionMapper">
+
+     <resultMap id="PlanActionMap" type="planAction">
+        <id property="id" column="id"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="consumeTime" column="consumeTime"/>
+        <result property="overTime" column="overTime"/>
+        <result property="result" column="result"/>
+        <result property="reason" column="reason"/>
+        <result property="targetPlanId" column="targetPlanId"/>
+        <result property="num" column="num"/>
+        <result property="actionDate" column="actionDate"/>
+    </resultMap>
+
+     <sql id="base_column">
+        pl.id,pl.startTime,pl.endTime,pl.consumeTime,pl.overTime,pl.result,pl.reason,pl.targetPlanId,pl.num,pl.actionDate
+     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO plan_action
+        (
+            <trim suffixOverrides=",">
+                <if test="startTime != null ">
+                startTime,
+                </if>
+                <if test="endTime != null ">
+                endTime,
+                </if>
+                <if test="consumeTime != null ">
+                consumeTime,
+                </if>
+                <if test="overTime != null ">
+                overTime,
+                </if>
+                <if test="result != null ">
+                result,
+                </if>
+                <if test="reason != null ">
+                reason,
+                </if>
+                <if test="targetPlanId != null ">
+                targetPlanId,
+                </if>
+                <if test="num != null">
+                num,
+                </if>
+                <if test="actionDate != null">
+                actionDate,
+                </if>
+            </trim>
+        )
+        VALUES (
+            <trim suffixOverrides=",">
+                <if test="startTime != null ">
+                #{startTime},
+                </if>
+                <if test="endTime != null ">
+                #{endTime},
+                </if>
+                <if test="consumeTime != null ">
+                #{consumeTime},
+                </if>
+                <if test="overTime != null ">
+                #{overTime},
+                </if>
+                <if test="result != null ">
+                #{result},
+                </if>
+                <if test="reason != null ">
+                #{reason},
+                </if>
+                <if test="targetPlanId != null ">
+                #{targetPlanId},
+                </if>
+                <if test="num != null">
+                #{num},
+                </if>
+                <if test="actionDate != null">
+                #{actionDate},
+                </if>
+            </trim>
+        )
+    </insert>
+
+    <update id="delete" >
+        UPDATE plan_action set delflag = #{delflag}
+         WHERE id = #{ id }
+    </update>
+
+    <update id="update" parameterType="planaction">
+        UPDATE plan_action SET 
+            <trim suffixOverrides=",">
+                <if test="startTime != null ">
+                startTime = #{startTime},
+                </if>
+                <if test="endTime != null ">
+                endTime = #{endTime},
+                </if>
+                <if test="consumeTime != null ">
+                consumeTime = #{consumeTime},
+                </if>
+                <if test="overTime != null ">
+                overTime = #{overTime},
+                </if>
+                <if test="result != null ">
+                result = #{result},
+                </if>
+                <if test="reason != null ">
+                reason = #{reason},
+                </if>
+                <if test="targetPlanId != null ">
+                targetPlanId = #{targetPlanId}
+                </if>
+            </trim>
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateFull" parameterType="planaction">
+        UPDATE plan_action SET 
+            startTime = #{startTime},
+            endTime = #{endTime},
+            consumeTime = #{consumeTime},
+            overTime = #{overTime},
+            result = #{result},
+            reason = #{reason},
+            targetPlanId = #{targetPlanId}
+         WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="planAction" parameterType="planAction">
+        SELECT 
+        <include refid="base_column"/>
+        FROM plan_action pl
+        WHERE pl.id = #{id} AND pl.delflag = #{delflag}
+    </select>
+
+    <select id="getList" resultType="planAction" parameterType="planAction">
+        SELECT 
+        <include refid="base_column"/>
+        FROM plan_action pl
+        WHERE 
+    <trim prefixOverrides="AND">
+        <if test="startTime != null ">
+        AND pl.`startTime` = #{startTime}
+        </if>
+        <if test="endTime != null ">
+        AND pl.`endTime` = #{endTime}
+        </if>
+        <if test="consumeTime != null ">
+        AND pl.`consumeTime` = #{consumeTime}
+        </if>
+        <if test="overTime != null ">
+        AND pl.`overTime` = #{overTime}
+        </if>
+        <if test="result != null ">
+        AND pl.`result` = #{result}
+        </if>
+        <if test="reason != null ">
+        AND pl.`reason` = #{reason}
+        </if>
+        <if test="targetPlanId != null ">
+        AND pl.`targetPlanId` = #{targetPlanId}
+        </if>
+    </trim>
+    </select>
+
+</mapper>

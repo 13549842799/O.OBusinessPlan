@@ -2,6 +2,11 @@ package com.oo.businessplan.quzrtz.pojo;
 
 import com.oo.businessplan.basic.entity.DeleteAbleEntity;
 
+/**
+ * 时钟实体类
+ * @author cyz
+ *
+ */
 public class SysTaskCronJob extends DeleteAbleEntity<Integer>{
 	
 	/**
