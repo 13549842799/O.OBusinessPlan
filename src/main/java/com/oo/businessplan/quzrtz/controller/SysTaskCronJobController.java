@@ -23,7 +23,7 @@ import com.oo.businessplan.quzrtz.pojo.SysTaskCronJob;
 
 
 /**
- * 
+ * 时钟任务
  * @author cyz
  * @version 创建时间：2019-12-11 17:49:54
  */
@@ -33,11 +33,28 @@ public class SysTaskCronJobController extends BaseController{
 
     @Autowired
     SysTaskCronJobService sysTaskCronJobService;
+    
     @IgnoreSecurity
     @GetMapping(value = "/list.re")
-    public ResponseResult<List<SysTaskCronJob>> list(HttpServletRequest request) {
+    public ResponseResult<List<SysTaskCronJob>> list(HttpServletRequest request,
+    		@RequestBody SysTaskCronJob job) {
         ResponseResult<List<SysTaskCronJob>> response = new ResponseResult<>();
 
-        return response.success();
+        return response.success(sysTaskCronJobService.getList(job));
     }
+    
+    @IgnoreSecurity
+    @PostMapping(value = "/save.do")
+    public ResponseResult<SysTaskCronJob> save(HttpServletRequest request,
+    		@RequestBody SysTaskCronJob job) {
+        ResponseResult<SysTaskCronJob> response = new ResponseResult<>();
+        
+        if (job.getId() == null) {
+        	 sysTaskCronJobService.add(job, Integer.class);
+        	 return response.success(job);
+        } else {
+        	return response.updateResult(sysTaskCronJobService.update(job));
+        }   
+    }
+    
 }
