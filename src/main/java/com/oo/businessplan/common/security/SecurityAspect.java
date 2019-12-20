@@ -103,6 +103,7 @@ public class SecurityAspect {
 			//3.2  判断url类型 是否是 xx/s/number/xx.xx 这种形式的 然后判断是否是 xxx/sys/xx.xx 这种类型的(后台管理类型) 
 			 String key = tempArr[len - 3].equals("s") ? tempArr[len - 4] : (tempArr[len - 2].equals("sys") ? tempArr[len - 3] + "/sys" : tempArr[len - 2]);
 			 System.out.println("key:"+key);
+			 System.out.println("auths:"+authMap);
 			 if (authMap == null || authMap.isEmpty() || (level = authMap.get(key)) == null 
 					 || level < neetLevel ) {
 				// new ResponseResult<>().responseFailMessage(response, "权限不足");

@@ -1,6 +1,7 @@
 package test1;
 
 import java.sql.Time;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -35,5 +36,10 @@ public class TargetTest extends BaseTest {
 		Time time = new Time(8, 20, 60);
 		
 		System.out.println(time.before(new Date()));
+	}
+	
+	@Test
+	public void testArray() {
+		Byte[] bs = {1,2,3,4};
 	}
 }

@@ -18,7 +18,7 @@ public interface TargetPlanService extends BaseService<TargetPlan> {
 	 * 获取当天将要执行的计划
 	 * @return
 	 */
-	public List<TargetPlan> getWillExecutePlanListInDay(int creator);
+	public List<TargetPlan> getWillExecutePlanListInDay(Integer creator);
 	
 	/**
 	 * 判断计划的执行时间是否存在重叠的区域
@@ -36,5 +36,11 @@ public interface TargetPlanService extends BaseService<TargetPlan> {
 	public List<TargetPlanAlterRecord> recordsList(Integer id, Integer creatorId);
 	
 	public List<TargetPlan> unCompleteList(int creator);
+
+	/**
+	 * 
+	 * @param willPlan
+	 */
+	public void updateCountBatch(List<TargetPlan> willPlan);
 	
 }

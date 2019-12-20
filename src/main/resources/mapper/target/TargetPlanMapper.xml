@@ -15,6 +15,7 @@
         <result property="period" column="period"/>
         <result property="unit" column="unit"/>
         <result property="startDate" column="startDate"/>
+        <result property="count" column="count"/>
         <collection property="actions" ofType="planAction">
             <id property="id" column="ac_id"/>
             <result property="num" column="ac_num"/>
@@ -30,7 +31,7 @@
     </resultMap>
 
      <sql id="base_column">
-        ta.id,ta.delflag,ta.planName,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit,ta.startDate,ta.targetId,ta.creator,ta.createTime
+        ta.id,ta.delflag,ta.planName,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit,ta.startDate,ta.targetId,ta.creator,ta.createTime,ta.count
      </sql>
      
      <sql id="with_action_column">
@@ -131,8 +132,22 @@
                 <if test="unit != null ">
                 unit = #{unit}
                 </if>
+                <if test="count != count ">
+                count = #{count}
+                </if>
             </trim>
          WHERE id = #{id}
+    </update>
+    
+    <update id="updateCountBatch" parameterType="targetPlan">
+        UPDATE target_plan SET 
+            count = CASE id 
+            <foreach collection="list" item="l">
+            WHEN #{l.id} THEN #{l.count} 
+            </foreach>
+            END
+        WHERE
+            id in <foreach open="(" collection="list" separator="," item="l" close=")">#{l.id}</foreach>
     </update>
 
     <update id="updateFull" parameterType="targetPlan">

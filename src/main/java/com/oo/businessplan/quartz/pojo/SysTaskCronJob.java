@@ -1,4 +1,4 @@
-package com.oo.businessplan.quzrtz.pojo;
+package com.oo.businessplan.quartz.pojo;
 
 import com.oo.businessplan.basic.entity.DeleteAbleEntity;
 
@@ -42,6 +42,10 @@ public class SysTaskCronJob extends DeleteAbleEntity<Integer>{
  
 	// Job是否启用
 	private Boolean enabled;
+	
+	public String getJobStatus() {
+		return this.enabled ? "运行" : "停止";
+	}
 
 	public String getJobName() {
 		return jobName;

@@ -1,7 +1,7 @@
-package com.oo.businessplan.quzrtz.service;
+package com.oo.businessplan.quartz.service;
 
 import com.oo.businessplan.basic.service.BaseService;
-import com.oo.businessplan.quzrtz.pojo.SysTaskCronJob;
+import com.oo.businessplan.quartz.pojo.SysTaskCronJob;
 
 
 /**

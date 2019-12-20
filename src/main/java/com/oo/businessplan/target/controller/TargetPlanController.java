@@ -2,6 +2,7 @@ package com.oo.businessplan.target.controller;
 
 import java.util.List;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,8 +20,10 @@ import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.valid.ValidService;
+import com.oo.businessplan.target.service.PlanActionService;
 import com.oo.businessplan.target.service.TargetPlanService;
 import com.oo.businessplan.target.service.TargetService;
+import com.oo.businessplan.target.pojo.entity.PlanAction;
 import com.oo.businessplan.target.pojo.entity.Target;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
 import com.oo.businessplan.target.pojo.entity.TargetPlanAlterRecord;
@@ -40,6 +43,9 @@ public class TargetPlanController extends BaseController{
 
     @Autowired
     TargetPlanService targetPlanService;
+    
+    @Autowired
+    private PlanActionService planActionService;
     
     @Autowired
     ValidService validUtil;
@@ -206,5 +212,26 @@ public class TargetPlanController extends BaseController{
         plan.setCreator(currentAdminId(request));
         plan.setDeleteReason(reason);
         return response.deleteResult(targetPlanService.delete(plan));
+    }
+    
+    @IgnoreSecurity
+    @GetMapping(value = "/test.do")
+    public ResponseResult<TargetPlan> text(HttpServletRequest request) {
+        ResponseResult<TargetPlan> response = new ResponseResult<>();
+        
+        System.out.println("开始执行计划");
+		List<PlanAction> actions = planActionService.getActionLastDay(null, PlanAction.WAITSTART, PlanAction.UNSTART, PlanAction.ACTIONING);
+		if (actions != null && actions.size() > 0) {
+			for (PlanAction action : actions) {
+				if (action.getStartTime() == null) {
+					action.setResult(PlanAction.GIVEUP);
+				} else if (action.getEndTime() == null) {
+					action.setResult(PlanAction.UNCOMPLETE);
+				}
+			}
+			planActionService.batchUpdateResult(actions);
+		}
+        
+        return response.success();
     }
 }

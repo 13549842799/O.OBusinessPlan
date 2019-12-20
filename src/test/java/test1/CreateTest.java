@@ -11,6 +11,12 @@ public class CreateTest {
 	public static void main(String[] args) {
 		//System.out.println(IdEntity.class.getSuperclass() == Object.class);
 		System.out.println(Integer.parseInt("01"));
+		
+		try {
+			Class<?> cls = Class.forName("test1.CreateTest");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

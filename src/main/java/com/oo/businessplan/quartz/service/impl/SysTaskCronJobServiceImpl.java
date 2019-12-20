@@ -1,4 +1,4 @@
-package com.oo.businessplan.quzrtz.service.impl;
+package com.oo.businessplan.quartz.service.impl;
 
 import javax.annotation.PostConstruct;
 
@@ -28,9 +28,9 @@ import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.exception.AddErrorException;
 import com.oo.businessplan.common.util.StringUtil;
-import com.oo.businessplan.quzrtz.mapper.SysTaskCronJobMapper;
-import com.oo.businessplan.quzrtz.service.SysTaskCronJobService;
-import com.oo.businessplan.quzrtz.pojo.SysTaskCronJob;
+import com.oo.businessplan.quartz.mapper.SysTaskCronJobMapper;
+import com.oo.businessplan.quartz.pojo.SysTaskCronJob;
+import com.oo.businessplan.quartz.service.SysTaskCronJobService;
 
 
 /**
@@ -149,7 +149,7 @@ public class SysTaskCronJobServiceImpl extends BaseServiceImpl<SysTaskCronJob> i
 		//新建触发器
 		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(triggerKey).forJob(jobKey)
 				.withSchedule(CronScheduleBuilder.cronSchedule(cronExpr).withMisfireHandlingInstructionDoNothing()).build();
-	    
+	    System.out.println("创建<" + job.getJobName() + ">定时任务");
 		scheduler.scheduleJob(jobDetail, cronTrigger);
 	 
 	}

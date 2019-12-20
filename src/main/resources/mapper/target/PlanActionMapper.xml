@@ -84,6 +84,30 @@
             </trim>
         )
     </insert>
+    
+    <insert id="batchAdd" useGeneratedKeys="true" keyProperty="id" parameterType="planAction">
+        INSERT INTO plan_action
+        (
+                result,
+                targetPlanId,
+                actionDate,
+                num
+        )
+        VALUES 
+        <foreach collection="list" item="l" separator=",">
+        (#{l.result},#{l.targetPlanId},#{l.actionDate},#{l.num})
+        </foreach>
+    </insert>
+    
+    <update id="batchUpdateResult">
+        UPDATE plan_action 
+            SET result = CASE id 
+        <foreach collection="list" item="l">
+            WHEN #{l.id} THEN #{l.result}
+        </foreach>
+        END
+        WHERE id IN <foreach collection="list" item="l" open="(" close=")" separator=",">#{l.id}</foreach>
+    </update>
 
     <update id="delete" >
         UPDATE plan_action set delflag = #{delflag}
@@ -165,6 +189,19 @@
         AND pl.`targetPlanId` = #{targetPlanId}
         </if>
     </trim>
+    </select>
+    
+    <select id="getActionLastDay" resultType="planAction">
+        SELECT
+        <include refid="base_column"/>
+        FROM plan_action pl
+        WHERE
+            pl.targetPlanId = IFNULL(#{targetPlanId},pl.targetPlanId)
+        AND
+            TO_DAYS(actionDate) = TO_DAYS(DATE_SUB(NOW(), INTERVAL 1 day))
+        <if test="results != null">
+        AND pl.result in (${results})
+        </if>
     </select>
 
 </mapper>

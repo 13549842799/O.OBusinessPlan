@@ -80,6 +80,8 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	 */
 	private String deleteReason;
 	
+	private int count = 0;
+	
 	/**
 	 * 当前将要或正在执行的计划动作
 	 */
@@ -173,12 +175,28 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.startDate = startDate;
 	}
 
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
 	public PlanAction getAction() {
 		return action;
 	}
 
 	public void setAction(PlanAction action) {
 		this.action = action;
+	}
+	
+	/**
+	 * 计划目前动作的次数
+	 * @return
+	 */
+	public int countAddOne() {
+		return ++this.count;
 	}
 
 	@Override

@@ -49,4 +49,10 @@ public interface TargetPlanMapper extends BaseMapper<TargetPlan> {
 	 * @return
 	 */
 	public List<TargetPlan> unCompleteList(@Param("creator")int creator, @Param("delflag")byte delflag);
+
+	/**
+	 * 批量更新count
+	 * @param list
+	 */
+	public void updateCountBatch(List<TargetPlan> list);
 }

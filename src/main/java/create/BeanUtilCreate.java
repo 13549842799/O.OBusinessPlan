@@ -2,7 +2,7 @@ package create;
 
 import com.oo.businessplan.article.pojo.entity.Portion;
 import com.oo.businessplan.article.pojo.entity.Section;
-import com.oo.businessplan.quzrtz.pojo.SysTaskCronJob;
+import com.oo.businessplan.quartz.pojo.SysTaskCronJob;
 import com.oo.businessplan.target.pojo.entity.PlanAction;
 import com.oo.businessplan.target.pojo.entity.Target;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
@@ -38,6 +38,6 @@ public class BeanUtilCreate {
 		beanUtils.createBeanServiceImpl(c);
 		beanUtils.createBeanMapper(c);
 		beanUtils.createBeanXml(c, idName, type);
-
+		
 	}
 }

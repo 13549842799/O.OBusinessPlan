@@ -1,18 +1,12 @@
 package com.oo.businessplan.target.service.impl;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,7 +43,7 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
      * 然后通过时间的单位和周期计算筛选出当天需要进行的计划。
      */
 	@Override
-	public List<TargetPlan> getWillExecutePlanListInDay(int creator) {
+	public List<TargetPlan> getWillExecutePlanListInDay(Integer creator) {
 		
 		List<TargetPlan> willPlans = new LinkedList<>();
 		
@@ -75,26 +69,30 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 		    willPlans.add(plan);
 		}
 		
-		if (willPlans.size() == 0) {
+		if (willPlans.size() == 0 || creator == null) { //如果creator == null，则表示调用此方法的是定时任务，无需要判断action
 		    return willPlans;
 		}
-		Date now  = new Date();
-		for (TargetPlan plan : willPlans) {
+		//为将要执行的计划设置动作，如果这个动作已经完成了或放弃了，则查找下一个
+		Iterator<TargetPlan> it = willPlans.iterator();
+		while (it.hasNext()) {
+			TargetPlan plan = it.next();
 			PlanAction action = actionMapper.getLaststActionToday(plan.getId());
+			
 			if (action == null) {
 				action = new PlanAction();
 				action.setTargetPlanId(plan.getId());
-				action.setActionDate(now);
-				action.setResult(plan.getExecutionTime().before(now) ? PlanAction.WAITSTART : PlanAction.UNSTART);
+				action.setResult(PlanAction.WAITSTART);
+				action.setActionDate(new Date());
 				try {
 					actionMapper.add(action);
 				} catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
 					e.printStackTrace();
-					break;
 				}
 			}
+			
 			plan.setAction(action);
-			if (action != null && (action.getResult() > 2) ) {
+			if (action.getResult() > 2) {
+				it.remove();
 				continue;
 			}
 			break;
@@ -181,6 +179,11 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 	public List<TargetPlan> unCompleteList(int creator) {
 		
 		return null;
+	}
+
+	@Override
+	public void updateCountBatch(List<TargetPlan> willPlan) {
+		targetPlanMapper.updateCountBatch(willPlan);
 	}
 	
 	

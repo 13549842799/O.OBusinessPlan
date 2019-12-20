@@ -1,7 +1,7 @@
-package com.oo.businessplan.quzrtz.mapper;
+package com.oo.businessplan.quartz.mapper;
 
 import com.oo.businessplan.basic.mapper.BaseMapper;
-import com.oo.businessplan.quzrtz.pojo.SysTaskCronJob;
+import com.oo.businessplan.quartz.pojo.SysTaskCronJob;
 
 
 /**
