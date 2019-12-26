@@ -38,7 +38,7 @@ public interface LabelMapper extends BaseMapper<Label> {
 	 * @param targetType
 	 * @return
 	 */
-	Set<String> frequentlyUsedLabelNames(@Param("creator")Integer creator, @Param("targetType")Byte targetType, @Param("delfalg")byte delfalg, @Param("count")int count);
+	Set<String> frequentlyUsedLabelNames(@Param("creator")Integer creator, @Param("targetType")Byte targetType, @Param("delflag")byte delfalg, @Param("count")int count);
 	
 	/**
 	 * 获取分类的标签

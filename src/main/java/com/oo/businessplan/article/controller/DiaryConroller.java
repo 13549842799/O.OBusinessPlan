@@ -105,7 +105,7 @@ public class DiaryConroller extends BaseController{
 		
 		if (diary.getId() == null) {
 		    diary.setCreator(adminId);
-			diaryService.add(diary);			
+			diaryService.add(diary, Integer.class);			
 		} else {
 	        if(diaryService.update(diary) != 1) {
 		        return response.fail("更新失败");
