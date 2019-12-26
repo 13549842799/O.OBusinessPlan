@@ -206,13 +206,14 @@
     
     <select id="getListWithLabels" resultMap="DiaryWithLabelMap" parameterType="diaryForm">
     SELECT 
-        <include refid="base_column"/>,cl.name as cl_name
+        <include refid="base_column"/>,cl.name as cl_name, GROUP_CONCAT(la.`name`) as labels
         FROM diary di
         LEFT JOIN classify cl ON di.classify = cl.id
-        LEFT JOIN label la ON FIND_IN_SET(la.id, di.labels)
+        LEFT JOIN label la ON di.id = la.targetId AND la.targetType = 1
         WHERE 
     <include refid="listBase" />
-     ORDER BY di.`date` desc
+    GROUP BY di.id 
+    ORDER BY di.`date` desc
     </select>
     
     <sql id="listBase">
