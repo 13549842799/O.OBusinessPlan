@@ -1,5 +1,6 @@
 package com.oo.businessplan.quartz.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oo.businessplan.basic.entity.DeleteAbleEntity;
 
 /**
@@ -40,6 +41,7 @@ public class SysTaskCronJob extends DeleteAbleEntity<Integer>{
 	// Job编号
 	private String jobNumber;
  
+	@JsonProperty(defaultValue="false")
 	// Job是否启用
 	private Boolean enabled;
 	

@@ -53,7 +53,7 @@ public class Classify extends CreatorEntity<Integer> implements Serializable{
 	
 	private Byte type; // 1-系统  2-自定义
 	
-	private Byte childType; // 1-日记 2-总结 3-备忘  4-灵感 5-小说
+	private Byte childType; // 1-日记 2-总结   4-小说
 	
 	private int count = 0; //拥有文章数
 	

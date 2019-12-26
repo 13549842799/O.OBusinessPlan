@@ -1,6 +1,8 @@
 package com.oo.businessplan.article.controller;
 
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,14 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Diary;
+import com.oo.businessplan.article.pojo.entity.Label;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
 import com.oo.businessplan.article.service.DiaryService;
+import com.oo.businessplan.article.service.LabelService;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.common.constant.ArticleConstant.ArticleType;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
-import com.oo.businessplan.common.exception.AddErrorException;
 import com.oo.businessplan.common.exception.AuthorityNotEnoughException;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
@@ -39,6 +42,9 @@ public class DiaryConroller extends BaseController{
 	
 	@Autowired
 	private DiaryService diaryService;
+	
+	@Autowired
+	private LabelService labelService;
 	
 	@GetMapping("/s/{id}/diary.re")
 	@IgnoreSecurity
@@ -93,17 +99,23 @@ public class DiaryConroller extends BaseController{
 		if (StringUtil.isEmpty(diary.getTitle())) {
 			return response.fail("标题不能为空");
 		}
+
 		Integer adminId = currentAdminId(request);
 		diary.setModifier(adminId);
+		
 		if (diary.getId() == null) {
-			diary.setCreator(adminId);
+		    diary.setCreator(adminId);
 			diaryService.add(diary);			
-		 } else {
-			 if(diaryService.update(diary) != 1) {
-				 return response.fail("更新失败");
-			 }
-		 }
-		return response.success(diaryService.getById(diary));
+		} else {
+	        if(diaryService.update(diary) != 1) {
+		        return response.fail("更新失败");
+			}
+		}
+		
+		labelService.batchAddOrUpdate(diary.getLabelList(), diary, ArticleType.DIARY);
+		Diary newDiary = diaryService.getCompleteDiary(diary.getId());
+		
+		return response.success(newDiary);
 		
 	}
 	

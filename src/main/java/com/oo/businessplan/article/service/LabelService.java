@@ -1,6 +1,11 @@
 package com.oo.businessplan.article.service;
 
+import com.oo.businessplan.basic.entity.CreatorEntity;
 import com.oo.businessplan.basic.service.BaseService;
+
+import java.util.List;
+import java.util.Set;
+
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.article.pojo.entity.Label;
 
@@ -35,4 +40,14 @@ public interface LabelService extends BaseService<Label> {
 	 * @return
 	 */
 	int hasUseCount(int id);
+	
+	/**
+	 * 
+	 * @param labels
+	 * @param target
+	 * @param targetType
+	 */
+	void batchAddOrUpdate(List<Label> labels, CreatorEntity<Integer> target, byte targetType);
+	
+	Set<String> frequentlyUsedLabelNames(Label label);
 }

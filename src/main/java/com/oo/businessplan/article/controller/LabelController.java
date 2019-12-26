@@ -1,6 +1,7 @@
 package com.oo.businessplan.article.controller;
 
 import java.util.List;
+import java.util.Set;
 import java.sql.Timestamp;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +52,20 @@ public class LabelController extends BaseController{
         label.setAdminId(currentAdminId(request));
         List<Label> labels = labelService.getList(label);
         return response.success(labels);
+    }
+    
+    @IgnoreSecurity
+    @GetMapping(value = "/frequently-used.re")
+    public ResponseResult<Set<String>> frequentlyUsedList(
+    		HttpServletRequest request, @RequestParam(value="type", required = false) Byte type) {
+        ResponseResult<Set<String>> response = new ResponseResult<>();
+        Label label = new Label(null, DeleteFlag.VALID.getCode());
+
+        label.setCreator(currentAdminId(request));
+        label.setTargetType(type);
+        Set<String> names = labelService.frequentlyUsedLabelNames(label);
+        
+        return response.success(names);
     }
     
     @IgnoreSecurity

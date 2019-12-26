@@ -29,6 +29,16 @@ public class Label extends CreatorEntity<Integer> {
 	private String name;
 	
 	private Integer adminId;
+	
+	/**
+	 * 1-日记 4-小说
+	 */
+	private Byte targetType;
+	
+	/**
+	 * 关联的实体的id 日记,小说,
+	 */
+	private Integer targetId;
 
 	public String getName() {
 		return name;
@@ -46,6 +56,26 @@ public class Label extends CreatorEntity<Integer> {
 		this.adminId = adminId;
 	}
 	
+	public Byte getTargetType() {
+		return targetType;
+	}
+
+
+	public void setTargetType(Byte targetType) {
+		this.targetType = targetType;
+	}
+
+
+	public Integer getTargetId() {
+		return targetId;
+	}
+
+
+	public void setTargetId(Integer targetId) {
+		this.targetId = targetId;
+	}
+
+
 	/**
 	 * 为前端提供check属性初始值
 	 * @return

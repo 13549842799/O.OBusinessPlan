@@ -23,6 +23,7 @@
         <collection property="labelList" ofType="label">
             <id property="id" column="l_id"/>
             <result property="name" column="l_name"/>
+            <result property="delflag" column="l_delfalg"/>
         </collection>
     </resultMap>
 
@@ -192,16 +193,15 @@
     
     <select id="getCompleteDiaryById" resultMap="DiaryWithLabelMap" >
     SELECT
-         <include refid="base_column"/>, la.id as l_id, la.name as l_name, cl.name as cl_name
+         <include refid="base_column"/>, la.id as l_id, la.name as l_name, cl.name as cl_name, la.delflag as l_delfalg
     FROM diary di
     LEFT JOIN classify cl ON di.classify = cl.id
-    LEFT JOIN (
-        SELECT id, name FROM label WHERE delflag = #{delflag, jdbcType=TINYINT}
-    ) la ON FIND_IN_SET(la.id, di.labels)
+    LEFT JOIN label la ON di.id = la.targetId AND la.targetType = 1 AND la.delflag = 1
     WHERE 
         di.id = #{id}
     AND di.delflag = #{delflag, jdbcType=TINYINT}
     AND (cl.delflag = #{delflag, jdbcType=TINYINT} OR cl.delflag IS NULL)
+    ORDER BY di.`date` desc
     </select>
     
     <select id="getListWithLabels" resultMap="DiaryWithLabelMap" parameterType="diaryForm">
@@ -212,7 +212,7 @@
         LEFT JOIN label la ON FIND_IN_SET(la.id, di.labels)
         WHERE 
     <include refid="listBase" />
-        
+     ORDER BY di.`date` desc
     </select>
     
     <sql id="listBase">

@@ -54,8 +54,9 @@ public class SysTaskCronJobController extends BaseController{
         ResponseResult<SysTaskCronJob> response = new ResponseResult<>();
         
         if (job.getId() == null) {
-        	 sysTaskCronJobService.add(job, Integer.class);
-        	 return response.success(job);
+            job.setDelflag(DeleteFlag.VALID.getCode());
+        	sysTaskCronJobService.add(job, Integer.class);
+        	return response.success(job);
         } else {
         	return response.updateResult(sysTaskCronJobService.update(job));
         }   

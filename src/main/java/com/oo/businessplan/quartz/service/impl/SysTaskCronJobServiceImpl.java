@@ -20,7 +20,10 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.stereotype.Service;
@@ -39,7 +42,7 @@ import com.oo.businessplan.quartz.service.SysTaskCronJobService;
  * @version 创建时间：2019-12-11 17:49:54
  */
 @Service("sysTaskCronJobService")
-public class SysTaskCronJobServiceImpl extends BaseServiceImpl<SysTaskCronJob> implements SysTaskCronJobService {
+public class SysTaskCronJobServiceImpl extends BaseServiceImpl<SysTaskCronJob> implements SysTaskCronJobService, ApplicationContextAware {
 	
 	/**
 	* 基于cron调度的Job的默认组名
@@ -48,6 +51,8 @@ public class SysTaskCronJobServiceImpl extends BaseServiceImpl<SysTaskCronJob> i
 
     @Autowired
     SysTaskCronJobMapper sysTaskCronJobMapper;
+    
+    private ApplicationContext context;
     
     private volatile Scheduler scheduler ;
     
@@ -216,7 +221,6 @@ public class SysTaskCronJobServiceImpl extends BaseServiceImpl<SysTaskCronJob> i
      * @throws ClassNotFoundException 
      */
 	public void reSetScheduler(SysTaskCronJob newJob, SysTaskCronJob oldJob) throws SchedulerException, ClassNotFoundException {
-    	
         //如果在状态没有修改的情况下，如果当前状态为停止或者表达式没有修改，则不更新或者创建时钟任务
         if (newJob.getEnabled().equals(oldJob.getEnabled()) 
         		&& (!newJob.getEnabled() || newJob.getCron().trim().equals(oldJob.getCron().trim())) && newJob.getDelflag() == DeleteFlag.DELETE.getCode() ) {
@@ -242,9 +246,13 @@ public class SysTaskCronJobServiceImpl extends BaseServiceImpl<SysTaskCronJob> i
         Trigger trigger = scheduler.getTrigger(triggerKey);//获取对应触发器trigger
 
         // trigger如果为null则说明scheduler中并没有创建该任务
-        if (trigger == null) {        	
+        if (trigger == null) {
         	this.newJobAndNewCronTrigger(newJob, scheduler, jobKey);
         } else { // 不为null则说明scheduler中有创建该任务,更新即可
+        	if (!newJob.getJobParams().equals(oldJob.getJobParams())) {
+        		scheduler.getJobDetail(jobKey).getJobDataMap().clear();
+        		scheduler.getJobDetail(jobKey).getJobDataMap().putAll(acceptParams(newJob.getJobParams()));
+        	}
         	updateCronTriggerOfJob(newJob, scheduler, jobKey, triggerKey);
         }
     }
@@ -338,7 +346,7 @@ public class SysTaskCronJobServiceImpl extends BaseServiceImpl<SysTaskCronJob> i
     	
     	for(int i = 0; i < arr.length; i++) {
     		String[] p = arr[i].split("/");
-    		if (p.length != 2 || p.length != 3) {
+    		if (p.length != 2 && p.length != 3) {
     			continue;
     		}
     		switch (p[0]) {
@@ -369,12 +377,13 @@ public class SysTaskCronJobServiceImpl extends BaseServiceImpl<SysTaskCronJob> i
                 || (tk1.getGroup() != null && tk1.getGroup().equals(tk2.getGroup())));
     }
     
-    @Bean
-    public ApplicationObjectSupport getApplicationContextBean() {
-    	return new ApplicationObjectSupport() {};
-    }
-    
     public Object getBean(String beanName) {
-    	return this.getApplicationContextBean().getApplicationContext().getBean(beanName);
+    	return context.getBean(beanName);
     }
+
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.context = applicationContext;
+	}
 }
