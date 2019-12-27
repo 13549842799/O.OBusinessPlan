@@ -13,13 +13,13 @@
         <result property="content" column="content"/>
         <result property="classify" column="classify"/>
         <result property="date" column="date"/>
-        <result property="labels" column="labels"/>
         <result property="status" column="status"/>
         <result property="source" column="source"/>
     </resultMap>
     
     <resultMap id="DiaryWithLabelMap" type="diaryForm" extends="DiaryMap">
         <result property="classifyName" column="cl_name"/>
+        <result property="labels" column="labels"/>
         <collection property="labelList" ofType="label">
             <id property="id" column="l_id"/>
             <result property="name" column="l_name"/>
@@ -28,7 +28,7 @@
     </resultMap>
 
      <sql id="base_column">
-        di.id,di.delflag,di.creator,di.createTime,di.modifier,di.modifierTime,di.title,di.content,di.classify,di.date,di.labels, di.status, di.source
+        di.id,di.delflag,di.creator,di.createTime,di.modifier,di.modifierTime,di.title,di.content,di.classify,di.date, di.status, di.source
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
