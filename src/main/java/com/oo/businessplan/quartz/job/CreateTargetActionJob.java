@@ -62,7 +62,7 @@ public class CreateTargetActionJob extends QuartzJobBean {
     						
     			action = new PlanAction();
     			action.setTargetPlanId(plan.getId());
-    			action.setResult(PlanAction.WAITSTART);
+    			action.setResult(PlanAction.UNSTART);
     			action.setActionDate(today);
     			action.setNum(plan.countAddOne());
     			actions.add(action);

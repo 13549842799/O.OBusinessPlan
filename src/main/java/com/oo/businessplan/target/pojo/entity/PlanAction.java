@@ -8,7 +8,7 @@ import com.oo.businessplan.basic.entity.IdEntity;
 public class PlanAction extends IdEntity<Long> {
 	
 	/**
-	 * 不可执行
+	 * 不可执行  ，当动作被生成时为不可知性，当时间到达该动作执行时间后，则改变等待执行，点击进行后变为正在执行
 	 */
 	public static final byte UNSTART = 0; //不可执行
 	
