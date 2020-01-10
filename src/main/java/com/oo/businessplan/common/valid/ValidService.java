@@ -134,7 +134,7 @@ public final class ValidService {
 	}
 	
 	/**
-	 * 
+	 * valid the field about is bigger or is smaller, or is null ?
 	 * @param entity
 	 * @param type  if type is true, the method will filter the field which accept, otherwise, 他和method will rtain the field which accept
 	 * @param fields
@@ -205,7 +205,7 @@ public final class ValidService {
 					minResultMess = meta.value()+"最小长度是" + meta.max() + "字" ;
 					break;
 				case 2:		
-					minResult = validMin(val, meta.max(), 2);
+					minResult = validMin(val, meta.min(), 2);
 					minResultMess = meta.value()+"最小值不能小于" + meta.max() ;
 					break;
 			    }

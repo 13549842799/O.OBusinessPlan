@@ -2,7 +2,10 @@ package com.oo.businessplan.target.controller;
 
 import java.util.List;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.inject.internal.cglib.core.Local;
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.pageModel.ResponseResult;
@@ -134,7 +139,6 @@ public class TargetPlanController extends BaseController{
         plan.setId(id);
         plan.setCreator(currentAdminId(request));
         plan = targetPlanService.getById(plan);
-        
         return response.success(plan);
     }
     
@@ -148,14 +152,44 @@ public class TargetPlanController extends BaseController{
         if (StringUtil.isNotEmpty(result)) {
         	return response.fail(result);
         }
-        if (plan.getStartDate() == null || plan.getStartDate().before(new Date())) {
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        if (plan.getStartDate() == null || plan.getStartDate().compareTo(calendar.getTime()) < 0) {
         	return response.fail("请选择合理的开始时间（在当前时间之后）");
         }
-        plan.setCreator(currentAdminId(request));
-        plan.setCreateTime(new Timestamp(new Date().getTime()));
-        targetPlanService.add(plan, Integer.class);
-                
-        return response.success(plan);
+        if (plan.getId() == null) {
+        	Date now = new Date();
+            calendar.setTime(plan.getStartDate());           
+            String startStr = sdf.format(plan.getStartDate()), nowStr = sdf.format(now);
+        	boolean needADDAction = startStr.equals(nowStr) && plan.getExecutionTime().after(now); //需要创建一个动作
+        	plan.setCreator(currentAdminId(request));
+            plan.setCreateTime(new Timestamp(new Date().getTime()));
+            plan.setCount(needADDAction ? 1 : 0);
+            targetPlanService.add(plan, Integer.class);
+            
+            if (needADDAction) {
+            	PlanAction action = new PlanAction();
+            	action.setActionDate(now);
+            	action.setTargetPlanId(plan.getId());
+            	action.setResult(PlanAction.UNSTART);
+            	action.setNum(1);
+            	planActionService.add(action, Integer.class);
+            	
+            	TargetPlan p = new TargetPlan();
+            	p.setId(plan.getId());
+            	p.setCount(1);
+            	targetPlanService.update(p);           	
+            	plan.setAction(action);
+            }
+            return response.success(plan);
+        }      
+       
+        return response.updateResult(targetPlanService.update(plan));
     }
     
     /**

@@ -50,6 +50,9 @@
                 <if test="content != null ">
                 content,
                 </if>
+                <if test="planName != null ">
+                planName,
+                </if>
                 <if test="executionTime != null ">
                 executionTime,
                 </if>
@@ -71,6 +74,9 @@
                 <if test="creator != null ">
                 creator,
                 </if>
+                <if test="createTime != null ">
+                createTime,
+                </if>
             </trim>
         )
         VALUES (
@@ -80,6 +86,9 @@
                 </if>
                 <if test="content != null ">
                 #{content},
+                </if>
+                <if test="planName != null ">
+                #{planName},
                 </if>
                 <if test="executionTime != null ">
                 #{executionTime},
@@ -101,6 +110,9 @@
                 </if>
                 <if test="creator != null ">
                 #{creator},
+                </if>
+                <if test="createTime != null ">
+                #{createTime},
                 </if>
             </trim>
         )
@@ -130,10 +142,13 @@
                 period = #{period},
                 </if>
                 <if test="unit != null ">
-                unit = #{unit}
+                unit = #{unit},
                 </if>
-                <if test="count != count ">
-                count = #{count}
+                <if test="startDate != null">
+                startDate = #{startDate},
+                </if>
+                <if test="planName != null">
+                planName = #{planName},
                 </if>
             </trim>
          WHERE id = #{id}

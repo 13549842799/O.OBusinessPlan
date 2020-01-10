@@ -178,7 +178,7 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 	@Override
 	public List<TargetPlan> unCompleteList(int creator) {
 		
-		return null;
+		return targetPlanMapper.unCompleteList(creator, DeleteFlag.VALID.getCode());
 	}
 
 	@Override

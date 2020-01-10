@@ -5,10 +5,14 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oo.businessplan.basic.entity.CreatorEntity;
+import com.oo.businessplan.common.valid.EnableCheckOut;
 import com.oo.businessplan.common.valid.FieldMeta;
 
+@EnableCheckOut
 public class TargetPlan extends CreatorEntity<Integer>{
 	
 	/**
@@ -59,6 +63,10 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	@FieldMeta(value="周期")
 	private Integer period;
 	
+	public static final byte DAY = 2;
+	public static final byte WEEK = 3;
+	public static final byte MONTH = 4;
+	
 	/**
 	 * 单位 1-小时（弃用）  2-天 3-周  4-月
 	 */
@@ -108,6 +116,7 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.period = period;
 	}
 	
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="HH:mm")
 	public Time getExecutionTime() {
 		return executionTime;
@@ -117,6 +126,7 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.executionTime = executionTime;
 	}
 	
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="HH:mm")
 	public Time getEndTime() {
 		return endTime;
@@ -132,6 +142,10 @@ public class TargetPlan extends CreatorEntity<Integer>{
 
 	public void setUnit(Byte unit) {
 		this.unit = unit;
+	}
+	
+	public String getUnitName() {
+		return this.unit == DAY ? "天" : (this.unit == WEEK ? "周" : "月") ;
 	}
 
 	public List<PlanAction> getActions() {
@@ -166,7 +180,8 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.deleteReason = deleteReason;
 	}
 
-	@JsonFormat(pattern="YYYY年MM月dd日")
+	//后面的timezone必须要加,否则日期会少一天
+	@JsonFormat(pattern="yyyy年MM月dd日",timezone="GMT+8")
 	public Date getStartDate() {
 		return startDate;
 	}

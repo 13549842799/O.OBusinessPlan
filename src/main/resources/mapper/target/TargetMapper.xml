@@ -16,14 +16,16 @@
         <result property="expectFinishTime" column="expectFinishTime"/>
         <result property="realFinishTime" column="realFinishTime"/>
         <result property="alert" column="alert"/>
-        <collection property="plans" ofType="targetplan">
-            <id property="id" column="id"/>
+        <collection property="plans" ofType="targetPlan">
+            <id property="id" column="tp_id"/>
             <result property="delflag" column="delflag"/>
-            <result property="content" column="content"/>
+            <result property="planName" column="planName"/>
+            <result property="content" column="tp_content"/>
             <result property="executionTime" column="executionTime"/>
             <result property="endTime" column="endTime"/>
             <result property="period" column="period"/>
             <result property="unit" column="unit"/>
+            <result property="count" column="tp_count"/>
         </collection>
     </resultMap>
 
@@ -185,10 +187,11 @@
          WHERE id = #{id}
     </update>
 
-    <select id="getById" resultType="target" parameterType="target">
+    <select id="getById" resultMap="TargetMap" parameterType="target">
         SELECT 
-        <include refid="base_column"/>
+        <include refid="base_column"/>, tp.id as tp_id, tp.planName as planName, tp.content as tp_content, tp.period as period, tp.unit as unit, tp.count as tp_count, tp.startDate as startDate
         FROM target ta
+        LEFT JOIN target_plan tp on ta.id = tp.targetId and tp.delflag = #{delflag}
         WHERE ta.id = #{id} AND ta.delflag = #{delflag}
     </select>
 
