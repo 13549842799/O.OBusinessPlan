@@ -42,11 +42,14 @@ public class Classify extends CreatorEntity<Integer> implements Serializable{
 	 */
 	public static final byte FinalReport = 2;
 	
+	public static final byte NOVEL = 4;
+	
 	public static final Map<Byte, String> mapperTable = new HashMap<>();
 	
 	{
 		mapperTable.put(DIARY, "diary");
 		mapperTable.put(FinalReport, "finalreport");
+		mapperTable.put(NOVEL, "novel");
 	}
 	
 	private String name;
