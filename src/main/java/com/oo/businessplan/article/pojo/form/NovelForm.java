@@ -29,6 +29,8 @@ public class NovelForm extends Novel {
 	private String classifyName;
 	
 	private SectionForm lastetSection;
+	
+	public NovelForm() {}
 
 	@JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
 	@Override

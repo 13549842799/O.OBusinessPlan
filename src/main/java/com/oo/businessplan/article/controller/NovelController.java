@@ -154,6 +154,7 @@ public class NovelController extends BaseController{
         ResponseResult<PageInfo<NovelForm>> response = new ResponseResult<>();
         form.setDelflag(DeleteFlag.VALID.getCode());
         form.setCreator(currentAdminId(request));
+        System.out.println(currentAdminId(request));
         PageInfo<NovelForm> page = novelService.getPage(form);    
         return response.success(page);
     }

@@ -31,6 +31,7 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 	
 	private Integer sectionsNum;
 	
+	private Long lastetSectionId; //最新的章节
 
 	public Novel() {
 		super();
@@ -106,6 +107,14 @@ public class Novel extends AbstractArticle<Integer> implements Serializable{
 
 	public void setSectionsNum(Integer sectionsNum) {
 		this.sectionsNum = sectionsNum;
+	}
+
+	public Long getLastetSectionId() {
+		return lastetSectionId;
+	}
+
+	public void setLastetSectionId(Long lastetSectionId) {
+		this.lastetSectionId = lastetSectionId;
 	}
 
 	

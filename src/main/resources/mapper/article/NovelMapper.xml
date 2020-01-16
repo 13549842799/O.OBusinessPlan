@@ -13,11 +13,11 @@
         <result property="content" column="content"/>
         <result property="classify" column="classify"/>
         <result property="cover" column="cover"/>
-        <result property="labels" column="labels"/>
         <result property="wordsNum" column="wordsNum"/>
         <result property="novelState" column="novelState"/>
         <result property="portionsNum" column="portionsNum"/>
         <result property="sectionsNum" column="sectionsNum"/>
+        <result property="lastetSectionId" column="lastetSectionId"/>
     </resultMap>
     
     <resultMap id="ExpandMap" type="novelForm" extends="NovelMap">
@@ -35,7 +35,7 @@
     </resultMap>
 
      <sql id="base_column">
-        no.id,no.delflag,no.creator,no.createTime,no.modifier,no.modifierTime,no.title,no.content,no.classify,no.cover,no.labels,no.wordsNum, no.novelState, no.portionsNum,no.sectionsNum
+        no.id,no.delflag,no.creator,no.createTime,no.modifier,no.modifierTime,no.title,no.content,no.classify,no.cover,no.wordsNum, no.novelState, no.portionsNum,no.sectionsNum
      </sql>
      
      <sql id="expand_column">
@@ -43,7 +43,8 @@
      </sql>
      
      <sql id="expand_list_column">
-        <include refid="base_column" />, ad.nikename as nike_name, cl.id as cl_id, cl.name as cl_name
+        <include refid="base_column" />, ad.nikename as nike_name, cl.id as cl_id, cl.name as cl_name,
+        GROUP_CONCAT(la.`name`) as labels,se.id as se_id,se.title as se_title,se.createTime as se_createTime
      </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
@@ -244,7 +245,9 @@
         <include refid="expand_list_column"/>
         FROM novel no
         LEFT JOIN classify cl ON no.classify = cl.id
+        LEFT JOIN label la ON no.id = la.targetId AND la.targetType = 4
         LEFT JOIN admin ad ON no.creator = ad.id
+        LEFT JOIN section se ON no.lastetSectionId = se.id
         WHERE 
     <trim prefixOverrides="AND">
         <if test="creator != null ">
@@ -271,7 +274,11 @@
         <if test="novelState != null ">
         AND no.`novelState` = #{novelState}
         </if>
+        <if test="labels != null">
+        AND LOCATE(la.`name`, #{labels}) > 0
+        </if>
     </trim>
+        GROUP BY no.id
         ORDER BY no.createTime desc
     </select>
 
