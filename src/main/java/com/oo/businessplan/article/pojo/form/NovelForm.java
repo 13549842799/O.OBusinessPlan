@@ -131,14 +131,17 @@ public class NovelForm extends Novel {
 	
 	
 	public String getStateName() {
+		if (this.getNovelState() == null) {
+			this.setNovelState(Novel.UNSTART);
+		}
 		switch (this.getNovelState()) {
-		case 1:
+		case 0:
 			return "未开始";
-		case 2:
+		case 1:
 			return "连载中";
-		case 3:
+		case 2:
 			return "没有更新";
-		case 4:
+		case 3:
 			return "完结";
 		}
 		return "";

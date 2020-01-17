@@ -23,6 +23,7 @@
     <resultMap id="ExpandMap" type="novelForm" extends="NovelMap">
         <result property="createNikeName" column="nike_name" />
         <result property="classifyName" column="cl_name" />
+        <result property="labels" column="labels" />
         <association property="lastetSection" javaType="sectionForm">
             <id property="id" column="se_id"/>
             <result property="title" column="se_title"/>
@@ -31,6 +32,7 @@
         <collection property="labelList" ofType="label">
             <id property="id" column="la_id"/>
             <result property="name" column="la_name"/>
+            <result property="delflag" column="la_delflag"/>
         </collection>
     </resultMap>
 
@@ -39,7 +41,7 @@
      </sql>
      
      <sql id="expand_column">
-        <include refid="base_column" />, la.id as la_id, la.name as la_name,ad.nikename as nike_name, cl.name as cl_name,se_id,se_title,se_createTime
+        <include refid="base_column" />, la.id as la_id, la.name as la_name, la.delflag as la_delflag,ad.nikename as nike_name, cl.name as cl_name,se_id,se_title,se_createTime
      </sql>
      
      <sql id="expand_list_column">
@@ -210,7 +212,7 @@
         LEFT JOIN classify cl ON no.classify = cl.id
         LEFT JOIN admin ad ON no.creator = ad.id
         LEFT JOIN (SELECT id as se_id, title as se_title, createTime as se_createTime, novelId FROM section WHERE novelId = #{id} ORDER BY createTime desc LIMIT 1) se ON se.novelId = no.id
-        WHERE no.id = #{id} AND no.delflag = #{delflag}
+        WHERE no.id = #{id} AND no.delflag = #{delflag} AND la.delflag = #{delflag}
         <if test="creator != null">
         AND no.creator = IFNULL(#{creator}, no.creator)
         </if>
