@@ -35,7 +35,8 @@ public class TestNovel extends BaseTest {
         form.setPageSize(10);
 		PageHelper.startPage(form.getPageNum(), form.getPageSize());
 		List<NovelForm> list = nm.getExpandList(form);
-
 		PageInfo<NovelForm> page = new PageInfo<>(list);
+		
+		System.out.println(page);
 	}
 }
