@@ -32,6 +32,7 @@ import com.oo.businessplan.article.service.PortionService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
+import com.google.inject.internal.Objects;
 import com.oo.businessplan.article.pojo.entity.Novel;
 import com.oo.businessplan.article.pojo.entity.Portion;
 import com.oo.businessplan.article.pojo.form.NovelForm;
@@ -59,6 +60,7 @@ public class NovelController extends BaseController{
     @PostMapping(value = "/save.do")
     public ResponseResult<Novel> createNovel(HttpServletRequest request,
     		Novel novel, String fileName) {
+    	System.out.println("进入接口");
         ResponseResult<Novel> response = new ResponseResult<>();
         if (StringUtil.isEmpty(novel.getTitle())) {
         	return response.fail("请输入标题");
@@ -99,6 +101,60 @@ public class NovelController extends BaseController{
         return response.success(novel);
     }
     
+    /**
+     * 新的保存接口
+     * @param request
+     * @param novel
+     * @param fileName
+     * @return
+     */
+    @IgnoreSecurity
+    @PostMapping(value = "/save2.do")
+    public ResponseResult<Novel> createNovel2(HttpServletRequest request,
+    		Novel novel, String fileName) {
+        ResponseResult<Novel> response = new ResponseResult<>();
+        if (StringUtil.isEmpty(novel.getTitle())) {
+        	return response.fail("请输入标题");
+        }
+        
+        if (StringUtil.isNotEmpty(novel.getContent()) && novel.getContent().length() > 600) {
+        	return response.fail("简介过长");
+        }
+        MethodResult<String> saveCover = null;
+        if (StringUtil.isNotEmpty(fileName) && (saveCover = saveCover(request, fileName)).fail() && !saveCover.getErrorMessage().equals("no_file")) {
+        	return response.fail(saveCover.getErrorMessage());
+        }
+        if (saveCover.isSuccess()) {
+        	novel.setCover(saveCover == null ? null : saveCover.getData());	
+        }
+        Integer creator = currentAdminId(request);
+        if (novel.getId() == null) {
+        	novel.setCreator(creator);      
+        	novel.setCreateTime(new Timestamp(new Date().getTime()));
+        	novelService.add(novel, Integer.class);
+        	Portion worksInfo = new Portion();
+        	worksInfo.setTitle("作品相关");
+        	worksInfo.setCreator(creator);
+        	worksInfo.setCreateTime(new Timestamp(new Date().getTime()));
+        	worksInfo.setNovelId(novel.getId());
+        	worksInfo.setNumber(0d);
+        	worksInfo.setType(Portion.WORKSINFO);
+        	portionService.add(worksInfo);
+        } else {
+        	novel.setModifier(creator);
+        	if (novelService.update(novel) != 1) {
+        		return response.fail("更新失败");
+        	}
+        	Novel oldNovel = novelService.getById(novel);
+        	if (oldNovel != null && StringUtil.isNotEmpty(oldNovel.getCover()) && novel.getCover() != null && oldNovel.getCover() != null 
+        			&& !Objects.equal(novel.getCover(), oldNovel.getCover())) {
+        		upLoadUtil.deleteFile(UpLoadUtil.LOCALPREFIX + oldNovel.getCover());
+        	}
+        }
+    
+        return response.success(novel);
+    }
+    
     
     @IgnoreSecurity
     @PostMapping(value = "/s/{id}/cover.do")
@@ -132,7 +188,7 @@ public class NovelController extends BaseController{
 		Map<String, MultipartFile> fileMap = upLoadUtil.getFile(key, request);
         MultipartFile file = null;
         if (fileMap == null || (file = fileMap.get(key)) == null) {
-        	return result.fail("请提交文件");
+        	return result.fail("no_file");
         }
 	    
         MethodResult<String> validResult = upLoadUtil.validFile(file, 120l, upLoadUtil.types[2]);

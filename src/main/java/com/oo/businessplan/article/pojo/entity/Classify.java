@@ -38,7 +38,7 @@ public class Classify extends CreatorEntity<Integer> implements Serializable{
 	public static final byte DIARY = 1;
 	
 	/**
-	 * 总结
+	 * 原本是总结，现在改为备忘
 	 */
 	public static final byte FinalReport = 2;
 	
@@ -48,7 +48,7 @@ public class Classify extends CreatorEntity<Integer> implements Serializable{
 	
 	{
 		mapperTable.put(DIARY, "diary");
-		mapperTable.put(FinalReport, "finalreport");
+		//mapperTable.put(FinalReport, "finalreport");
 		mapperTable.put(NOVEL, "novel");
 	}
 	
@@ -56,7 +56,7 @@ public class Classify extends CreatorEntity<Integer> implements Serializable{
 	
 	private Byte type; // 1-系统  2-自定义
 	
-	private Byte childType; // 1-日记 2-总结   4-小说
+	private Byte childType; // 1-日记  2-备忘 3-灵感   4-小说
 	
 	private int count = 0; //拥有文章数
 	

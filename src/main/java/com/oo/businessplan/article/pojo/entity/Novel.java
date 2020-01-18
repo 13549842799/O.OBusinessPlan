@@ -11,6 +11,11 @@ import com.oo.businessplan.article.pojo.AbstractArticle;
  *
  */
 public class Novel extends AbstractArticle<Integer> implements Serializable{
+	
+	/**
+	 * 小说的连载状态：未开始
+	 */
+	public static final byte UNSTART = 0;
 
 	/**
 	 * 

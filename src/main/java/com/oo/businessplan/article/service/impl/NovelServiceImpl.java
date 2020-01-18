@@ -27,8 +27,6 @@ public class NovelServiceImpl extends BaseServiceImpl<Novel> implements NovelSer
 
 	@Override
 	public PageInfo<NovelForm> getPage(NovelForm form) {
-		System.out.println(form.getPageNum());
-		System.out.println(form.getPageSize());
 		PageHelper.startPage(form.getPageNum(), form.getPageSize());
 		List<NovelForm> list = novelMapper.getExpandList(form);
 		PageInfo<NovelForm> page = new PageInfo<>(list);		
