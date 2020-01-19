@@ -1,3 +1,4 @@
+
 package com.oo.businessplan.article.pojo.form;
 
 import java.sql.Timestamp;
@@ -167,5 +168,4 @@ public class NovelForm extends Novel {
 		}
 		return "";
 	}
-
 }

@@ -1,3 +1,4 @@
+
 package com.oo.businessplan.article.controller;
 
 import java.util.List;
@@ -241,9 +242,6 @@ public class NovelController extends BaseController{
     	}
     	return response.fail("删除异常");
     }
-    
-    
-    
     
     
 }

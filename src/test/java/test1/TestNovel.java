@@ -49,3 +49,4 @@ public class TestNovel extends BaseTest {
 
 	}
 }
+
