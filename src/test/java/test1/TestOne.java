@@ -47,6 +47,19 @@ public class TestOne {
 	}
 	
 	@Test
+	public void testSb() {
+		List<Long> ids = new ArrayList<>();
+		ids.add(1l);
+		ids.add(2l);
+		ids.add(3l);
+		ids.add(4l);
+		final StringBuilder sb = new StringBuilder();
+		ids.forEach(o -> sb.append(String.valueOf(o)).append(","));
+		String idss = sb.deleteCharAt(sb.length() - 1).toString();
+		System.out.println(idss);
+	}
+	
+	@Test
 	public void testEmail() throws Exception{
 		EmailServer server = ctx.getBean("emailServer",EmailServer.class);
 		StringBuffer sb = new StringBuffer();

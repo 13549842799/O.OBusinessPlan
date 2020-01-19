@@ -1,5 +1,7 @@
 package test1;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,11 +13,16 @@ import org.junit.Test;
 
 import com.oo.businessplan.article.mapper.DiaryMapper;
 import com.oo.businessplan.article.mapper.NovelMapper;
+import com.oo.businessplan.article.mapper.SectionMapper;
 import com.oo.businessplan.article.pojo.entity.Label;
+import com.oo.businessplan.article.pojo.entity.Novel;
 import com.oo.businessplan.article.pojo.form.DiaryForm;
 import com.oo.businessplan.article.pojo.form.NovelForm;
 import com.oo.businessplan.common.constant.ArticleConstant;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
+import com.oo.businessplan.common.util.StringUtil;
+import com.oo.businessplan.upload.mapper.UploadFileMapper;
+import com.oo.businessplan.upload.pojo.UploadFile;
 
 public class FixData extends BaseTest {
 
@@ -58,6 +65,60 @@ public class FixData extends BaseTest {
 				.append(label.getTargetId()).append(");\n\r");
 			}
 			System.out.println(sb.toString());
+		}
+	}
+	
+	/**
+	 * 最新章节的逻辑修改了，改为再novel中记录最新创建的章节的id，因为旧数据中没有记录这个字段的数据，所以要修复一下
+	 */
+	@Test
+	public void fixLastetSection() {
+		NovelMapper nm = context.getBean("novelMapper", NovelMapper.class);
+		SectionMapper sm = context.getBean("sectionMapper", SectionMapper.class);
+		Novel novel = new Novel();
+		novel.setDelflag(DeleteFlag.VALID.getCode());
+		List<Novel> list = nm.getList(novel);
+		for (Novel n : list) {
+			Long sid = sm.getlastetId(n.getId());
+			if (sid == null) {
+				continue;
+			}
+			Novel temp = new Novel(n.getId());
+			temp.setLastetSectionId(sid);
+			nm.update(temp);
+		}
+	}
+	
+	/**
+	 * 因为封面的逻辑修改了，所以要修复数据
+	 */
+	@Test
+	public void fixCover() {
+		NovelMapper nm = context.getBean("novelMapper", NovelMapper.class);
+		UploadFileMapper um = context.getBean("uploadFileMapper", UploadFileMapper.class);
+		
+		Novel novel = new Novel();
+		novel.setDelflag(DeleteFlag.VALID.getCode());
+		List<Novel> list = nm.getList(novel);
+		for (Novel n : list) {
+			if (StringUtil.isEmpty(n.getCover())) {
+				continue;
+			}
+			UploadFile file = new UploadFile(n.getCover(), UploadFile.NOVEL, 1l);
+			file.setCreateTime(new Timestamp(new Date().getTime()));
+			file.setCreator(n.getCreator());
+			file.setDelflag(DeleteFlag.VALID.getCode());
+			file.setTheType();
+			file.setName("covertImage");
+			file.setObjId((long)n.getId());
+			try {
+				um.add(file);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

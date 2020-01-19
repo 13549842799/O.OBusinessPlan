@@ -29,6 +29,10 @@
             <result property="title" column="se_title"/>
             <result property="createTime" column="se_createTime"/>
         </association>
+        <association property="coverFile" javaType="uploadFile">
+            <id property="id" column="up_id"/>
+            <result property="path" column="up_path"/>
+        </association>
         <collection property="labelList" ofType="label">
             <id property="id" column="la_id"/>
             <result property="name" column="la_name"/>
@@ -41,7 +45,9 @@
      </sql>
      
      <sql id="expand_column">
-        <include refid="base_column" />, la.id as la_id, la.name as la_name, la.delflag as la_delflag,ad.nikename as nike_name, cl.name as cl_name,se_id,se_title,se_createTime
+        <include refid="base_column" />, ad.nikename as nike_name, cl.id as cl_id, cl.name as cl_name,
+        la.id as la_id, la.name as la_name, la.delflag as la_delflag, se.id as se_id,
+        se.title as se_title, se.createTime as se_createTime, up.id as up_id, up.path as up_path
      </sql>
      
      <sql id="expand_list_column">
@@ -156,9 +162,9 @@
                 <if test="cover != null ">
                 cover = #{cover},
                 </if>
-                <if test="Labels != null ">
+                <!-- <if test="Labels != null ">
                 Labels = #{Labels},
-                </if>
+                </if> -->
                 <if test="wordsNum != null ">
                 wordsNum = #{wordsNum},
                 </if>
@@ -170,6 +176,9 @@
                 </if>
                 <if test="sectionsNum != null ">
                 sectionsNum = #{sectionsNum},
+                </if>
+                <if test="lastetSectionId != null ">
+                lastetSectionId = #{lastetSectionId},
                 </if>
             </trim>
          WHERE id = #{id}
@@ -208,11 +217,13 @@
         SELECT 
         <include refid="expand_column"/>
         FROM novel no
-        LEFT JOIN label la ON FIND_IN_SET(la.id, no.labels)
-        LEFT JOIN classify cl ON no.classify = cl.id
+        LEFT JOIN label la ON la.targetId = no.id AND la.targetType = 4 AND la.delflag = #{delflag}
+        LEFT JOIN classify cl ON no.classify = cl.id AND cl.delflag = #{delflag}
         LEFT JOIN admin ad ON no.creator = ad.id
-        LEFT JOIN (SELECT id as se_id, title as se_title, createTime as se_createTime, novelId FROM section WHERE novelId = #{id} ORDER BY createTime desc LIMIT 1) se ON se.novelId = no.id
-        WHERE no.id = #{id} AND no.delflag = #{delflag} AND la.delflag = #{delflag}
+        LEFT JOIN upload up ON up.objId = no.id AND up.relevance = 3
+        <!-- LEFT JOIN (SELECT id as se_id, title as se_title, createTime as se_createTime, novelId FROM section WHERE novelId = #{id} ORDER BY createTime desc LIMIT 1) se ON se.novelId = no.id -->
+        LEFT JOIN section se on se.id = no.lastetSectionId
+        WHERE no.id = #{id} AND no.delflag = #{delflag}
         <if test="creator != null">
         AND no.creator = IFNULL(#{creator}, no.creator)
         </if>

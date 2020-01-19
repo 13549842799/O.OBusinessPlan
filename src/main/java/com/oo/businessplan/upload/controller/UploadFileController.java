@@ -3,6 +3,9 @@ package com.oo.businessplan.upload.controller;
 import java.util.List;
 import java.util.Map;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.oo.businessplan.admin.pojo.entity.Admin;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.pageModel.MethodResult;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.redis.RedisManager;
@@ -66,14 +70,12 @@ public class UploadFileController extends BaseController{
         if (fileMap == null || (file = fileMap.get(upLoadFile.getName())) == null) {
         	return response.fail("请提交文件");
         }
-	    
         MethodResult<String> validResult = 
         		upLoadUtil.validFile(file, 120l, types[upLoadFile.getRelevance() - 1]);
         
         if (validResult.fail()) {
         	return response.fail(validResult.getErrorMessage());
         }
-        
         String path = 
         		upLoadUtil.filePersistence(file, File.separator + models[upLoadFile.getRelevance() - 1], upLoadUtil.getRandomName(getAccountName(request)));
 
@@ -82,16 +84,62 @@ public class UploadFileController extends BaseController{
         upLoadFile.setTheType();
         upLoadFile.setCreator(currentAdminId(request));
         upLoadFile.setCreateTime(new Timestamp(new Date().getTime()));
-        uploadFileService.add(upLoadFile, Integer.class);
+        uploadFileService.add(upLoadFile, Long.class);
         //redis
         
         return response.success(upLoadFile);
+    }
+    
+    //@IgnoreSecurity
+    @GetMapping(value = "/s/{id}/file.re")
+    public void readFile(HttpServletRequest request,
+    		@PathVariable("id")Long id) {
+        ResponseResult<List<UploadFile>> response = new ResponseResult<>();
+        
+        UploadFile uploadFile = new UploadFile();
+        uploadFile.setId(id);
+        uploadFile.setCreator(currentAdminId(request));
+        uploadFile.setDelflag(DeleteFlag.VALID.getCode());
+        
+        uploadFile = uploadFileService.getById(uploadFile);
+        if (uploadFile == null) {
+        	
+        }
+        
+        File file = new File(UpLoadUtil.LOCALPREFIX + uploadFile.getPath());
+        
+        if (!file.exists()) {
+        	
+        }
+        try(FileInputStream in = new FileInputStream(file)) {
+        	
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
     }
     
     @IgnoreSecurity
     @GetMapping(value = "/list.re")
     public ResponseResult<List<UploadFile>> list(HttpServletRequest request) {
         ResponseResult<List<UploadFile>> response = new ResponseResult<>();
+
+        return response.success();
+    }
+    
+    /**
+     * 删除临时的图片文件(真删除)
+     * @param request
+     * @return
+     */
+    @IgnoreSecurity
+    @DeleteMapping(value = "/s/{id}/del.do")
+    public ResponseResult<String> delete(HttpServletRequest request,
+    		@PathVariable("id")Long id) {
+        ResponseResult<String> response = new ResponseResult<>();
+        
+        uploadFileService.deleteTempFile(id, currentAdminId(request));
 
         return response.success();
     }

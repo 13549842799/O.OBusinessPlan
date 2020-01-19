@@ -21,12 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.common.constant.ArticleConstant.ArticleType;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.pageModel.MethodResult;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.util.UpLoadUtil;
+import com.oo.businessplan.upload.pojo.UploadFile;
+import com.oo.businessplan.upload.service.UploadFileService;
+import com.oo.businessplan.article.service.LabelService;
 import com.oo.businessplan.article.service.NovelService;
 import com.oo.businessplan.article.service.PortionService;
 import com.alibaba.fastjson.JSON;
@@ -51,16 +55,21 @@ public class NovelController extends BaseController{
     NovelService novelService;
     
     @Autowired
+    private LabelService labelService;
+    
+    @Autowired
     PortionService portionService;
     
     @Autowired
 	private UpLoadUtil upLoadUtil;
     
+    @Autowired
+    private UploadFileService uploadFileService;
+    
     @IgnoreSecurity
     @PostMapping(value = "/save.do")
     public ResponseResult<Novel> createNovel(HttpServletRequest request,
     		Novel novel, String fileName) {
-    	System.out.println("进入接口");
         ResponseResult<Novel> response = new ResponseResult<>();
         if (StringUtil.isEmpty(novel.getTitle())) {
         	return response.fail("请输入标题");
@@ -79,14 +88,8 @@ public class NovelController extends BaseController{
         	novel.setCreator(creator);      
         	novel.setCreateTime(new Timestamp(new Date().getTime()));
         	novelService.add(novel, Integer.class);
-        	Portion worksInfo = new Portion();
-        	worksInfo.setTitle("作品相关");
-        	worksInfo.setCreator(creator);
-        	worksInfo.setCreateTime(new Timestamp(new Date().getTime()));
-        	worksInfo.setNovelId(novel.getId());
-        	worksInfo.setNumber(0d);
-        	worksInfo.setType(Portion.WORKSINFO);
-        	portionService.add(worksInfo);
+        	//添加小说相关分管
+        	portionService.addDefaultPosition(novel.getId(), creator);
         } else {
         	novel.setModifier(creator);
         	if (novelService.update(novel) != 1) {
@@ -98,11 +101,12 @@ public class NovelController extends BaseController{
         	}
         }
     
+        
         return response.success(novel);
     }
     
     /**
-     * 新的保存接口
+     * 新的保存接口,独立出封面文件的保存逻辑，这里只保存小说实体和封面文件路径
      * @param request
      * @param novel
      * @param fileName
@@ -110,9 +114,9 @@ public class NovelController extends BaseController{
      */
     @IgnoreSecurity
     @PostMapping(value = "/save2.do")
-    public ResponseResult<Novel> createNovel2(HttpServletRequest request,
-    		Novel novel, String fileName) {
-        ResponseResult<Novel> response = new ResponseResult<>();
+    public ResponseResult<NovelForm> createNovel2(HttpServletRequest request,
+    		@RequestBody NovelForm novel) {
+        ResponseResult<NovelForm> response = new ResponseResult<>();
         if (StringUtil.isEmpty(novel.getTitle())) {
         	return response.fail("请输入标题");
         }
@@ -120,39 +124,32 @@ public class NovelController extends BaseController{
         if (StringUtil.isNotEmpty(novel.getContent()) && novel.getContent().length() > 600) {
         	return response.fail("简介过长");
         }
-        MethodResult<String> saveCover = null;
-        if (StringUtil.isNotEmpty(fileName) && (saveCover = saveCover(request, fileName)).fail() && !saveCover.getErrorMessage().equals("no_file")) {
-        	return response.fail(saveCover.getErrorMessage());
-        }
-        if (saveCover.isSuccess()) {
-        	novel.setCover(saveCover == null ? null : saveCover.getData());	
-        }
+
         Integer creator = currentAdminId(request);
         if (novel.getId() == null) {
         	novel.setCreator(creator);      
         	novel.setCreateTime(new Timestamp(new Date().getTime()));
+        	novel.setNovelState(Novel.UNSTART);
         	novelService.add(novel, Integer.class);
-        	Portion worksInfo = new Portion();
-        	worksInfo.setTitle("作品相关");
-        	worksInfo.setCreator(creator);
-        	worksInfo.setCreateTime(new Timestamp(new Date().getTime()));
-        	worksInfo.setNovelId(novel.getId());
-        	worksInfo.setNumber(0d);
-        	worksInfo.setType(Portion.WORKSINFO);
-        	portionService.add(worksInfo);
+        	//添加小说相关分管
+        	portionService.addDefaultPosition(novel.getId(), creator);
         } else {
         	novel.setModifier(creator);
         	if (novelService.update(novel) != 1) {
         		return response.fail("更新失败");
         	}
-        	Novel oldNovel = novelService.getById(novel);
-        	if (oldNovel != null && StringUtil.isNotEmpty(oldNovel.getCover()) && novel.getCover() != null && oldNovel.getCover() != null 
-        			&& !Objects.equal(novel.getCover(), oldNovel.getCover())) {
-        		upLoadUtil.deleteFile(UpLoadUtil.LOCALPREFIX + oldNovel.getCover());
-        	}
         }
-    
-        return response.success(novel);
+        //关联封面与小说
+        if (StringUtil.isNotEmpty(novel.getCover())) {
+        	//如果存在旧的封面，则删除旧的封面(假删除)
+            uploadFileService.relatedObjdAndFile(creator, UploadFile.NOVEL, novel.getId(), Long.parseLong(novel.getCover()));	
+        }
+        
+        //批量保存标签
+        labelService.batchAddOrUpdate(novel.getLabelList(), novel, ArticleType.NOVEL);      
+        NovelForm novelForm = novelService.getComplete(novel);
+        
+        return response.success(novelForm);
     }
     
     
@@ -239,6 +236,7 @@ public class NovelController extends BaseController{
     	Novel novel = new Novel(id, adminId);
     	novel.setModifier(adminId);
     	if (novelService.delete(novel)) {
+    		
     		return response.success();
     	}
     	return response.fail("删除异常");

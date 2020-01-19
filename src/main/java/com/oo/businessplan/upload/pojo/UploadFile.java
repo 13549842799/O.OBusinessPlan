@@ -7,7 +7,9 @@ import com.oo.businessplan.basic.entity.CreatorEntity;
  * @author cyz
  *
  */
-public class UploadFile extends CreatorEntity<Integer>{
+public class UploadFile extends CreatorEntity<Long>{
+	
+	public static final byte NOVEL = 3;
 
 	/**
 	 * 

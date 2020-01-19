@@ -50,6 +50,12 @@ public class SectionController extends BaseController{
         return response.success(sectionService.getSimpleSections(section));
     }
     
+    /**
+     * 
+     * @param request
+     * @param section
+     * @return
+     */
     @IgnoreSecurity
     @PostMapping(value = "/addOrUpdate.do")
     public ResponseResult<Section> section(HttpServletRequest request,
@@ -64,7 +70,7 @@ public class SectionController extends BaseController{
         if (section.getId() == null) {       	
         
         	section.setCreateTime(new Timestamp(new Date().getTime()));
-			sectionService.add(section, Section.class);
+			sectionService.add(section, Long.class);
 			
 			section = sectionService.getById(section);
 			Long lastId = sectionService.lastSectionId(section);
@@ -93,7 +99,7 @@ public class SectionController extends BaseController{
         	uploadFileService.deleteBatch(section.getDelImagesId(), user);
         }
         if (StringUtil.isNotEmpty(section.getAddImagesId())) {
-        	uploadFileService.relatedUserAndFile(user, section.getAddImagesId());
+        	uploadFileService.relatedUserAndFile(section.getId(), section.getAddImagesId());
         }     
         return response.success(section);
     }

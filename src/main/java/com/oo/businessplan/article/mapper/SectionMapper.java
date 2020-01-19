@@ -63,4 +63,7 @@ public interface SectionMapper extends BaseMapper<Section> {
 	 * @return
 	 */
 	Long nextSectionId(Section current);
+	
+	@Select("select id from section where novelId = #{novelId} order by createTime desc limit 1")
+	Long getlastetId(@Param("novelId") Integer id);
 }

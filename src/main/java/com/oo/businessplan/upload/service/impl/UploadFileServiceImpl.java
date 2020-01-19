@@ -1,8 +1,13 @@
 package com.oo.businessplan.upload.service.impl;
 
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
+import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.util.UpLoadUtil;
 import com.oo.businessplan.upload.mapper.UploadFileMapper;
@@ -50,8 +55,50 @@ public class UploadFileServiceImpl extends BaseServiceImpl<UploadFile> implement
 	}
 
 	@Override
-	public void relatedUserAndFile(int adminId, String ids) {
-		int count = uploadFileMapper.updateObjId(adminId, ids);
+	public void relatedUserAndFile(long objId, String ids) {
+		int count = uploadFileMapper.updateObjId(objId, ids);
+	}
+
+	@Override
+	public int deleteTempFile(long id, int creator) {
+		UploadFile upload = new UploadFile();
+		upload.setId(id);
+		upload.setCreator(creator);
+		upload.setDelflag(DeleteFlag.VALID.getCode());
+		
+		upload = uploadFileMapper.getById(upload);
+		if (upload == null) {
+			return 0;
+		}
+		int count = uploadFileMapper.deleteReal(id, creator);
+		
+		util.deleteFile(upload.getPath());
+		
+		return count;
+	}
+
+	@Override
+	public void relatedObjdAndFile(int adminId, byte relevance, long objId, long id) {
+		UploadFile file = new UploadFile();
+		file.setId(id);
+		file.setCreator(adminId);
+		file.setRelevance(relevance);
+		file.setObjId(objId);
+		if (uploadFileMapper.checkFileExist(file) == null) {
+			return;
+		}
+		
+		List<UploadFile> oldIds = uploadFileMapper.checkFileExistInObj(file);
+		if (oldIds != null && oldIds.size() > 0) {
+			final StringBuilder sb = new StringBuilder();
+			oldIds.forEach(o -> sb.append(String.valueOf(o.getId())).append(","));
+			String ids = sb.deleteCharAt(sb.length() - 1).toString();
+			uploadFileMapper.deleteBatch(ids, adminId);
+			for (UploadFile uploadFile : oldIds) {
+				util.deleteFile(uploadFile.getPath());
+			}
+		}
+		uploadFileMapper.updateObjId(objId, String.valueOf(objId));
 	}
     
     

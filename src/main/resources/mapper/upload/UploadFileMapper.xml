@@ -85,6 +85,9 @@
     <update id="update" parameterType="uploadfile">
         UPDATE upload SET 
             <trim suffixOverrides=",">
+                <if test="objId != null ">
+                objId = #{objId},
+                </if>
                 <if test="path != null ">
                 path = #{path},
                 </if>

@@ -37,4 +37,15 @@ public class TestNovel extends BaseTest {
 		List<NovelForm> list = nm.getExpandList(form);	
 		PageInfo<NovelForm> page = new PageInfo<>(list);
 	}
+	
+	@Test
+	public void testNovelOne () {
+		NovelMapper nm = context.getBean("novelMapper", NovelMapper.class);
+		Novel novel = new Novel();
+		novel.setId(18);
+		novel.setCreator(2);
+		novel.setDelflag(DeleteFlag.VALID.getCode());
+		NovelForm nf = nm.getComplete(novel);
+
+	}
 }

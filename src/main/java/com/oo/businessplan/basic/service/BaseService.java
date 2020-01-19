@@ -33,8 +33,8 @@ public interface BaseService<T> {
 	 * 继承了IdEntity的实体类的添加方法，
 	 * 因为IdEntity中是泛型的id，所以获取自增主键的时候id的类型会有问题导致调用get方法出错
 	 * 所以重新设置了id的类型
-	 * @param t
-	 * @param cls
+	 * @param t 保存的实体
+	 * @param cls id的类型的class
 	 * @throws AddErrorException
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })

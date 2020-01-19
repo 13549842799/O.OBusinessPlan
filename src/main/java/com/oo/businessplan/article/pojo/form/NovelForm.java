@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oo.businessplan.article.pojo.entity.Label;
 import com.oo.businessplan.article.pojo.entity.Novel;
+import com.oo.businessplan.upload.pojo.UploadFile;
 
 public class NovelForm extends Novel {
 	
@@ -29,6 +30,11 @@ public class NovelForm extends Novel {
 	private String classifyName;
 	
 	private SectionForm lastetSection;
+	
+	/**
+	 * 封面文件
+	 */
+	private UploadFile coverFile;
 	
 	public NovelForm() {}
 
@@ -128,8 +134,23 @@ public class NovelForm extends Novel {
 	public void setLastetSection(SectionForm lastetSection) {
 		this.lastetSection = lastetSection;
 	}
+
+	public UploadFile getCoverFile() {
+		return coverFile;
+	}
+
+	public void setCoverFile(UploadFile coverFile) {
+		this.coverFile = coverFile;
+	}
 	
-	
+	/**
+	 * 获取封面文件的路径
+	 * @return
+	 */
+	public String getCoverPath() {
+		return this.coverFile != null ? this.coverFile.getPath() : "";
+	}
+
 	public String getStateName() {
 		if (this.getNovelState() == null) {
 			this.setNovelState(Novel.UNSTART);
