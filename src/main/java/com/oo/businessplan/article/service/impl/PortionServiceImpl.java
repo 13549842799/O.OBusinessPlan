@@ -29,11 +29,11 @@ public class PortionServiceImpl extends BaseServiceImpl<Portion> implements Port
     @Autowired
     NovelMapper novelMapper;
     
-	@Override
 	/**
 	 * 1.确定分卷的卷号
 	 * 2.维护小说的分卷总数值
 	 */
+    @Override
 	@Transactional(rollbackFor= {Exception.class})
 	public void add(Portion t) throws AddErrorException {
 		if (t.getNumber() == null) {

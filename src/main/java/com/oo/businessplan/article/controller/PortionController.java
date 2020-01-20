@@ -3,6 +3,7 @@ package com.oo.businessplan.article.controller;
 import java.util.List;
 import java.util.Map;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.article.service.PortionService;
 import com.oo.businessplan.article.pojo.entity.Portion;
+import com.oo.businessplan.article.pojo.entity.Section;
 
 
 /**
@@ -69,10 +71,12 @@ public class PortionController extends BaseController{
         }    
         portion.setDelflag(DeleteFlag.VALID.getCode());
         if (portion.getId() == null) {
+        	portion.setWordsNum(0);
+        	portion.setSectionNum(0);
         	portion.setCreator(currentAdminId(request));
         	portion.setCreateTime(new Timestamp(new Date().getTime()));
         	portionService.add(portion, Integer.class);
-        	return response.success(portion);
+        	return response.success(portionService.getById(portion));
         } else {
         	portion.setModifier(currentAdminId(request));
         	return response.updateResult(portionService.update(portion));
