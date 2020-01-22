@@ -67,6 +67,7 @@ public class UploadFileController extends BaseController{
      
         Map<String, MultipartFile> fileMap = upLoadUtil.getFile(upLoadFile.getName(), request);
         MultipartFile file = null;
+        System.out.println(upLoadFile.getName());
         if (fileMap == null || (file = fileMap.get(upLoadFile.getName())) == null) {
         	return response.fail("请提交文件");
         }

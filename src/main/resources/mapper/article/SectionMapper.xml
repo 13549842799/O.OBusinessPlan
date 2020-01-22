@@ -168,10 +168,24 @@
                 number = #{number},
                 </if>
                 <if test="lastSection != null">
-                lastSection = #{lastSection},
+                    <choose>
+                    <when test="lastSection == -1">
+                    lastSection = null,
+                    </when>
+                    <otherwise>
+                    lastSection = #{lastSection},
+                    </otherwise>
+                    </choose>
                 </if>
                 <if test="nextSection != null">
-                nextSection = #{nextSection},
+                    <choose>
+                    <when test="nextSection == -1">
+                    nextSection = null,
+                    </when>
+                    <otherwise>
+                    nextSection = #{nextSection},
+                    </otherwise>
+                    </choose>
                 </if>
             </trim>
          WHERE id = #{id}
@@ -201,7 +215,7 @@
     
     <select id="getExpandSection" resultMap="SectionForm" parameterType="section">
         SELECT 
-        <include refid="base_column"/>
+        <include refid="form_column"/>
         FROM section se
         LEFT JOIN portion po on se.portionId = po.id
         LEFT JOIN novel no on po.novelId = no.id

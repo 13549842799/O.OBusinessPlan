@@ -243,7 +243,6 @@ public class UpLoadUtil {
 		   if (key == null) {
 			   return mRequest.getFileMap();
 		   }
-		   
 		   Map<String, MultipartFile> result = new HashMap<>();
 		   result.put(key, mRequest.getFile(key));
 		   

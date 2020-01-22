@@ -22,7 +22,7 @@ public class UploadFile extends CreatorEntity<Long>{
 	
 	private Byte fileType; //文件类型   1-图片 2-视频
 	
-	private Byte relevance; // 1-admin  2-employee 3-novel 4-portion
+	private Byte relevance; // 1-admin  2-employee 3-novel 4-section
 	
 	private Long objId; //关联的表的记录的id
 	

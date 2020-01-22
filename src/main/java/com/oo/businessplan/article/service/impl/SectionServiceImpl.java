@@ -71,13 +71,18 @@ public class SectionServiceImpl extends BaseServiceImpl<Section> implements Sect
 		}
 		t = sectionMapper.getById(t);
 
-		Section last = new Section(t.getLastSection());
-		last.setNextSection(t.getNextSection());
+		if (t.getLastSection() != null) {
+			Section last = new Section(t.getLastSection());
+			last.setNextSection(t.getNextSection() == null ? -1l : t.getNextSection());
+			sectionMapper.update(last);
+		}
 		
-		Section next = new Section(t.getNextSection());
-		next.setLastSection(t.getLastSection());
-		sectionMapper.update(last);
-		sectionMapper.update(next);
+		if (t.getNextSection() != null) {
+			Section next = new Section(t.getNextSection());
+			next.setLastSection(t.getLastSection() == null ? -1 : t.getLastSection());
+			sectionMapper.update(next);
+		}
+	
 		return super.delete(t);
 	}
 

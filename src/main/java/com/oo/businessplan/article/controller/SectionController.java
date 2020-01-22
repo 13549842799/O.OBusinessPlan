@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.oo.businessplan.basic.controller.BaseController;
+import com.oo.businessplan.common.annotation.UseTrigger;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
@@ -62,7 +63,7 @@ public class SectionController extends BaseController{
     		@RequestBody(required = true) Section section) {
         ResponseResult<Section> response = new ResponseResult<>();
         int user = currentAdminId(request);
-        section.setWordsNum(StringUtil.isNotEmpty(section.getContent()) ? section.getContent().length() : 0);
+        section.setWordsNum(StringUtil.returenOnlyWords(section.getContent()).length());
         /*if (section.getWordsNum() < 500) {
         	return response.fail("内容不能少于500字");
         }*/
@@ -104,6 +105,56 @@ public class SectionController extends BaseController{
         return response.success(section);
     }
     
+    /**
+     * 电脑客户端调用的章节保存接口
+     * @param request
+     * @param section
+     * @return
+     */
+    @UseTrigger(name="alterForInsertSection, alterForUpdateSection", effect="修改小说和分卷的字数合计，章节合计，状态和最新章标记")
+    @IgnoreSecurity
+    @PostMapping(value = "/addOrUpdate2.do")
+    public ResponseResult<Section> section2(HttpServletRequest request,
+    		@RequestBody(required = true) Section section) {
+        ResponseResult<Section> response = new ResponseResult<>();
+        int user = currentAdminId(request);
+        section.setWordsNum(StringUtil.isNotEmpty(section.getContent()) ? section.getContent().length() : 0);
+        section.setCreator(user);
+        Timestamp now = new Timestamp(new Date().getTime());
+        if (section.getId() == null) {       	   
+        	section.setCreateTime(now);
+			sectionService.add(section, Long.class);
+			
+			section = sectionService.getById(section);
+			Long lastId = sectionService.lastSectionId(section);
+			if (lastId != null) {
+				Section last = new Section();
+				last.setId(lastId);
+				last.setNextSection(section.getId());
+				sectionService.update(last);
+			}
+			Long nextId = sectionService.nextSectionId(section);
+			if (nextId != null) {
+				Section next = new Section();
+				next.setId(nextId);
+				next.setLastSection(section.getId());
+				sectionService.update(next);
+			}
+			section = new Section(section.getId());
+			section.setLastSection(lastId);
+			section.setNextSection(nextId);
+		}
+        
+        section.setModifier(user);
+        section.setModifierTime(now);
+		sectionService.update(section);
+		
+        if (StringUtil.isNotEmpty(section.getDelImagesId())) {
+        	uploadFileService.deleteBatch(section.getDelImagesId(), user);
+        }
+        section.setCreator(user);
+        return response.success(sectionService.getById(section));
+    }
     
     @IgnoreSecurity
     @GetMapping(value = "/s/{id}/read.re")
@@ -121,6 +172,7 @@ public class SectionController extends BaseController{
         return response.success(section);
     }
     
+    @UseTrigger(name="alterForDeleteSection")
     @IgnoreSecurity
     @DeleteMapping(value = "/s/{id}/delete.do")
     public ResponseResult<Section> delSection(HttpServletRequest request,

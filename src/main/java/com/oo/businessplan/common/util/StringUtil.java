@@ -29,6 +29,7 @@ public class StringUtil {
     private static Pattern abcPattern = Pattern.compile("^[a-z|A-Z]+$");
     public static final String splitStrPattern = ",|，|;|；|、|\\.|。|-|_|\\(|\\)|\\[|\\]|\\{|\\}|\\\\|/| |　|\"";
     private static Log logger = LogFactory.getLog(StringUtil.class);
+    private static final Pattern special = Pattern.compile("\\s*|\t|\r|\n");
 
     /**
      * 判断是否数字表示
@@ -63,6 +64,18 @@ public class StringUtil {
         return return_value;
     }
 
+    /**
+     * 移除文本中的隐藏字符，包括换行符等
+     * @param content
+     * @return
+     */
+    public static String returenOnlyWords(String content) {
+        if (content == null) {
+        	return "";
+        }
+		return special.matcher(content.trim()).replaceAll("");
+    }
+    
     /**
      * 判断是否纯字母组合
      *
