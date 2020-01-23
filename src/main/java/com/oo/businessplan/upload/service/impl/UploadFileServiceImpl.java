@@ -38,7 +38,7 @@ public class UploadFileServiceImpl extends BaseServiceImpl<UploadFile> implement
 		if (!super.delete(t)) {
 			return false;
 		}	
-		return util.deleteFile(t.getPath());
+		return util.deleteFileWillRoot(t.getPath());
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class UploadFileServiceImpl extends BaseServiceImpl<UploadFile> implement
 			String ids = sb.deleteCharAt(sb.length() - 1).toString();
 			uploadFileMapper.deleteBatch(ids, adminId);
 			for (UploadFile uploadFile : oldIds) {
-				util.deleteFile(uploadFile.getPath());
+				util.deleteFileWillRoot(uploadFile.getPath());
 			}
 		}
 		uploadFileMapper.updateObjId(objId, String.valueOf(objId));

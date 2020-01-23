@@ -135,6 +135,9 @@
         <if test="relevance != null ">
         AND up.`relevance` = #{relevance}
         </if>
+        <if test="objId != null">
+        AND up.`objId` = #{objId}
+        </if>
         <if test="fileSize != null ">
         AND up.`fileSize` = #{fileSize}
         </if>

@@ -377,6 +377,43 @@ public class BeanUtils {
 		fw.close();
 		showInfo(fileName);
 	}
+	
+	public void createBeanBuilder(Class c, String idName, Class type) throws Exception {
+		String cName = c.getName();
+		String beanName = getLastChar(cName);
+		String moduleName = getModuleName(cName);
+		String packageName = getPackageName(cName);
+		String realName = beanName + "Builder";
+		String fileName = System.getProperty("user.dir") + File.separator + "src" + File.separator +"main" + File.separator + "java" + File.separator + packageName + File.separator + moduleName + File.separator + "builder" + File.separator + realName + ".java";
+		
+		File f = new File(fileName);
+		/*if (f.exists()) { // 如果已经存在f文件了
+			System.out.println("文件名：" + f.getAbsolutePath()); // 打印绝对路径
+			System.out.println("文件大小：" + f.length());
+			System.out.println("文件已存在，不能再创建。");
+			return;
+		} else {
+			f.getParentFile().mkdirs();
+			// getParentFile()返回File类型的父路径，mkdirs()创建所有的路径
+			try {
+				f.createNewFile(); // 至此真正在硬盘上创建了myTest.txt文件。
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}*/
+		System.out.println(fileName);
+		List<List<fieldMap>> args = fingByArg(c);
+		List<fieldMap> list = args != null && args.size() > 0 ? args.get(0) : new ArrayList<>();
+		System.out.println(list.size());
+		for (fieldMap field : list) {
+			System.out.println(field.field.getName());
+		}
+		
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("public class ").append(realName).append("{").append(RT_2);
+		buffer.append(BLANK_4).append("");
+		buffer.append("}");
+	}
 
 	/**
 	 * 创建bean的Xml<br>

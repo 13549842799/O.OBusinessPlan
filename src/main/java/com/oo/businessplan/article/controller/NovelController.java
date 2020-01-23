@@ -1,12 +1,12 @@
 
 package com.oo.businessplan.article.controller;
 
-import java.util.List;
 import java.util.Map;
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,17 +28,14 @@ import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.common.util.UpLoadUtil;
+import com.oo.businessplan.upload.builder.UploadBuilder;
 import com.oo.businessplan.upload.pojo.UploadFile;
 import com.oo.businessplan.upload.service.UploadFileService;
 import com.oo.businessplan.article.service.LabelService;
 import com.oo.businessplan.article.service.NovelService;
 import com.oo.businessplan.article.service.PortionService;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
-import com.google.inject.internal.Objects;
 import com.oo.businessplan.article.pojo.entity.Novel;
-import com.oo.businessplan.article.pojo.entity.Portion;
 import com.oo.businessplan.article.pojo.form.NovelForm;
 
 
@@ -69,9 +65,9 @@ public class NovelController extends BaseController{
     
     @IgnoreSecurity
     @PostMapping(value = "/save.do")
-    public ResponseResult<Novel> createNovel(HttpServletRequest request,
-    		Novel novel, String fileName) {
-        ResponseResult<Novel> response = new ResponseResult<>();
+    public ResponseResult<NovelForm> createNovel(HttpServletRequest request,
+    		NovelForm novel, String fileName) {
+        ResponseResult<NovelForm> response = new ResponseResult<>();
         if (StringUtil.isEmpty(novel.getTitle())) {
         	return response.fail("请输入标题");
         }
@@ -83,11 +79,11 @@ public class NovelController extends BaseController{
         if (StringUtil.isNotEmpty(fileName) && (saveCover = saveCover(request, fileName)).fail()) {
         	return response.fail(saveCover.getErrorMessage());
         }
-        novel.setCover(saveCover == null ? null : saveCover.getData());
         Integer creator = currentAdminId(request);
+        Timestamp now = new Timestamp(new Date().getTime());
         if (novel.getId() == null) {
         	novel.setCreator(creator);      
-        	novel.setCreateTime(new Timestamp(new Date().getTime()));
+        	novel.setCreateTime(now);
         	novelService.add(novel, Integer.class);
         	//添加小说相关分管
         	portionService.addDefaultPosition(novel.getId(), creator);
@@ -96,14 +92,23 @@ public class NovelController extends BaseController{
         	if (novelService.update(novel) != 1) {
         		return response.fail("更新失败");
         	}
-        	Novel oldNovel = novelService.getById(novel);
-        	if (oldNovel != null && StringUtil.isNotEmpty(oldNovel.getCover())) {
-        		upLoadUtil.deleteFile(UpLoadUtil.LOCALPREFIX + saveCover.getData());
+        	UploadFile old = new UploadFile((byte)3, novel.getId().longValue());
+        	List<UploadFile> ufs = uploadFileService.getList(old);
+        	if (ufs != null && ufs.size() > 0) {
+        		uploadFileService.delete(ufs.get(0));    		
         	}
         }
-    
+      //保存封面文件
+        if (saveCover != null) {
+            UploadFile newCover = UploadBuilder.newBuilder().Name(fileName).Path(saveCover.getData())
+            		.Relevance((byte)3).ObjId(novel.getId().longValue()).creator(creator).createTime(now).delflag(DeleteFlag.VALID.getCode()).build();
+            uploadFileService.add(newCover);
+        }
+        //批量保存标签
+        labelService.batchAddOrUpdate(novel.getLabelList(), novel, ArticleType.NOVEL);      
+        NovelForm novelForm = novelService.getComplete(novel);
         
-        return response.success(novel);
+        return response.success(novelForm);
     }
     
     /**

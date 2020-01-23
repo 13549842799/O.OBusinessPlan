@@ -25,11 +25,11 @@ import com.oo.businessplan.common.pageModel.MethodResult;
  */
 public class UpLoadUtil {
 	
-	   //public static final String LOCALPREFIX = File.separator + "usr" + File.separator + "local" + File.separator + "tomcat" + File.separator + "O.OBusinessPlanFile";
+	   public static final String LOCALPREFIX = File.separator + "usr" + File.separator + "local" + File.separator + "tomcat" + File.separator + "O.OBusinessPlanFile";
 	   
 	   //public static final String LOCALPREFIX = "E:" + File.separator + "O.OMusicRelated";
 	
-	   public static final String LOCALPREFIX = "D:" + File.separator + "gitRes" + File.separator + "O.OBusinessPlanFile";
+	   //public static final String LOCALPREFIX = "D:" + File.separator + "gitRes" + File.separator + "O.OBusinessPlanFile";
 	   
 	   public final String[] models = {"admin", "employee", "novel"};
 	   public final String[] types = {"img", "img", "img"};
@@ -310,6 +310,19 @@ public class UpLoadUtil {
 	 */
 	public boolean deleteFile(String path) {
 		File file = new File(path);
+		if (!file.exists()) {
+			return false;
+		}
+		return file.delete();
+	}
+	
+	/**
+	 * 删除文件，
+	 * @param path path无需自带根路径
+	 * @return
+	 */
+	public boolean deleteFileWillRoot(String path) {
+		File file = new File(LOCALPREFIX + path);
 		if (!file.exists()) {
 			return false;
 		}

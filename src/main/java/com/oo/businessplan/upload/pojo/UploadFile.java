@@ -31,6 +31,11 @@ public class UploadFile extends CreatorEntity<Long>{
 	public UploadFile() {
 		super();
 	}
+	
+	public UploadFile(byte relevance, long objId) {
+		this.relevance = relevance;
+		this.objId = objId;
+	}
 
 	public UploadFile(String path, Byte relevance, Long fileSize) {
 		this.path = path;
