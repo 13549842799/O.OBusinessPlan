@@ -13,9 +13,13 @@
         <result property="count" column="count"/>
     </resultMap>
 
-     <sql id="base_column">
+    <sql id="base_column">
         cl.id,cl.delflag,cl.creator,cl.createTime,cl.name,cl.type,cl.childType, cl.count
-     </sql>
+    </sql>
+    
+    <sql id="expand_column">
+        cl.id,cl.delflag,cl.creator,cl.createTime,cl.name,cl.type,cl.childType, cot.num as count
+    </sql>
 
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO classify
@@ -112,6 +116,19 @@
         SELECT 
         <include refid="base_column"/>
         FROM classify cl
+    LEFT JOIN (
+    <choose>
+       <when test="childType == 1">
+       SELECT COUNT(0) AS num, di.classify as cid FROM diary di WHERE di.delflag = 1 GROUP BY di.classify
+       </when>
+       <when test="childType == 4">
+       SELECT COUNT(0) AS num, no.classify as cid FROM novel no WHERE no.delflag = 1 GROUP BY no.classify
+       </when>
+       <otherwise>
+       SELECT 0 as num, 0 as cid
+       </otherwise>
+    </choose>
+    ) cot ON cl.id = cot.cid
         WHERE 
     <trim prefixOverrides="AND">
         <if test="delflag != null ">

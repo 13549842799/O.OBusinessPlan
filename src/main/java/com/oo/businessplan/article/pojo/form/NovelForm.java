@@ -4,10 +4,12 @@ package com.oo.businessplan.article.pojo.form;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oo.businessplan.article.pojo.entity.Label;
 import com.oo.businessplan.article.pojo.entity.Novel;
+import com.oo.businessplan.common.util.StringUtil;
 import com.oo.businessplan.upload.pojo.UploadFile;
 
 public class NovelForm extends Novel {
@@ -23,6 +25,8 @@ public class NovelForm extends Novel {
 	private Integer label;
 	
 	private List<Label> labelList;
+	
+	private String labelListJson;
 	
 	private Long startTime;
 	
@@ -168,4 +172,13 @@ public class NovelForm extends Novel {
 		}
 		return "";
 	}
+
+	public void setLabelListJson(String labelListJson) {
+		if (StringUtil.isEmpty(labelListJson)) {
+			return;
+		}
+		this.labelList = JSONObject.parseArray(labelListJson, Label.class);
+	}
+	
+	
 }
