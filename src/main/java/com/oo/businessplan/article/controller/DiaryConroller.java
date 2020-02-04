@@ -79,6 +79,8 @@ public class DiaryConroller extends BaseController{
 		Integer adminId = currentAdminId(request);
 		form.setCreator(adminId);
 		form.setDelflag(DeleteFlag.VALID.getCode());
+		form.setTitle(StringUtil.isEmpty(form.getTitle()) ? null : form.getTitle());
+		form.setLabels(StringUtil.isEmpty(form.getLabels()) ? null : form.getLabels());
 		PageInfo<DiaryForm> page = diaryService.getPage(form);	
 		return response.success(page);
 	}

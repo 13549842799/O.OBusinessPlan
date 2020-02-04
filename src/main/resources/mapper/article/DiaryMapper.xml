@@ -249,7 +249,7 @@
         AND di.`date` = #{date}
         </if>
         <if test="labels != null ">
-        AND di.`labels` = #{labels}
+        AND LOCATE(#{labels}, la.`name`)
         </if>
         <if test="status != null ">
         AND di.`status` = #{status}
