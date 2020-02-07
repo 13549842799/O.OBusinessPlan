@@ -1,5 +1,7 @@
 package com.oo.businessplan.target.pojo.form;
 
+import java.util.Date;
+
 import com.oo.businessplan.target.pojo.entity.Target;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
 
@@ -9,6 +11,11 @@ import com.oo.businessplan.target.pojo.entity.TargetPlan;
  *
  */
 public class TargetPlanForm extends TargetPlan{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2104648521252872366L;
 
 	private Target target = new Target();
 
@@ -18,8 +25,6 @@ public class TargetPlanForm extends TargetPlan{
 
 	public void setTarget(Target target) {
 		this.target = target;
-	}
-	
-	
+	}	
 	
 }

@@ -230,6 +230,11 @@
             <if test="target.creator != null">
                 AND t.creator = #{target.creator}
             </if>
+            <if test="target.expectFinishTime != null">
+            <![CDATA[
+                AND t.expectFinishTime >= #{target.expectFinishTime}
+            ]]>
+            </if>
             <if test="target.state != null">
                 AND t.state = #{target.state}
             </if>

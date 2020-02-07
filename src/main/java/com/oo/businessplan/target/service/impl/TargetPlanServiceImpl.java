@@ -53,10 +53,10 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 		target.setDelflag(DeleteFlag.VALID.getCode());
 		target.setCreator(creator);
 		target.setState(Target.RUN);
+		target.setExpectFinishTime(new Date());
 		
 		form.setTarget(target);
 		form.setDelflag(DeleteFlag.VALID.getCode());
-
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
 		List<TargetPlan> plans = targetPlanMapper.getListByTarget(form);
 		for (TargetPlan plan : plans) {

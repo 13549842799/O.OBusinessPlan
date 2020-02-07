@@ -51,9 +51,11 @@ public class PlanActionController extends BaseController{
     public ResponseResult<PageInfo<PlanActionForm>> page(HttpServletRequest request,
     		PlanAction action,
     		@RequestParam(name="pageNum", defaultValue ="1")int pageNum,
-    		@RequestParam(name="pageSize", defaultValue ="10")int pageSize) {
+    		@RequestParam(name="pageSize", defaultValue ="10")int pageSize,
+    		@RequestParam(name="planId", required = true)int planId) {
         ResponseResult<PageInfo<PlanActionForm>> response = new ResponseResult<>();
         
+        action.setTargetPlanId(planId);
         PageInfo<PlanActionForm> page = planActionService.getPage(action, pageNum, pageSize);
         if (page != null && page.getList() != null && page.getList().size() > 1) {
         	List<PlanActionForm> list = page.getList();

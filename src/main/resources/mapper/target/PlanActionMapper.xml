@@ -193,7 +193,7 @@
     
     <select id="getActions" resultType="planActionForm" parameterType="planAction">
         SELECT 
-        <include refid="base_column"/>, date_format( pl.actionDate, “%Y-%m” ) as dateStr
+        <include refid="base_column"/>, date_format( pl.actionDate, '%Y-%m' ) as dateStr
         FROM plan_action pl
         WHERE 
             pl.`targetPlanId` = #{targetPlanId}

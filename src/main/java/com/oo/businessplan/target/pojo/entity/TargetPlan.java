@@ -88,6 +88,9 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	 */
 	private String deleteReason;
 	
+	/**
+	 * 当前已经执行了计划的次数
+	 */
 	private int count = 0;
 	
 	/**
