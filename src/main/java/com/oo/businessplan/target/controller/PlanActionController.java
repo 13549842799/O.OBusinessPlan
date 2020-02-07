@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.basic.controller.BaseController;
 import com.oo.businessplan.common.pageModel.ResponseResult;
 import com.oo.businessplan.common.security.IgnoreSecurity;
 import com.oo.businessplan.target.service.PlanActionService;
 import com.oo.businessplan.target.pojo.entity.PlanAction;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
+import com.oo.businessplan.target.pojo.form.PlanActionForm;
 
 
 /**
@@ -41,6 +44,25 @@ public class PlanActionController extends BaseController{
         ResponseResult<List<PlanAction>> response = new ResponseResult<>();
 
         return response.success();
+    }
+    
+    @IgnoreSecurity
+    @GetMapping(value = "/page.re")
+    public ResponseResult<PageInfo<PlanActionForm>> page(HttpServletRequest request,
+    		PlanAction action,
+    		@RequestParam(name="pageNum", defaultValue ="1")int pageNum,
+    		@RequestParam(name="pageSize", defaultValue ="10")int pageSize) {
+        ResponseResult<PageInfo<PlanActionForm>> response = new ResponseResult<>();
+        
+        PageInfo<PlanActionForm> page = planActionService.getPage(action, pageNum, pageSize);
+        if (page != null && page.getList() != null && page.getList().size() > 1) {
+        	List<PlanActionForm> list = page.getList();
+    		for (int i = 1; i < list.size(); i++) {
+    			list.get(i).setEtype(list.get(i).getDateStr().equals(list.get(i-1).getDateStr()) ? 1 : 0);
+    		}
+        }
+        
+        return response.success(page);
     }
     
     /**

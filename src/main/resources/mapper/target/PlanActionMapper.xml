@@ -191,6 +191,33 @@
     </trim>
     </select>
     
+    <select id="getActions" resultType="planActionForm" parameterType="planAction">
+        SELECT 
+        <include refid="base_column"/>
+        FROM plan_action pl
+        WHERE 
+            pl.`targetPlanId` = #{targetPlanId}
+    <trim prefixOverrides="AND">
+        <if test="startTime != null ">
+        <![CDATA[ 
+         AND pl.`startTime` >= #{startTime}
+	    ]]>
+        </if>
+        <if test="endTime != null ">
+        <![CDATA[
+        AND pl.`endTime` <= #{endTime}
+        ]]>
+        </if>
+        <if test="consumeTime != null ">
+        AND pl.`consumeTime` = #{consumeTime}
+        </if>
+        <if test="result != null ">
+        AND pl.`result` = #{result}
+        </if>
+    </trim>
+        ORDER BY pl.actionDate desc
+    </select>
+    
     <select id="getActionLastDay" resultType="planAction">
         SELECT
         <include refid="base_column"/>

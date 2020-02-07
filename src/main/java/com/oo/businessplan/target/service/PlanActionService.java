@@ -2,9 +2,11 @@ package com.oo.businessplan.target.service;
 
 import java.util.List;
 
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.basic.service.BaseService;
 import com.oo.businessplan.target.pojo.entity.PlanAction;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
+import com.oo.businessplan.target.pojo.form.PlanActionForm;
 
 
 /**
@@ -45,4 +47,8 @@ public interface PlanActionService extends BaseService<PlanAction> {
 	 * @return
 	 */
 	public List<PlanAction> getActionLastDay(Integer targetPlanId, Byte ...results);
+
+	public PageInfo<PlanActionForm> getPage(PlanAction action, int pageNum, int pageSize);
+
+	
 }

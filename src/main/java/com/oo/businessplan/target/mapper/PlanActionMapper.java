@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Update;
 
 import com.oo.businessplan.basic.mapper.BaseMapper;
 import com.oo.businessplan.target.pojo.entity.PlanAction;
+import com.oo.businessplan.target.pojo.form.PlanActionForm;
 
 
 /**
@@ -47,4 +48,6 @@ public interface PlanActionMapper extends BaseMapper<PlanAction> {
 	
 	@Delete("delete from plan_action where TO_DAYS(actionDate) = TO_DAYS(now())")
 	void deleteTodayAction();
+	
+	List<PlanActionForm> getActions(PlanAction action);
 }

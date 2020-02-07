@@ -7,12 +7,16 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.basic.service.impl.BaseServiceImpl;
 import com.oo.businessplan.target.mapper.PlanActionMapper;
 import com.oo.businessplan.target.service.PlanActionService;
 import com.oo.businessplan.target.service.TargetPlanService;
 import com.oo.businessplan.target.pojo.entity.PlanAction;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
+import com.oo.businessplan.target.pojo.form.PlanActionForm;
 
 
 /**
@@ -28,6 +32,18 @@ public class PlanActionServiceImpl extends BaseServiceImpl<PlanAction> implement
 
     @Autowired
     private PlanActionMapper planActionMapper;
+    
+    
+
+	@Override
+	public PageInfo<PlanActionForm> getPage(PlanAction action, int pageNum, int pageSize) {
+		
+		PageHelper.startPage(pageNum, pageSize);
+		List<PlanActionForm> list = planActionMapper.getActions(action);
+		PageInfo<PlanActionForm> page = new PageInfo<>(list);
+		
+		return page;
+	}
 
 	@Override
 	public PlanAction getLaststActionToday(Integer planId, Integer creator) {
