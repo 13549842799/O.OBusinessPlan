@@ -1,6 +1,7 @@
 package com.oo.businessplan.target.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
@@ -50,4 +51,7 @@ public interface PlanActionMapper extends BaseMapper<PlanAction> {
 	void deleteTodayAction();
 	
 	List<PlanActionForm> getActions(PlanAction action);
+	
+	@Select("select  sum(if(result = 3, 1, 0)) as a,sum(if(result = 4, 1, 0)) as b,sum(if(result = 5, 1, 0)) as c,sum(if(result = 6, 1, 0)) as d from plan_action where targetPlanId = #{planId} AND result in (3,4,5,6) ")
+	Map<String, Integer> getActionsStatic(@Param("planId")int lanId);
 }

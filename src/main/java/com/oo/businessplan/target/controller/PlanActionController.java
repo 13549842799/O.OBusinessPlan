@@ -90,6 +90,8 @@ public class PlanActionController extends BaseController{
         switch (pl.getResult()) {
         case PlanAction.OVERCOMPLETE: //超时状态需要记录结束时间和超时理由
 			pl.setEndTime(action.getEndTime());
+			PlanAction exist = planActionService.getById(action);
+			pl.setConsumeTime((action.getEndTime().getTime() - exist.getStartTime().getTime())/1000);
 		case PlanAction.GIVEUP: //放弃需要记录理由
 			pl.setReason(action.getReason());
 			break;
@@ -98,10 +100,26 @@ public class PlanActionController extends BaseController{
 			break;
 		case PlanAction.COMPLETE:
 			pl.setEndTime(action.getEndTime());
+			PlanAction exist2 = planActionService.getById(action);
+			pl.setConsumeTime((action.getEndTime().getTime() - exist2.getStartTime().getTime())/1000);
 			break;
 		default:
 			break;
 		}
         return response.updateResult(planActionService.update(pl));
+    }
+    
+    @IgnoreSecurity
+    @GetMapping(value = "/static.re")
+    public ResponseResult<Map<String, Object>> staticActions(HttpServletRequest request,
+    		@RequestParam(name="planId", required = true)int planId) {
+        ResponseResult<Map<String, Object>> response = new ResponseResult<>();
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put("planId", planId);
+        
+        Map<String, Object> result = planActionService.staticActions(params);
+        
+        return response.success(result);
     }
 }

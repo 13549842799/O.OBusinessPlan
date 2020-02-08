@@ -79,6 +79,11 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	private Date startDate;
 	
 	/**
+	 * 计划结束时间
+	 */
+	private Date endDate;
+	
+	/**
 	 * 对应的目标的id
 	 */
 	private Integer targetId;
@@ -209,6 +214,16 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.action = action;
 	}
 	
+	
+	
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
 	/**
 	 * 计划目前动作的次数
 	 * @return

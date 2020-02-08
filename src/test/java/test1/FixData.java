@@ -2,7 +2,10 @@ package test1;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -10,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.oo.businessplan.article.mapper.DiaryMapper;
 import com.oo.businessplan.article.mapper.NovelMapper;
@@ -21,6 +26,10 @@ import com.oo.businessplan.article.pojo.form.NovelForm;
 import com.oo.businessplan.common.constant.ArticleConstant;
 import com.oo.businessplan.common.enumeration.DeleteFlag;
 import com.oo.businessplan.common.util.StringUtil;
+import com.oo.businessplan.target.mapper.PlanActionMapper;
+import com.oo.businessplan.target.mapper.TargetPlanMapper;
+import com.oo.businessplan.target.pojo.entity.PlanAction;
+import com.oo.businessplan.target.pojo.entity.TargetPlan;
 import com.oo.businessplan.upload.mapper.UploadFileMapper;
 import com.oo.businessplan.upload.pojo.UploadFile;
 
@@ -119,6 +128,47 @@ public class FixData extends BaseTest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	@Test
+	public void testTiime() {
+		Date date = new Date();
+		System.out.println(SimpleDateFormat.getTimeInstance(2).format(date));
+	}
+	
+	@Test
+	@Transactional
+	public void fixTime() {
+		TargetPlanMapper tpm = context.getBean("targetPlanMapper", TargetPlanMapper.class);
+		PlanActionMapper pam = context.getBean("planActionMapper", PlanActionMapper.class);
+		TargetPlan p = new TargetPlan(DeleteFlag.VALID.getCode());
+		List<TargetPlan> plans = tpm.getList(p);
+		if (plans == null) {
+			System.out.println("不存在");
+			return;
+		}
+		try {
+		for (TargetPlan targetPlan : plans) {
+			String st = SimpleDateFormat.getTimeInstance(2).format(targetPlan.getExecutionTime()),
+				et =  SimpleDateFormat.getTimeInstance(2).format(targetPlan.getEndTime());
+			
+	        PlanAction param = new PlanAction();
+	        param.setTargetPlanId(targetPlan.getId());
+			List<PlanAction> pa = pam.getList(param);
+			for (PlanAction planAction : pa) {
+				Date curDate = planAction.getActionDate();
+				String cstr = SimpleDateFormat.getDateInstance().format(curDate);
+				Date newS = SimpleDateFormat.getDateTimeInstance().parse(cstr + " " + st);
+				Date newe = SimpleDateFormat.getDateTimeInstance().parse(cstr + " " + et);					
+				planAction.setExpectStartTime(new Timestamp(newS.getTime()));
+				planAction.setExpectEndTime(new Timestamp(newe.getTime()));
+				pam.update(planAction);
+			}
+		}
+		} catch (ParseException e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		}
 	}
 }

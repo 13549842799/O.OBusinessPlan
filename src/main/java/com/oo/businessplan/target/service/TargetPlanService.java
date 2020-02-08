@@ -43,4 +43,11 @@ public interface TargetPlanService extends BaseService<TargetPlan> {
 	 */
 	public void updateCountBatch(List<TargetPlan> willPlan);
 	
+	/**
+	 * 
+	 * @param plan
+	 * @return
+	 */
+	public long getTotalCountFromPlan(TargetPlan plan);
+	
 }

@@ -1,6 +1,7 @@
 package com.oo.businessplan.target.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.oo.businessplan.basic.service.BaseService;
@@ -49,6 +50,13 @@ public interface PlanActionService extends BaseService<PlanAction> {
 	public List<PlanAction> getActionLastDay(Integer targetPlanId, Byte ...results);
 
 	public PageInfo<PlanActionForm> getPage(PlanAction action, int pageNum, int pageSize);
+
+	/**
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public Map<String, Object> staticActions(Map<String, Object> params);
 
 	
 }

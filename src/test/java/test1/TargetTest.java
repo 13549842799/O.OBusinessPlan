@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.oo.businessplan.common.enumeration.DeleteFlag;
+import com.oo.businessplan.target.mapper.PlanActionMapper;
 import com.oo.businessplan.target.mapper.TargetPlanMapper;
 import com.oo.businessplan.target.pojo.entity.Target;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
@@ -22,8 +23,12 @@ public class TargetTest extends BaseTest {
 		TargetPlanMapper tpm = context.getBean("targetPlanMapper", TargetPlanMapper.class);
 		
 		//List<TargetPlan> count = tpm.overLappedTimePlans(2, DeleteFlag.VALID.getCode(), new Time(7, 50, 0), new Time(9, 50, 0), "1");
-		List<TargetPlan> ps = tpm.unCompleteList(2, DeleteFlag.VALID.getCode());
-		System.out.println(ps);
+		/*List<TargetPlan> ps = tpm.unCompleteList(2, DeleteFlag.VALID.getCode());
+		System.out.println(ps);*/
+		TargetPlan p = new TargetPlan(DeleteFlag.VALID.getCode());
+		p.setId(2);
+		p = tpm.getById(p);
+		System.out.println((p.getEndTime().getTime() - p.getExecutionTime().getTime())/1000/60);
 	}
 	
 	@Test
@@ -53,6 +58,8 @@ public class TargetTest extends BaseTest {
 	
 	@Test
 	public void testArray() {
-		Byte[] bs = {1,2,3,4};
+		PlanActionMapper pm = context.getBean("planActionMapper", PlanActionMapper.class);
+		
+		System.out.println(pm.getActionsStatic(2));
 	}
 }

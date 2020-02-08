@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oo.businessplan.basic.entity.IdEntity;
 
 public class PlanAction extends IdEntity<Long> {
@@ -53,6 +55,16 @@ public class PlanAction extends IdEntity<Long> {
 	 * 当前执行动作是对应计划的最新次数
 	 */
 	private int num;
+	
+	/**
+	 * 当天预计开始时间
+	 */
+	private Timestamp expectStartTime;
+	
+	/**
+	 * 当天预计结束时间
+	 */
+	private Timestamp expectEndTime;
 
 	/**
 	 * 实际开始时间
@@ -155,7 +167,26 @@ public class PlanAction extends IdEntity<Long> {
 	public void setNum(int num) {
 		this.num = num;
 	}
+	
+	
 
+	public Timestamp getExpectStartTime() {
+		return expectStartTime;
+	}
+
+	public void setExpectStartTime(Timestamp expectStartTime) {
+		this.expectStartTime = expectStartTime;
+	}
+
+	public Timestamp getExpectEndTime() {
+		return expectEndTime;
+	}
+
+	public void setExpectEndTime(Timestamp expectEndTime) {
+		this.expectEndTime = expectEndTime;
+	}
+
+	@JsonFormat(pattern="yyyy-MM-dd")
 	public Date getActionDate() {
 		return actionDate;
 	}

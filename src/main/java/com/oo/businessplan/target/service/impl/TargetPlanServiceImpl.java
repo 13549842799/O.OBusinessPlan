@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Iterator;
@@ -57,10 +58,9 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 		
 		form.setTarget(target);
 		form.setDelflag(DeleteFlag.VALID.getCode());
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
 		List<TargetPlan> plans = targetPlanMapper.getListByTarget(form);
 		for (TargetPlan plan : plans) {
-		    LocalDate startDate = LocalDate.parse(sdf.format(plan.getStartDate()));//开始时间
+		    LocalDate startDate = plan.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();//开始时间
 		    LocalDate now = LocalDate.now();
 		    
 		    if (!this.isCome(startDate, now, plan.getPeriod(), plan.getUnit())) {
@@ -186,6 +186,21 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 		targetPlanMapper.updateCountBatch(willPlan);
 	}
 	
+	
+	public long getTotalCountFromPlan(TargetPlan plan) {
+		LocalDate startDate =  plan.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+         endDate = plan.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		switch (plan.getUnit()) {
+		case TargetPlan.DAY:
+			return ChronoUnit.DAYS.between(startDate, endDate);
+        case TargetPlan.WEEK:
+        	long dura = ChronoUnit.WEEKS.between(startDate, endDate);
+        	return (startDate.getDayOfWeek().getValue() > endDate.getDayOfWeek().getValue() ? dura + 1 : dura) / plan.getPeriod();
+		default:
+			long d2 = ChronoUnit.MONTHS.between(startDate, endDate);
+			return (startDate.getDayOfMonth() > endDate.getDayOfMonth() ? d2 + 1 : d2) / plan.getPeriod();
+		}
+	}
 	
 	
    
