@@ -1,5 +1,10 @@
 package com.oo.businessplan.quartz.job;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,13 +62,16 @@ public class CreateTargetActionJob extends QuartzJobBean {
     		planActionService.deleteTodayAction();//预防当天生成多个动作
     		
     		PlanAction action = null;
-    		Date today = new Date();
+    		long dayMinSecond = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+    		Date now = new Date(dayMinSecond);
     		for (TargetPlan plan : willPlan) {
     						
     			action = new PlanAction();
     			action.setTargetPlanId(plan.getId());
     			action.setResult(PlanAction.UNSTART);
-    			action.setActionDate(today);
+    			action.setActionDate(now); 			
+    			action.setExpectStartTime(new Timestamp(dayMinSecond + plan.getExecutionTime().getTime()));
+    			action.setExpectEndTime(new Timestamp(dayMinSecond + plan.getEndTime().getTime()));
     			action.setNum(plan.countAddOne());
     			actions.add(action);
     		}

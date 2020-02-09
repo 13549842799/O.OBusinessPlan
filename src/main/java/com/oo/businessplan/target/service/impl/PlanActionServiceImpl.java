@@ -25,6 +25,9 @@ import com.oo.businessplan.target.mapper.PlanActionMapper;
 import com.oo.businessplan.target.service.PlanActionService;
 import com.oo.businessplan.target.service.TargetPlanService;
 import com.oo.businessplan.target.service.TargetService;
+
+import sun.awt.AWTAccessor.ToolkitAccessor;
+
 import com.oo.businessplan.target.pojo.entity.PlanAction;
 import com.oo.businessplan.target.pojo.entity.Target;
 import com.oo.businessplan.target.pojo.entity.TargetPlan;
@@ -124,29 +127,14 @@ public class PlanActionServiceImpl extends BaseServiceImpl<PlanAction> implement
 		
 		TargetPlan plan = new TargetPlan(DeleteFlag.VALID.getCode());
 		plan = targetPlanService.getById(plan);
-		Target target = new Target(plan.getTargetId(), DeleteFlag.VALID.getCode());
-		target = targetService.getById(target);
-		//计算单次耗时多少秒
-		long consumeSecond = plan.getEndTime().getTime() - plan.getExecutionTime().getTime();
+		//计算单次耗时多少分钟
+		long consumeMin = (plan.getEndTime().getTime() - plan.getExecutionTime().getTime())/1000/60;
 		
-		long count = 0, totalCount = 0;
-        LocalDate now = LocalDate.now();
-        LocalDate startDate =  plan.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate endDate = plan.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		switch (plan.getUnit()) {
-		case TargetPlan.DAY:
-			count = (ChronoUnit.DAYS.between(startDate, endDate) - hasDoCount) / plan.getPeriod();
-			break;
-        case TargetPlan.WEEK:
-        	long dura = ChronoUnit.WEEKS.between(startDate, endDate);
-        	dura = startDate.getDayOfWeek().getValue() > endDate.getDayOfWeek().getValue() ? dura + 1 : dura;
-        	count = dura / plan.getPeriod();
-			break;
-		default:
-			count = ChronoUnit.MONTHS.between(startDate, endDate);
-			count = startDate.getDayOfMonth() > endDate.getDayOfMonth() ? count + 1 : count;
-			count = count / plan.getPeriod();
-		}
+		long totalCount = this.getTotalCountFromPlan(plan);
+		
+		result.put("total", new BigDecimal(totalCount));
+		result.put("undo", new BigDecimal(totalCount - hasDoCount));
+		result.put("hour", new BigDecimal(consumeMin).divide(new BigDecimal(60), 1, BigDecimal.ROUND_UNNECESSARY));
 		
 		return result;
 	}
@@ -163,12 +151,12 @@ public class PlanActionServiceImpl extends BaseServiceImpl<PlanAction> implement
 		int planId = Integer.parseInt(params.get("planId").toString());
 		
 		Map<String, Integer> hasDo = planActionMapper.getActionsStatic(planId);
-		
+
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("hasDo", hasDo);
 		
-		//Map<String, BigDecimal> doneDo = getDoneDoData(planId);
-		//result.put("doneDo", doneDo);
+		Map<String, BigDecimal> doneDo = getDoneDoData(planId, hasDo.get("e") == null ? 0 : hasDo.get("e"));
+		result.put("doneDo", doneDo);
 		
 		return result;
 	}

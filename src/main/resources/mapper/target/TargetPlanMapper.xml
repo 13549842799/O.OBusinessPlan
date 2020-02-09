@@ -15,6 +15,7 @@
         <result property="period" column="period"/>
         <result property="unit" column="unit"/>
         <result property="startDate" column="startDate"/>
+        <result property="endDate" column="endDate"/>
         <result property="count" column="count"/>
         <collection property="actions" ofType="planAction">
             <id property="id" column="ac_id"/>
@@ -31,7 +32,7 @@
     </resultMap>
 
      <sql id="base_column">
-        ta.id,ta.delflag,ta.planName,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit,ta.startDate,ta.targetId,ta.creator,ta.createTime,ta.count
+        ta.id,ta.delflag,ta.planName,ta.content,ta.executionTime,ta.endTime,ta.period,ta.unit,ta.startDate, ta.endDate,ta.targetId,ta.creator,ta.createTime,ta.count
      </sql>
      
      <sql id="with_action_column">
@@ -67,6 +68,9 @@
                 </if>
                 <if test="startDate != null ">
                 startDate,
+                </if>
+                <if test="endDate != null ">
+                endDate,
                 </if>
                 <if test="targetId != null ">
                 targetId,
@@ -104,6 +108,9 @@
                 </if>
                 <if test="startDate != null">
                 #{startDate},
+                </if>
+                <if test="endDate != null">
+                #{endDate},
                 </if>
                 <if test="targetId != null ">
                 #{targetId},
@@ -146,6 +153,9 @@
                 </if>
                 <if test="startDate != null">
                 startDate = #{startDate},
+                </if>
+                <if test="endDate != null">
+                endDate = #{endDate},
                 </if>
                 <if test="planName != null">
                 planName = #{planName},
@@ -247,6 +257,11 @@
         </if>
         <if test="executionTime != null ">
         AND ta.`executionTime` = #{executionTime}
+        </if>
+        <if test="endDate != null">
+        <![CDATA[
+        AND ta.endDate >= #{endDate}
+        ]]>
         </if>
         <if test="endTime != null ">
         AND ta.`endTime` = #{endTime}

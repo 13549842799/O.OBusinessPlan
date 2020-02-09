@@ -153,7 +153,7 @@ public class TargetPlan extends CreatorEntity<Integer>{
 	}
 	
 	public String getUnitName() {
-		return this.unit == DAY ? "天" : (this.unit == WEEK ? "周" : "月") ;
+		return this.unit == null || this.unit == DAY ? "天" : (this.unit == WEEK ? "周" : "月") ;
 	}
 
 	public List<PlanAction> getActions() {
@@ -214,8 +214,7 @@ public class TargetPlan extends CreatorEntity<Integer>{
 		this.action = action;
 	}
 	
-	
-	
+	@JsonFormat(pattern="yyyy年MM月dd日",timezone="GMT+8")
 	public Date getEndDate() {
 		return endDate;
 	}

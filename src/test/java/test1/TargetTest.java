@@ -2,6 +2,12 @@ package test1;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +34,11 @@ public class TargetTest extends BaseTest {
 		TargetPlan p = new TargetPlan(DeleteFlag.VALID.getCode());
 		p.setId(2);
 		p = tpm.getById(p);
-		System.out.println((p.getEndTime().getTime() - p.getExecutionTime().getTime())/1000/60);
+	    LocalDateTime t = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).plusSeconds(p.getExecutionTime().getTime()/1000);
+
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+	    String dateTime = t.format(formatter);
+		System.out.println(dateTime);
 	}
 	
 	@Test
