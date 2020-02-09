@@ -28,8 +28,8 @@
                 <if test="expectStartTime != null ">
                 expectStartTime,
                 </if>
-                <if test="expectEndTiime != null ">
-                expectEndTiime,
+                <if test="expectEndTime != null ">
+                expectEndTime,
                 </if>
                 <if test="startTime != null ">
                 startTime,
