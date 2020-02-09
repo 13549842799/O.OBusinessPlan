@@ -219,23 +219,22 @@
         FROM plan_action pl
         WHERE 
             pl.`targetPlanId` = #{targetPlanId}
-        AND
-    <trim prefixOverrides="AND">
+    <trim >
         <if test="startTime != null ">
         <![CDATA[ 
-         AND pl.`startTime` >= #{startTime}
+           AND pl.`startTime` >= #{startTime}
 	    ]]>
         </if>
         <if test="endTime != null ">
         <![CDATA[
-        AND pl.`endTime` <= #{endTime}
+          AND pl.`endTime` <= #{endTime}
         ]]>
         </if>
         <if test="consumeTime != null ">
-        AND pl.`consumeTime` = #{consumeTime}
+         AND pl.`consumeTime` = #{consumeTime}
         </if>
-        <if test="result != null ">
-        AND pl.`result` = #{result}
+        <if test="result != null "> 
+          AND pl.`result` = #{result}
         </if>
     </trim>
         ORDER BY pl.actionDate desc
