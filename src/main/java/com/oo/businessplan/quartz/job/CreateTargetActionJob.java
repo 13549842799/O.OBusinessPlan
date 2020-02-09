@@ -64,14 +64,13 @@ public class CreateTargetActionJob extends QuartzJobBean {
     		PlanAction action = null;
     		long dayMinSecond = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).toInstant(ZoneOffset.of("+8")).toEpochMilli();
     		Date now = new Date(dayMinSecond);
-    		for (TargetPlan plan : willPlan) {
-    						
+    		for (TargetPlan plan : willPlan) {  						
     			action = new PlanAction();
     			action.setTargetPlanId(plan.getId());
     			action.setResult(PlanAction.UNSTART);
     			action.setActionDate(now); 			
-    			action.setExpectStartTime(new Timestamp(dayMinSecond + plan.getExecutionTime().getTime()));
-    			action.setExpectEndTime(new Timestamp(dayMinSecond + plan.getEndTime().getTime()));
+    			action.setExpectStartTime(new Timestamp(LocalDateTime.of(LocalDate.now(), plan.getExecutionTime().toLocalTime()).toInstant(ZoneOffset.of("+8")).toEpochMilli()));
+    			action.setExpectEndTime(new Timestamp(LocalDateTime.of(LocalDate.now(), plan.getEndTime().toLocalTime()).toInstant(ZoneOffset.of("+8")).toEpochMilli()));
     			action.setNum(plan.countAddOne());
     			actions.add(action);
     		}

@@ -2,6 +2,12 @@ package com.oo.businessplan.target.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 
@@ -100,7 +106,7 @@ public class PlanActionController extends BaseController{
 			break;
 		case PlanAction.COMPLETE:
 			pl.setEndTime(action.getEndTime());
-			PlanAction exist2 = planActionService.getById(action);
+			PlanAction exist2 = planActionService.getById(action);		
 			pl.setConsumeTime((action.getEndTime().getTime() - exist2.getStartTime().getTime())/1000);
 			break;
 		default:

@@ -6,6 +6,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -31,14 +32,14 @@ public class TargetTest extends BaseTest {
 		//List<TargetPlan> count = tpm.overLappedTimePlans(2, DeleteFlag.VALID.getCode(), new Time(7, 50, 0), new Time(9, 50, 0), "1");
 		/*List<TargetPlan> ps = tpm.unCompleteList(2, DeleteFlag.VALID.getCode());
 		System.out.println(ps);*/
-		TargetPlan p = new TargetPlan(DeleteFlag.VALID.getCode());
+		/*TargetPlan p = new TargetPlan(DeleteFlag.VALID.getCode());
 		p.setId(2);
 		p = tpm.getById(p);
-	    LocalDateTime t = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).plusSeconds(p.getExecutionTime().getTime()/1000);
+	    LocalDateTime t = LocalDateTime.of(LocalDate.now(), p.getExecutionTime().toLocalTime());
 
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
-	    String dateTime = t.format(formatter);
-		System.out.println(dateTime);
+	    String dateTime = t.format(formatter);*/
+		System.out.println(Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 	}
 	
 	@Test

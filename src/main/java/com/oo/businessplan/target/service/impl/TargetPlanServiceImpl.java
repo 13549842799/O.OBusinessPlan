@@ -2,9 +2,13 @@ package com.oo.businessplan.target.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Iterator;
@@ -58,6 +62,7 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 		target.setExpectFinishTime(new Date());
 		
 		form.setTarget(target);
+		form.setEndDate(Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		form.setDelflag(DeleteFlag.VALID.getCode());
 		List<TargetPlan> plans = targetPlanMapper.getListByTarget(form);
 		for (TargetPlan plan : plans) {
@@ -80,12 +85,20 @@ public class TargetPlanServiceImpl extends RedisCacheSupport<TargetPlan> impleme
 			PlanAction action = actionMapper.getLaststActionToday(plan.getId());
 			
 			if (action == null) {
+				long dayMinSecond = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+	    		Date now = new Date(dayMinSecond);
 				action = new PlanAction();
-				action.setTargetPlanId(plan.getId());
-				action.setResult(PlanAction.WAITSTART);
-				action.setActionDate(new Date());
+    			action.setTargetPlanId(plan.getId());
+    			action.setResult(PlanAction.UNSTART);
+    			action.setActionDate(now); 
+    			action.setExpectStartTime(new Timestamp(LocalDateTime.of(LocalDate.now(), plan.getExecutionTime().toLocalTime()).toInstant(ZoneOffset.of("+8")).toEpochMilli()));
+    			action.setExpectEndTime(new Timestamp(LocalDateTime.of(LocalDate.now(), plan.getEndTime().toLocalTime()).toInstant(ZoneOffset.of("+8")).toEpochMilli()));
+    			action.setNum(plan.countAddOne());
 				try {
 					actionMapper.add(action);
+					List<TargetPlan> ps = new LinkedList<>();
+					ps.add(plan);
+					targetPlanMapper.updateCountBatch(ps);
 				} catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
