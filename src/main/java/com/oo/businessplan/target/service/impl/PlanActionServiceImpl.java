@@ -121,20 +121,17 @@ public class PlanActionServiceImpl extends BaseServiceImpl<PlanAction> implement
 		}
 	}
 	
-	private Map<String, BigDecimal> getDoneDoData(Integer targetPlanId, int hasDoCount) {
+	private Map<String, BigDecimal> getDoneDoData(TargetPlan plan, int hasDoCount) {
 		
 		Map<String, BigDecimal> result = new HashMap<>();
 		
-		TargetPlan plan = new TargetPlan(DeleteFlag.VALID.getCode());
-		plan = targetPlanService.getById(plan);
 		//计算单次耗时多少分钟
 		long consumeMin = (plan.getEndTime().getTime() - plan.getExecutionTime().getTime())/1000/60;
-		
-		long totalCount = this.getTotalCountFromPlan(plan);
-		
-		result.put("total", new BigDecimal(totalCount));
-		result.put("undo", new BigDecimal(totalCount - hasDoCount));
-		result.put("hour", new BigDecimal(consumeMin).divide(new BigDecimal(60), 1, BigDecimal.ROUND_UNNECESSARY));
+
+		BigDecimal totalCount = new BigDecimal(this.getTotalCountFromPlan(plan));
+		result.put("total", totalCount);
+		result.put("undo", totalCount.subtract(new BigDecimal(hasDoCount)));
+		result.put("hour", new BigDecimal(consumeMin).multiply(totalCount).divide(new BigDecimal(60), 1, BigDecimal.ROUND_HALF_UP));
 		
 		return result;
 	}
@@ -150,12 +147,15 @@ public class PlanActionServiceImpl extends BaseServiceImpl<PlanAction> implement
 		
 		int planId = Integer.parseInt(params.get("planId").toString());
 		
-		Map<String, Integer> hasDo = planActionMapper.getActionsStatic(planId);
+		Map<String, Long> hasDo = planActionMapper.getActionsStatic(planId);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("hasDo", hasDo);
 		
-		Map<String, BigDecimal> doneDo = getDoneDoData(planId, hasDo.get("e") == null ? 0 : hasDo.get("e"));
+		TargetPlan plan = new TargetPlan(DeleteFlag.VALID.getCode());
+		plan.setId(planId);
+		plan = targetPlanService.getById(plan);
+		Map<String, BigDecimal> doneDo = getDoneDoData(plan, hasDo.get("e") == null ? 0 : hasDo.get("e").intValue());
 		result.put("doneDo", doneDo);
 		
 		return result;

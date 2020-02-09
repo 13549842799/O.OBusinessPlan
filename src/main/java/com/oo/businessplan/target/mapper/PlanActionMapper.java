@@ -52,6 +52,6 @@ public interface PlanActionMapper extends BaseMapper<PlanAction> {
 	
 	List<PlanActionForm> getActions(PlanAction action);
 	
-	@Select("select  sum(if(result = 3, 1, 0)) as a,sum(if(result = 4, 1, 0)) as b,sum(if(result = 5, 1, 0)) as c,sum(if(result = 6, 1, 0)) as d, count(0) as e from plan_action where targetPlanId = #{planId} AND result in (3,4,5,6) ")
-	Map<String, Integer> getActionsStatic(@Param("planId")int lanId);
+	@Select("select  ifnull(sum(if(result = 3, 1, 0)), 0) as a, IFNULL(sum(if(result = 4, 1, 0)), 0) as b, ifnull(sum(if(result = 5, 1, 0)), 0) as c, ifnull(sum(if(result = 6, 1, 0)), 0) as d, ifnull(count(0), 0) as e from plan_action where targetPlanId = #{planId} AND result in (3,4,5,6) ")
+	Map<String, Long> getActionsStatic(@Param("planId")int planId);
 }
