@@ -123,7 +123,7 @@ public class FinalReportController extends BaseController {
 		
 		ResponseResult<List<FinalReport>> response = new ResponseResult<>();
 		
-		return response.success(service.searchTitle(title));
+		return response.success(service.searchTitle(title, currentAdminId(request)));
 		
 	}
 

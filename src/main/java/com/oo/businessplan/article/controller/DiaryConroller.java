@@ -143,7 +143,7 @@ public class DiaryConroller extends BaseController{
 		
 		ResponseResult<List<Diary>> response = new ResponseResult<>();
 		
-		return response.success(diaryService.searchTitle(title));
+		return response.success(diaryService.searchTitle(title, currentAdminId(request)));
 		
 	}
 	

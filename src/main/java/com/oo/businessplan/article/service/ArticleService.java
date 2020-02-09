@@ -27,8 +27,8 @@ public interface ArticleService<T extends AbstractArticle<?>> extends BaseServic
 	 * @param title
 	 * @return
 	 */
-	default List<T> searchTitle(String title) {
-		return getMapper().searchTitle(title, DeleteFlag.VALID.getCode(), this.getClass().getSimpleName().replace("ServiceImpl", "").toLowerCase());
+	default List<T> searchTitle(String title, Integer creator) {
+		return getMapper().searchTitle(title, creator, DeleteFlag.VALID.getCode(), this.getClass().getSimpleName().replace("ServiceImpl", "").toLowerCase());
 	}
 
 	default PageInfo<T> getPage(T t, Integer pageNum, Integer pageSize) {

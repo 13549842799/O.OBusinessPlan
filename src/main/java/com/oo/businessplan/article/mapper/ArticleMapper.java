@@ -22,8 +22,8 @@ public interface ArticleMapper<T extends AbstractArticle<?>> extends BaseMapper<
 	 * @param table
 	 * @return
 	 */
-	@Select("SELECT id, title FROM ${table} WHERE LOCATE(#{name}, title) > 0 AND delflag = #{delflag}")
-	List<T> searchTitle(@Param("name")String name, @Param("delflag")byte delflag, @Param("table")String table);
+	@Select("SELECT id, title FROM ${table} WHERE creator = IFNULL(#{creator}, creator) AND LOCATE(#{name}, title) > 0 AND delflag = #{delflag}")
+	List<T> searchTitle(@Param("name")String name, @Param("creator")Integer creator, @Param("delflag")byte delflag, @Param("table")String table);
 	
 	
 }
