@@ -167,7 +167,7 @@ public class RedisTokenManager extends RedisManager implements SessionManager{
 			availableTime += l*60*60*24;
 			break;
 		}
-		String token =UUID.randomUUID().toString();
+		String token = UUID.randomUUID().toString();
 		info.setToken(token);
 		info.setAvailableDate(availableTime);
 

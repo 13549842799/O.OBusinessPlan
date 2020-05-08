@@ -72,7 +72,7 @@ public class SecurityAspect {
 	     int origin = HttpUtil.getInstance().checkHttpOrigin(request);
 	     
 	     //1.判断是否存在这个用户
-	    /* Object object = tokenManager
+	     /* Object object = tokenManager
 	    		 .getValueFromMap(userCode, origin == 0 ? EntityConstants.REDIS_PHONE_SESSION_NAME : EntityConstants.REDIS_SESSION_NAME);
 	     if (object==null) {
 	    	 throw new LoginException("用户不存在或未登录");

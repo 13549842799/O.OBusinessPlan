@@ -22,7 +22,6 @@ import com.oo.businessplan.common.util.StringUtil;
  * @author cyz
  *
  */
-@Component
 public final class ValidService {
 	
 	public final static int VALIDFORONE = 1; //if one filed is checkout fail， break

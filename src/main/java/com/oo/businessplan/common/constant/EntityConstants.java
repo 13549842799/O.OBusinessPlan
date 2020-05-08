@@ -18,5 +18,16 @@ public interface EntityConstants {
 	  String REDIS_AUTHORITY = "authority";
 	  
 	  String REDIS_RESOURCE = "resource";
+	  
+	  default String loginConstant(int type) {
+		 switch (type) {
+		     case 1:case 3:
+			     return REDIS_SESSION_NAME;
+		     case 2:
+			     return REDIS_PHONE_SESSION_NAME;
+		     default:
+			     return null;
+		 }
+	  }
 
 }
